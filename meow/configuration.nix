@@ -2,13 +2,19 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ config, pkgs, home-manager, ... }:
 
 {
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
     ];
+
+  home-manager = {	# Enable home-manager
+    useGlobalPkgs = true;
+    useUserPackages = true;
+    users.lightquantum = import ./home.nix;
+  };
 
   nix.package = pkgs.nix;
   nix.settings = {

@@ -30,6 +30,7 @@
         system = "x86_64-linux";
         modules = [
           ./meow/configuration.nix
+          home-manager.nixosModules.home-manager
         ];
       };
     };

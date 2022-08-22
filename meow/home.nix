@@ -9,6 +9,17 @@
 
   programs = {
     home-manager.enable = true;
+    zsh = {
+      enable = true;
+      shellAliases = {
+        vim = "nvim";
+      };
+      enableSyntaxHighlighting = true;
+      oh-my-zsh = {
+        enable = true;
+      };
+    };
+    starship.enable = true;
     nixvim = {
       enable = true;
       options = {

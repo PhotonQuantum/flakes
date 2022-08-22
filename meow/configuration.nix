@@ -11,6 +11,7 @@
     ];
 
   nix.package = pkgs.nix;
+  nix.gc.automatic = true;
   nix.settings = {
     trusted-users = [ "lightquantum" ];
     experimental-features = [ "nix-command" "flakes" ];

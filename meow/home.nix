@@ -20,6 +20,7 @@
       };
     };
     starship.enable = true;
+    lazygit.enable = true;
     nixvim = {
       enable = true;
       options = {

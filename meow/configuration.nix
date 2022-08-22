@@ -70,6 +70,7 @@
     docker-compose_2
     curl
     wget
+    lazydocker
   ];
 
   virtualisation.docker.enable = true;

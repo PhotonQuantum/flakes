@@ -105,6 +105,33 @@
     '';
   };
 
+  services.borgbackup.repos = {
+    aliyun = {
+      path = "/var/lib/borgbackup/aliyun";
+      quota = "10G";
+      user = "borg-aliyun";
+      authorizedKeys = [
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOvwlbYZzoGg+MYu9HyXhTor07AyoAEbRKpUpNi15LVu"
+      ];
+    };
+    hydev = {
+      path = "/var/lib/borgbackup/hydev";
+      quota = "10G";
+      user = "borg-hydev";
+      authorizedKeys = [
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHmsSyeENaYXUWWXDIETEu1u8Ah7zEX8dCcXuGcqWLxQ"
+      ];
+    };
+    projects = {
+      path = "/var/lib/borgbackup/projects";
+      quota = "100G";
+      user = "borg-projects";
+      authorizedKeys = [
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL3wabckxXT3q9ih7Y070OKjI3lf3+VuLrfilj3FzpK8"
+      ];
+    };
+  };
+
   # Open ports in the firewall.
   networking.firewall.allowedTCPPorts = [ ];
   networking.firewall.allowedUDPPorts = [ 20423 ];

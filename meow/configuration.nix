@@ -58,7 +58,6 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    git
     docker
     docker-compose_2
     curl
@@ -69,6 +68,14 @@
   # started in user sessions.
   programs.mtr.enable = true;
   programs.mosh.enable = true;
+  programs.git = {
+    enable = true;
+    config = {
+      merge = {
+        ff = "only";
+      };
+    };
+  };
 
   # List services that you want to enable:
 

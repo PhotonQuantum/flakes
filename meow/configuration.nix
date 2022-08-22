@@ -10,12 +10,6 @@
       ./hardware-configuration.nix
     ];
 
-  home-manager = {	# Enable home-manager
-    useGlobalPkgs = true;
-    useUserPackages = true;
-    users.lightquantum = import ./home.nix;
-  };
-
   nix.package = pkgs.nix;
   nix.settings = {
     trusted-users = [ "lightquantum" ];
@@ -64,7 +58,6 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    neovim
     git
     docker
     docker-compose_2

@@ -18,19 +18,32 @@
       inputs.darwin.follows = "darwin";
       inputs.home-manager.follows = "home-manager";
     };
+    nixvim = {
+      url = "github:pta2002/nixvim";
+    };
     deploy-rs = {	# Deploy to remote systems
       url = "github:serokell/deploy-rs";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs = { self, darwin, home-manager, nixpkgs, deploy-rs, ... }@inputs: {
+  outputs = { self, darwin, home-manager, nixvim, nixpkgs, deploy-rs, ... }@inputs: {
     nixosConfigurations = {
       lightquantum-meow = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
-          ./meow/configuration.nix
           home-manager.nixosModules.home-manager
+          ./meow/configuration.nix
+          {
+            home-manager = {	# Enable home-manager
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              users.lightquantum = import ./meow/home.nix;
+              sharedModules = [
+                nixvim.homeManagerModules.nixvim
+              ];
+            };
+          }
         ];
       };
     };

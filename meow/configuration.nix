@@ -42,7 +42,7 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.lightquantum = {
     isNormalUser = true;
-    extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "wheel" "docker" ]; # Enable ‘sudo’ for the user.
     openssh.authorizedKeys.keys = [
       "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCu4c/RtyBgjlkM32w9qeXL/5G1xN5LbUu4M8yMXT75ZdRV5eTf9w5rgnFvf1jWmM8J97hWfqxUqCzZbPz2fB56S0r4MoA12NZduNUPbUjIJGAhf/r/aNFgVSTwep+V2OL+MZjyOi1hjklwHBpqjjz9DnSOoH+8ZhEi0U3axCC5qlKs6BI2aamiV3GMifAHXaHy8IOFWkcD+qWG6bRtfRrGpXuuB6WOUCdv1IFsiqJWnJcw2JwfgS8HAKvTZI/GuYQUJ+IbwPy7iIz7WaGXy0w9hOhTO2Bhcixf7u1uXAB86J8279IcFJ9tXhyRrE9/trX5FqIJkr/OcMUHCBS2O8uvtlhxVhegFsbo2Cg2xfbW3ri0dFm9jV0T+0JOKhLEX9trxxr2gR/uUYDyZnZ4UI6eKGKIhZOnI6B0TeKuW6ojxxgvuZJ6q4kpOSvKc7oKFM/f8w5eeqRwos6/J/K+DPIelvIMw9dPO0U/bWm8oi7d/c86q2K67MdKUpdPOVcCM0zp4KFdDl0UnLOkHMM/tgPLFwab4bmhUq57ryB5gJEW1MLA4CCQEHayGObIlzk64TZF9iUUVVPL5HsuarmDWjT3HSwyAGjp8CkfL7EVk8kWD3CiRd0VTu6qWaxTS6vbeThuGPRoyre6SPmiVWcMHJHxX+djQ305bYYsbovupVAE4Q=="
     ];
@@ -60,6 +60,8 @@
   environment.systemPackages = with pkgs; [
     neovim
     git
+    docker
+    docker-compose_2
     curl
     wget
   ];

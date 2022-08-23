@@ -26,6 +26,8 @@
     experimental-features = [ "nix-command" "flakes" ];	# Enable flakes support
   };
 
+  programs.zsh.enable = true;
+
   services = {
     nix-daemon.enable = true;
   };

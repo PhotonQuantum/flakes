@@ -86,9 +86,7 @@
   programs.git = {
     enable = true;
     config = {
-      merge = {
-        ff = "only";
-      };
+      pull.rebase = true;
     };
   };
 

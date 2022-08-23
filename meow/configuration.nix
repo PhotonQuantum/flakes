@@ -6,7 +6,8 @@
 
 {
   imports =
-    [ # Include the results of the hardware scan.
+    [
+      # Include the results of the hardware scan.
       ./hardware-configuration.nix
     ];
 
@@ -26,12 +27,12 @@
 
   networking = {
     hostName = "lightquantum-meow"; # Define your hostname.
-    interfaces.ens18.ipv4.addresses = [ {
+    interfaces.ens18.ipv4.addresses = [{
       address = "10.0.1.104";
       prefixLength = 24;
     }];
     defaultGateway = "10.0.1.1";
-    nameservers = ["1.1.1.1" "1.0.0.1"];
+    nameservers = [ "1.1.1.1" "1.0.0.1" ];
   };
 
   # Set your time zone.
@@ -53,8 +54,9 @@
   };
 
   environment = {
-    shells = [ pkgs.zsh ];          # Default shell
-    variables = {                         # System variables
+    shells = [ pkgs.zsh ]; # Default shell
+    variables = {
+      # System variables
       EDITOR = "nvim";
       VISUAL = "nvim";
     };
@@ -64,7 +66,7 @@
     enable = true;
     wheelNeedsPassword = false;
   };
- 
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [

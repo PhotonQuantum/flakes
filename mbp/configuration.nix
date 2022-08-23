@@ -1,12 +1,6 @@
 { system, config, home-manager, pkgs, ... }:
 
 {
-  home-manager = {	# Enable home-manager
-    useGlobalPkgs = true;
-    useUserPackages = true;
-    users.lightquantum = import ./home.nix;
-  };
-
   users.users.lightquantum = {
     home = "/Users/lightquantum";
     shell = [ pkgs.zsh ];

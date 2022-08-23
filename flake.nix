@@ -55,6 +55,13 @@
           ./mbp/configuration.nix
           inputs.malob.darwinModules.security-pam   # might get merged to nix-darwin in the future
           home-manager.darwinModules.home-manager
+          {
+              home-manager = {	# Enable home-manager
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                users.lightquantum = import ./mbp/home.nix;
+              };
+          }
         ];
       };
     };

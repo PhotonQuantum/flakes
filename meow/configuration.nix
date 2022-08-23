@@ -74,6 +74,7 @@
     curl
     wget
     lazydocker
+    netdata   # This is necessary to bring netdata-claim.sh to default shell.
   ];
 
   virtualisation.docker.enable = true;
@@ -103,6 +104,19 @@
       ClientAliveInterval 30
       ClientAliveCountMax 2
     '';
+  };
+
+  # Enable netdata reporting.
+  # Notice: don't forget to claim the server to netdata cloud.
+  # ```shell
+  # $ sudo netdata-claim.sh -token=<token>
+  # $ sudo netdatacli reload-claiming-state
+  # ```
+  services.netdata = {
+    enable = true;
+    config = {
+      ml.enabled = true;
+    };
   };
 
   services.borgbackup.repos = {

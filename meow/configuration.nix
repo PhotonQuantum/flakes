@@ -119,6 +119,8 @@
     };
   };
 
+  services.qemuGuest.enable = true;
+
   services.borgbackup.repos = {
     aliyun = {
       path = "/var/lib/borgbackup/aliyun";

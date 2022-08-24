@@ -18,6 +18,7 @@
   environment.systemPackages = with pkgs; [
     rnix-lsp
     colmena
+    git-machete
   ];
 
   security.pam.enableSudoTouchIdAuth = true;

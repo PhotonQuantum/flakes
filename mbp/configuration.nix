@@ -19,6 +19,7 @@
     rnix-lsp
     colmena
     git-machete
+    bunyan-rs
   ];
 
   security.pam.enableSudoTouchIdAuth = true;

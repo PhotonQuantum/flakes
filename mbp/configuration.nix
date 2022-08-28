@@ -20,6 +20,7 @@
     colmena
     git-machete
     bunyan-rs
+    lazydocker
   ];
 
   security.pam.enableSudoTouchIdAuth = true;

@@ -21,6 +21,7 @@
     git-machete
     bunyan-rs
     lazydocker
+    diesel-cli
   ];
 
   security.pam.enableSudoTouchIdAuth = true;

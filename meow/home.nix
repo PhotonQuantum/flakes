@@ -1,6 +1,10 @@
 { pkgs, ... }:
 
 {
+  imports = [
+    ../common/vim.nix
+  ];
+
   home = {
     username = "lightquantum";
     homeDirectory = "/home/lightquantum";
@@ -21,8 +25,7 @@
     };
     starship.enable = true;
     lazygit.enable = true;
-    nixvim = {
-      enable = true;
+    nixvim = {      enable = true;
       options = {
         number = true;
         relativenumber = true;

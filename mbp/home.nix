@@ -1,6 +1,10 @@
 { pkgs, ... }:
 
 {
+  imports = [
+    ../common/vim.nix
+  ];
+
   home = {
     username = "lightquantum";
     homeDirectory = "/Users/lightquantum";

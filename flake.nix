@@ -33,20 +33,28 @@
 
   outputs = { self, darwin, home-manager, nixvim, nixpkgs, ... }@inputs:
     let
+      hm-modules = [
+        nixvim.homeManagerModules.nixvim
+      ];
+      hm-config = path:
+        {
+          home-manager = {
+            useGlobalPkgs = true;
+            useUserPackages = true;
+            users.lightquantum = import path;
+            sharedModules = hm-modules;
+          };
+        };
       meow-modules = [
         home-manager.nixosModules.home-manager
         ./meow/configuration.nix
-        {
-          home-manager = {
-            # Enable home-manager
-            useGlobalPkgs = true;
-            useUserPackages = true;
-            users.lightquantum = import ./meow/home.nix;
-            sharedModules = [
-              nixvim.homeManagerModules.nixvim
-            ];
-          };
-        }
+        (hm-config ./meow/home.nix)
+      ];
+      mbp-modules = [
+        home-manager.darwinModules.home-manager
+        inputs.malob.darwinModules.security-pam # might get merged to nix-darwin in the future
+        ./mbp/configuration.nix
+        (hm-config ./mbp/home.nix)
       ];
     in
     {
@@ -70,6 +78,9 @@
                 useGlobalPkgs = true;
                 useUserPackages = true;
                 users.lightquantum = import ./mbp/home.nix;
+                sharedModules = [
+                  nixvim.homeManagerModules.nixvim
+                ];
               };
             }
           ];

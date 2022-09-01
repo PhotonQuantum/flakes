@@ -23,6 +23,7 @@
     lazydocker
     diesel-cli
     typos
+    git-crypt
   ];
 
   security.pam.enableSudoTouchIdAuth = true;

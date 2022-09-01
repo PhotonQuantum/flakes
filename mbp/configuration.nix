@@ -22,6 +22,7 @@
     bunyan-rs
     lazydocker
     diesel-cli
+    typos
   ];
 
   security.pam.enableSudoTouchIdAuth = true;

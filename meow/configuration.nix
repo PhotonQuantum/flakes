@@ -31,8 +31,13 @@
       address = "10.0.1.104";
       prefixLength = 24;
     }];
+    interfaces.ens18.ipv6.addresses = [{
+      address = "2a01:4f9:4a:286f:1:104::1";
+      prefixLength = 80;
+    }];
     defaultGateway = "10.0.1.1";
-    nameservers = [ "1.1.1.1" "1.0.0.1" ];
+    defaultGateway6 = "2a01:4f9:4a:286f:1::1";
+    nameservers = [ "1.1.1.1" "1.0.0.1" "2606:4700:4700::1111" "2606:4700:4700::1001" ];
   };
 
   # Set your time zone.

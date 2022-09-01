@@ -24,6 +24,18 @@
       user = "matrix-synapse";
       group = "matrix-synapse";
     };
+    "id_ed25519_borg" = {
+      keyFile = ../secrets/id_ed25519_meow_borg;
+      destDir = "/var/keys";
+      user = "root";
+      group = "root";
+    };
+    "id_ed25519_borg.pub" = {
+      keyFile = ../secrets/id_ed25519_meow_borg.pub;
+      destDir = "/var/keys";
+      user = "root";
+      group = "root";
+    };
   };
 
   nix.package = pkgs.nix;
@@ -166,6 +178,19 @@
       authorizedKeys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL3wabckxXT3q9ih7Y070OKjI3lf3+VuLrfilj3FzpK8"
       ];
+    };
+  };
+
+  services.borgbackup.jobs = {
+    synapse = {
+      paths = [ "/var/lib/postgresql" "/var/lib/matrix-synapse" ];
+      repo = "ssh://c96qu46z@c96qu46z.repo.borgbase.com/./repo";
+      encryption.mode = "none";
+      compression = "auto,lz4";
+      startAt = "daily";
+      environment = {
+        BORG_RSH = "ssh -i /var/keys/id_ed25519_borg";
+      };
     };
   };
 

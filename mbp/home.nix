@@ -12,7 +12,13 @@
   };
   programs = {
     home-manager.enable = true;
-    lazygit.enable = true;
+    lazygit = {
+      enable = true;
+      settings = {
+        gui.showIcons = true;
+        refresher.refreshInterval = 1;
+      };
+    };
     git = {
       enable = true;
       lfs.enable = true;

@@ -24,6 +24,7 @@
     diesel-cli
     typos
     git-crypt
+    grcov
   ];
 
   security.pam.enableSudoTouchIdAuth = true;

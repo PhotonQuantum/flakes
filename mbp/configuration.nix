@@ -24,6 +24,7 @@
     diesel-cli
     typos
     git-crypt
+    cachix
   ];
 
   security.pam.enableSudoTouchIdAuth = true;

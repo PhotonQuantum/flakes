@@ -41,6 +41,7 @@
     cargo-update
     cargo-wipe
     skim
+    lf
   ];
 
   security.pam.enableSudoTouchIdAuth = true;

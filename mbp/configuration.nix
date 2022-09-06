@@ -25,6 +25,22 @@
     typos
     git-crypt
     cachix
+    bacon
+    cargo-audit
+    cargo-bloat
+    cargo-cache
+    cargo-expand
+    cargo-fuzz
+    cargo-generate
+    cargo-insta
+    cargo-modules
+    cargo-msrv
+    cargo-nextest
+    cargo-sort
+    cargo-udeps
+    cargo-update
+    cargo-wipe
+    skim
   ];
 
   security.pam.enableSudoTouchIdAuth = true;

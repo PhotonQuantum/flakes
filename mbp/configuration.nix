@@ -43,6 +43,7 @@
     skim
     lf
     dua
+    fd
   ];
 
   security.pam.enableSudoTouchIdAuth = true;

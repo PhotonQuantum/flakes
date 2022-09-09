@@ -22,6 +22,10 @@
     topgrade = {
       enable = true;
       package = pkgs.unstable.topgrade;
+      settings = {
+        assume_yes = true;
+        disable = [ "brew" "nix" ];
+      };
     };
     direnv = {
       enable = true;

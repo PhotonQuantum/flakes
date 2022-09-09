@@ -29,8 +29,6 @@
     ];
   };
 
-  environment.systemPath = [ "/System/Volumes/Data/usr/local/MacGPG2/bin" ];
-
   environment.systemPackages =
     let
       cargoPackages = with pkgs; [
@@ -133,6 +131,8 @@
       dua
       fd
       smartmontools
+      gnupg
+      pinentry_mac
     ] ++ cargoPackages ++ gitPackages ++ migratedPackages ++ guiPackages ++ fontPackages;
 
   security.pam.enableSudoTouchIdAuth = true;
@@ -146,6 +146,10 @@
   };
 
   programs.zsh.enable = true;
+  programs.gnupg.agent = {
+    enable = true;
+    enableSSHSupport = true;
+  };
 
   services = {
     nix-daemon.enable = true;

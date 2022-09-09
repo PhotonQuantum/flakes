@@ -27,6 +27,16 @@
     gh.enable = true;
     skim.enable = true;
     opam.enable = true;
+    gpg = {
+      enable = true;
+      scdaemonSettings = {
+        disable-ccid = true;
+      };
+      settings = {
+        default-key = "A99DCF320110092028ECAC42E53ED56B7F20B7BB";
+        auto-key-retrieve = true;
+      };
+    };
     topgrade = {
       enable = true;
       package = pkgs.unstable.topgrade;
@@ -54,7 +64,6 @@
         plugins = [ "git" "sudo" "cp" ];
       };
       initExtra = ''
-        export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
         export FPATH="/opt/homebrew/share/zsh/site-functions${FPATH+:$FPATH}";
         export MANPATH="/opt/homebrew/share/man${MANPATH+:$MANPATH}:";
         export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}";

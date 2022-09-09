@@ -56,7 +56,6 @@
     "gimp"
     "github"
     "gitkraken"
-    "gpg-suite"
     "handbrake"
     "iina"
     "jetbrains-toolbox"

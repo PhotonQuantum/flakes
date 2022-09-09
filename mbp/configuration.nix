@@ -44,6 +44,7 @@
     lf
     dua
     fd
+    smartmontools
   ];
 
   security.pam.enableSudoTouchIdAuth = true;

@@ -9,6 +9,14 @@
     username = "lightquantum";
     homeDirectory = "/Users/lightquantum";
     stateVersion = "22.05";
+    sessionVariables = {
+      PNPM_PATH = "$HOME/Library/pnpm";
+    };
+    sessionPath = [
+        "$HOME/.local/bin"
+        "$HOME/opt/GNAT/2020/bin"
+        "$HOME/Library/pnpm"
+    ];
   };
   programs = {
     aria2.enable = true;
@@ -32,6 +40,35 @@
       nix-direnv.enable = true;
     };
     home-manager.enable = true;
+    zsh = {
+      enable = true;
+      shellAliases = {
+        vim = "nvim";
+        ls = "lsd";
+        coqtags = "fd -e v . . ~/.opam/default/lib/coq/theories -X ctags --options=/Users/lightquantum/.config/coq.ctags";
+      };
+      enableAutosuggestions = true;
+      enableSyntaxHighlighting = true;
+      oh-my-zsh = {
+        enable = true;
+        plugins = [ "git" "sudo" "cp" ];
+      };
+      initExtra = ''
+        export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+        export FPATH="/opt/homebrew/share/zsh/site-functions${FPATH+:$FPATH}";
+        export MANPATH="/opt/homebrew/share/man${MANPATH+:$MANPATH}:";
+        export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}";
+        function git-sign {
+            FILTER_BRANCH_SQUELCH_WARNING=1 git filter-branch --commit-filter 'git commit-tree -S "$@";' $1..HEAD
+        }
+        function git-delete-bak {
+            ref=$(git show-ref | awk '/ refs.original.refs/{print$2}')
+            git update-ref -d $ref
+        }
+      '';
+      envExtra = ". $HOME/.cargo/env";
+    };
+    starship.enable = true;
     lazygit = {
       enable = true;
       settings = {

@@ -17,6 +17,7 @@
     };
   };
 
+  environment.systemPath = [ "/System/Volumes/Data/usr/local/MacGPG2/bin" ];
 
   environment.systemPackages =
     let

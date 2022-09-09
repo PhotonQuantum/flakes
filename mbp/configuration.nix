@@ -75,8 +75,9 @@
         unstable.hugo
         hyperfine
         imagemagick
+        python310
         python310Packages.ipython
-        python3
+        python310Packages.pip
         jmeter
         unstable.mongosh
         tesseract

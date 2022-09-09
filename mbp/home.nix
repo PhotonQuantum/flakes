@@ -57,7 +57,6 @@
         ls = "lsd";
         coqtags = "fd -e v . . ~/.opam/default/lib/coq/theories -X ctags --options=/Users/lightquantum/.config/coq.ctags";
       };
-      enableAutosuggestions = true;
       enableSyntaxHighlighting = true;
       oh-my-zsh = {
         enable = true;

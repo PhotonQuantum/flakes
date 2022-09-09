@@ -11,6 +11,18 @@
     stateVersion = "22.05";
   };
   programs = {
+    aria2.enable = true;
+    bat.enable = true;
+    lsd.enable = true;
+    htop.enable = true;
+    lf.enable = true;
+    gh.enable = true;
+    skim.enable = true;
+    opam.enable = true;
+    topgrade = {
+      enable = true;
+      package = pkgs.unstable.topgrade;
+    };
     direnv = {
       enable = true;
       nix-direnv.enable = true;

@@ -1,6 +1,8 @@
-{ system, config, home-manager, pkgs, ... }:
+{ system, config, nixpkgs, home-manager, pkgs, ... }:
 
 {
+  nixpkgs.config.allowUnfree = true;
+
   users.users.lightquantum = {
     home = "/Users/lightquantum";
     shell = [ pkgs.zsh ];
@@ -15,38 +17,111 @@
     };
   };
 
-  environment.systemPackages = with pkgs; [
-    rnix-lsp
-    colmena
-    git-machete
-    bunyan-rs
-    lazydocker
-    diesel-cli
-    typos
-    git-crypt
-    cachix
-    bacon
-    cargo-audit
-    cargo-bloat
-    cargo-cache
-    cargo-expand
-    cargo-fuzz
-    cargo-generate
-    cargo-insta
-    cargo-modules
-    cargo-msrv
-    cargo-nextest
-    cargo-sort
-    cargo-udeps
-    cargo-update
-    cargo-wipe
-    skim
-    lf
-    dua
-    fd
-    smartmontools
-    gh
-  ];
+
+  environment.systemPackages =
+    let
+      cargoPackages = with pkgs; [
+        cargo-audit
+        cargo-bloat
+        cargo-cache
+        cargo-expand
+        cargo-fuzz
+        cargo-generate
+        cargo-insta
+        cargo-modules
+        cargo-msrv
+        cargo-nextest
+        cargo-sort
+        cargo-udeps
+        cargo-update
+        cargo-wipe
+      ];
+
+      gitPackages = with pkgs; [
+        git-machete
+        git-crypt
+        git-absorb
+        git-branchless
+        delta
+      ];
+
+      migratedPackages = with pkgs; [
+        asciinema
+        pkgconfig
+        atool
+        autoconf
+        automake
+        bison
+        bitwarden-cli
+        borgbackup
+        calc
+        cmake
+        ffmpeg
+        frp
+        gawk
+        go
+        graphviz
+        # hugo [broken]
+        unstable.hugo
+        hyperfine
+        imagemagick
+        python310Packages.ipython
+        python3
+        jmeter
+        unstable.mongosh
+        tesseract
+        just
+        mdbook
+        zld
+        minisat
+        # miniserve [broken]
+        mosh
+        mtr
+        navi
+        ncdu
+        ninja
+        nodejs
+        nodejs-16_x
+        neofetch
+        # mongodb
+        nodejs-14_x
+        ocamlPackages.zarith
+        opencv
+        openjdk
+        openssl_3
+        p7zip
+        pandoc
+        sccache
+        flyctl
+        swiProlog
+        unstable.topgrade
+        wget
+        yarn
+        yasm
+        unstable.zig
+        ngrok
+      ];
+      guiPackages = with pkgs; [
+        iterm2
+      ];
+      fontPackages = with pkgs; [
+        jetbrains-mono
+        sarasa-gothic
+      ];
+    in
+    with pkgs; [
+      rnix-lsp
+      colmena
+      bunyan-rs
+      lazydocker
+      diesel-cli
+      typos
+      cachix
+      bacon
+      dua
+      fd
+      smartmontools
+    ] ++ cargoPackages ++ gitPackages ++ migratedPackages ++ guiPackages ++ fontPackages;
 
   security.pam.enableSudoTouchIdAuth = true;
 

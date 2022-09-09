@@ -1,6 +1,10 @@
 { system, config, nixpkgs, home-manager, pkgs, ... }:
 
 {
+  imports = [
+    ./brew.nix
+  ];
+
   nixpkgs.config.allowUnfree = true;
 
   users.users.lightquantum = {
@@ -14,7 +18,15 @@
       # System variables
       EDITOR = "nvim";
       VISUAL = "nvim";
+      HOMEBREW_PREFIX = "/opt/homebrew";
+      HOMEBREW_CELLAR = "/opt/homebrew/Cellar";
+      HOMEBREW_REPOSITORY = "/opt/homebrew";
+      HOMEBREW_SHELLENV_PREFIX = "/opt/homebrew";
     };
+    systemPath = [
+      "/opt/homebrew/bin"
+      "/opt/homebrew/sbin"
+    ];
   };
 
   environment.systemPath = [ "/System/Volumes/Data/usr/local/MacGPG2/bin" ];

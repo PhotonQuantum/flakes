@@ -27,6 +27,7 @@
     gh.enable = true;
     skim.enable = true;
     opam.enable = true;
+    nix-index.enable = true;
     gpg = {
       enable = true;
       scdaemonSettings = {

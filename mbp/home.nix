@@ -77,7 +77,12 @@
       '';
       envExtra = ". $HOME/.cargo/env";
     };
-    starship.enable = true;
+    starship = {
+      enable = true;
+      settings = {
+        git_status.disabled = true;
+      };
+    };
     lazygit = {
       enable = true;
       settings = {

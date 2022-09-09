@@ -31,7 +31,7 @@
     };
   };
 
-  outputs = { self, darwin, home-manager, nixvim, nixpkgs, ... }@inputs:
+  outputs = { self, darwin, home-manager, nixvim, nixpkgs, nixpkgs-unstable, ... }@inputs:
     let
       hm-modules = [
         nixvim.homeManagerModules.nixvim
@@ -45,17 +45,25 @@
             sharedModules = hm-modules;
           };
         };
+      overlays-module =
+        let
+          overlay-unstable = final: prev: {
+            unstable = nixpkgs-unstable.legacyPackages.${prev.system};
+          };
+        in
+        ({ config, pkgs, ... }: { nixpkgs.overlays = [ overlay-unstable ]; });
       meow-modules = [
         home-manager.nixosModules.home-manager
         ./meow/configuration.nix
         (hm-config ./meow/home.nix)
       ];
-      mbp-modules = [
-        home-manager.darwinModules.home-manager
-        inputs.malob.darwinModules.security-pam # might get merged to nix-darwin in the future
-        ./mbp/configuration.nix
-        (hm-config ./mbp/home.nix)
-      ];
+      # mbp-modules = [
+      #   overlays-module
+      #   home-manager.darwinModules.home-manager
+      #   inputs.malob.darwinModules.security-pam # might get merged to nix-darwin in the future
+      #   ./mbp/configuration.nix
+      #   (hm-config ./mbp/home.nix)
+      # ];
     in
     {
       nixosConfigurations = {
@@ -69,6 +77,7 @@
           inherit inputs;
           system = "aarch64-darwin";
           modules = [
+            overlays-module
             ./mbp/configuration.nix
             inputs.malob.darwinModules.security-pam # might get merged to nix-darwin in the future
             home-manager.darwinModules.home-manager

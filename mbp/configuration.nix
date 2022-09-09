@@ -61,7 +61,6 @@
         gawk
         go
         graphviz
-        # hugo [broken]
         unstable.hugo
         hyperfine
         imagemagick
@@ -74,7 +73,7 @@
         mdbook
         zld
         minisat
-        # miniserve [broken]
+        # miniserve
         mosh
         mtr
         navi

@@ -83,7 +83,6 @@
         tesseract
         just
         mdbook
-        zld
         minisat
         # miniserve
         mosh
@@ -102,7 +101,6 @@
         openssl_3
         p7zip
         pandoc
-        sccache
         flyctl
         swiProlog
         unstable.topgrade

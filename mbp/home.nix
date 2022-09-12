@@ -13,10 +13,21 @@
       PNPM_PATH = "$HOME/Library/pnpm";
     };
     sessionPath = [
-        "$HOME/.local/bin"
-        "$HOME/opt/GNAT/2020/bin"
-        "$HOME/Library/pnpm"
+      "$HOME/.local/bin"
+      "$HOME/opt/GNAT/2020/bin"
+      "$HOME/Library/pnpm"
     ];
+  };
+
+  home.file = with pkgs; let
+    format = pkgs.formats.toml { };
+  in
+  {
+    ".cargo/config".source = format.generate "config" {
+      build.rustc-wrapper = "${sccache}/bin/sccache";
+      target.x86_64-apple-darwin.rustflags = [ "-C" "link-arg=-fuse-ld=${zld}/bin/zld" ];
+      target.aarch64-apple-darwin.rustflags = [ "-C" "link-arg=-fuse-ld=${zld}/bin/zld" ];
+    };
   };
   programs = {
     aria2.enable = true;

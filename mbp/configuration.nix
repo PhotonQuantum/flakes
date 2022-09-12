@@ -46,6 +46,7 @@
         cargo-udeps
         cargo-update
         cargo-wipe
+        cargo-outdated
       ];
 
       gitPackages = with pkgs; [

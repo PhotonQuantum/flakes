@@ -124,7 +124,7 @@
       colmena
       bunyan-rs
       lazydocker
-      diesel-cli
+      unstable.diesel-cli
       typos
       cachix
       bacon

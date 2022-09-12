@@ -54,7 +54,7 @@
       package = pkgs.unstable.topgrade;
       settings = {
         assume_yes = true;
-        disable = [ "brew" "nix" ];
+        disable = [ "brew_cask" "brew_formula" "mas" "nix" "shell" "node" ];
       };
     };
     direnv = {

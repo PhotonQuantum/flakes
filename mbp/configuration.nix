@@ -42,6 +42,7 @@
         cargo-modules
         cargo-msrv
         cargo-nextest
+        cargo-readme
         cargo-sort
         cargo-udeps
         cargo-update

@@ -134,6 +134,7 @@
       smartmontools
       gnupg
       pinentry_mac
+      unstable.bun
     ] ++ cargoPackages ++ gitPackages ++ migratedPackages ++ guiPackages ++ fontPackages;
 
   security.pam.enableSudoTouchIdAuth = true;

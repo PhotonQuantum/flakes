@@ -112,9 +112,6 @@
         unstable.zig
         ngrok
       ];
-      guiPackages = with pkgs; [
-        iterm2
-      ];
       fontPackages = with pkgs; [
         jetbrains-mono
         sarasa-gothic
@@ -135,7 +132,7 @@
       gnupg
       pinentry_mac
       unstable.bun
-    ] ++ cargoPackages ++ gitPackages ++ migratedPackages ++ guiPackages ++ fontPackages;
+    ] ++ cargoPackages ++ gitPackages ++ migratedPackages ++ fontPackages;
 
   security.pam.enableSudoTouchIdAuth = true;
 

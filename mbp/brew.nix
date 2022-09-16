@@ -89,5 +89,6 @@
     "warp"
     "yubico-yubikey-manager"
     "zoom"
+    "iterm2"
   ];
 }

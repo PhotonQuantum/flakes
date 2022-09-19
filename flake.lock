@@ -148,6 +148,21 @@
         "type": "github"
       }
     },
+    "flake-utils_4": {
+      "locked": {
+        "lastModified": 1659877975,
+        "narHash": "sha256-zllb8aq3YO3h8B/U0/J1WBgAL8EX5yWf5pMj3G0NAmc=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "c0e246b9b83f637f4681389ecabcb2681b4f3af0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -169,13 +184,34 @@
         "type": "github"
       }
     },
+    "lq": {
+      "inputs": {
+        "flake-utils": "flake-utils_2",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1663625136,
+        "narHash": "sha256-55s9Z4bhLOP1l+MfjD0O1romaKFVuXCKwC9RbAGOwco=",
+        "owner": "PhotonQuantum",
+        "repo": "nix-overlay",
+        "rev": "2af1461c77eacc03aa0aa63342523cd42ec28b18",
+        "type": "github"
+      },
+      "original": {
+        "owner": "PhotonQuantum",
+        "repo": "nix-overlay",
+        "type": "github"
+      }
+    },
     "malob": {
       "inputs": {
         "darwin": [
           "darwin"
         ],
         "flake-compat": "flake-compat_2",
-        "flake-utils": "flake-utils_2",
+        "flake-utils": "flake-utils_3",
         "home-manager": [
           "home-manager"
         ],
@@ -320,7 +356,7 @@
     },
     "nixvim": {
       "inputs": {
-        "flake-utils": "flake-utils_3",
+        "flake-utils": "flake-utils_4",
         "nixpkgs": "nixpkgs_2",
         "nmdSrc": "nmdSrc"
       },
@@ -407,6 +443,7 @@
         "colmena": "colmena",
         "darwin": "darwin",
         "home-manager": "home-manager",
+        "lq": "lq",
         "malob": "malob",
         "nixpkgs": "nixpkgs",
         "nixpkgs-unstable": "nixpkgs-unstable",

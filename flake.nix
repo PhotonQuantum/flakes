@@ -29,9 +29,13 @@
       url = "github:zhaofengli/colmena";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    lq = {
+      url = "github:PhotonQuantum/nix-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, darwin, home-manager, nixvim, nixpkgs, nixpkgs-unstable, ... }@inputs:
+  outputs = { self, darwin, home-manager, nixvim, nixpkgs, nixpkgs-unstable, lq, ... }@inputs:
     let
       hm-modules = [
         nixvim.homeManagerModules.nixvim
@@ -51,7 +55,7 @@
             unstable = nixpkgs-unstable.legacyPackages.${prev.system};
           };
         in
-        ({ config, pkgs, ... }: { nixpkgs.overlays = [ overlay-unstable ]; });
+        ({ config, pkgs, ... }: { nixpkgs.overlays = [ overlay-unstable lq.overlay ]; });
       meow-modules = [
         home-manager.nixosModules.home-manager
         ./meow/configuration.nix

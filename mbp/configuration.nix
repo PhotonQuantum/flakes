@@ -133,6 +133,7 @@
       pinentry_mac
       unstable.bun
       gmp
+      lq.universal-ctags-pcre2
     ] ++ cargoPackages ++ gitPackages ++ migratedPackages ++ fontPackages;
 
   security.pam.enableSudoTouchIdAuth = true;

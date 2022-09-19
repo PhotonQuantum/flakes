@@ -112,6 +112,7 @@
       };
       ignores = [
         "/.idea"
+        ".DS_Store"
       ];
       extraConfig = {
         pull.ff = "only";

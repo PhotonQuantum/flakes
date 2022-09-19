@@ -132,6 +132,7 @@
       gnupg
       pinentry_mac
       unstable.bun
+      gmp
     ] ++ cargoPackages ++ gitPackages ++ migratedPackages ++ fontPackages;
 
   security.pam.enableSudoTouchIdAuth = true;

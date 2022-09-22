@@ -51,7 +51,7 @@
     };
     topgrade = {
       enable = true;
-      package = pkgs.unstable.topgrade;
+      package = pkgs.topgrade;
       settings = {
         assume_yes = true;
         disable = [ "brew_cask" "brew_formula" "mas" "nix" "shell" "node" ];

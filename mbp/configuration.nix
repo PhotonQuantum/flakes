@@ -1,4 +1,4 @@
-{ system, config, nixpkgs, home-manager, pkgs, ... }:
+{ system, config, nixpkgs, pkgs, ... }:
 
 {
   imports = [
@@ -74,14 +74,14 @@
         gawk
         go
         graphviz
-        unstable.hugo
+        hugo
         hyperfine
         imagemagick
         python310
         python310Packages.ipython
         python310Packages.pip
         jmeter
-        unstable.mongosh
+        mongosh
         tesseract
         just
         mdbook
@@ -105,11 +105,11 @@
         pandoc
         flyctl
         swiProlog
-        unstable.topgrade
+        topgrade
         wget
         yarn
         yasm
-        unstable.zig
+        zig
         ngrok
       ];
       fontPackages = with pkgs; [
@@ -122,7 +122,7 @@
       colmena
       bunyan-rs
       lazydocker
-      unstable.diesel-cli
+      diesel-cli
       typos
       cachix
       bacon
@@ -131,7 +131,7 @@
       smartmontools
       gnupg
       pinentry_mac
-      unstable.bun
+      bun
       gmp
       lq.universal-ctags-pcre2
     ] ++ cargoPackages ++ gitPackages ++ migratedPackages ++ fontPackages;

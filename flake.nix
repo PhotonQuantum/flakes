@@ -9,17 +9,20 @@
       url = "github:lnl7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    darwin-unstable = {
+      # Manage darwin systems
+      url = "github:lnl7/nix-darwin";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
     home-manager = {
       # Manage per-user config globally
       url = "github:nix-community/home-manager/release-22.05"; # Need to match nixpkgs channel
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    malob = {
-      # malob modules. Necessary for security-pam.
-      url = "github:malob/nixpkgs";
-      inputs.nixpkgs-unstable.follows = "nixpkgs-unstable";
-      inputs.darwin.follows = "darwin";
-      inputs.home-manager.follows = "home-manager";
+    home-manager-unstable = {
+      # Manage per-user config globally
+      url = "github:nix-community/home-manager"; # Need to match nixpkgs channel
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     nixvim = {
       url = "github:pta2002/nixvim";
@@ -35,7 +38,7 @@
     };
   };
 
-  outputs = { self, darwin, home-manager, nixvim, nixpkgs, nixpkgs-unstable, lq, ... }@inputs:
+  outputs = { self, nixvim, lq, ... }@inputs:
     let
       hm-modules = [
         nixvim.homeManagerModules.nixvim
@@ -52,60 +55,72 @@
       overlays-module =
         let
           overlay-unstable = final: prev: {
-            unstable = nixpkgs-unstable.legacyPackages.${prev.system};
+            unstable = inputs.nixpkgs-unstable.legacyPackages.${prev.system};
           };
         in
-        ({ config, pkgs, ... }: { nixpkgs.overlays = [ overlay-unstable lq.overlay ]; });
-      meow-modules = [
+        ({ config, pkgs, ... }: {
+          nixpkgs.overlays = [
+            # overlay-unstable
+            lq.overlay
+          ];
+        });
+      with-env = unstable: f:
+        let
+          nixpkgs = if unstable then inputs.nixpkgs-unstable else inputs.nixpkgs;
+          home-manager = if unstable then inputs.home-manager-unstable else inputs.home-manager;
+          darwin = if unstable then inputs.darwin-unstable else inputs.darwin;
+        in
+        f { inherit nixpkgs home-manager darwin; };
+      meow-modules = with-env false ({ home-manager, ... }: [
         home-manager.nixosModules.home-manager
         ./meow/configuration.nix
         (hm-config ./meow/home.nix)
-      ];
+      ]);
       # mbp-modules = [
       #   overlays-module
       #   home-manager.darwinModules.home-manager
-      #   inputs.malob.darwinModules.security-pam # might get merged to nix-darwin in the future
       #   ./mbp/configuration.nix
       #   (hm-config ./mbp/home.nix)
       # ];
     in
     {
       nixosConfigurations = {
-        lightquantum-meow = nixpkgs.lib.nixosSystem {
+        lightquantum-meow = with-env false ({ nixpkgs, ... }: nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           modules = meow-modules;
-        };
+        });
       };
       darwinConfigurations = {
-        lightquantum-mbp = darwin.lib.darwinSystem {
-          inherit inputs;
-          system = "aarch64-darwin";
-          modules = [
-            overlays-module
-            ./mbp/configuration.nix
-            inputs.malob.darwinModules.security-pam # might get merged to nix-darwin in the future
-            home-manager.darwinModules.home-manager
-            {
-              home-manager = {
-                # Enable home-manager
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                users.lightquantum = import ./mbp/home.nix;
-                sharedModules = [
-                  nixvim.homeManagerModules.nixvim
-                ];
-              };
-            }
-          ];
-        };
+        lightquantum-mbp = with-env true ({ darwin, nixpkgs, home-manager }:
+          darwin.lib.darwinSystem {
+            inputs = { inherit darwin nixpkgs home-manager; };
+            system = "aarch64-darwin";
+            modules =
+              [
+                overlays-module
+                ./mbp/configuration.nix
+                home-manager.darwinModules.home-manager
+                {
+                  home-manager = {
+                    # Enable home-manager
+                    useGlobalPkgs = true;
+                    useUserPackages = true;
+                    users.lightquantum = import ./mbp/home.nix;
+                    sharedModules = [
+                      nixvim.homeManagerModules.nixvim
+                    ];
+                  };
+                }
+              ];
+          });
       };
 
       colmena = {
-        meta = {
+        meta = with-env false ({ nixpkgs, ... }: {
           nixpkgs = import nixpkgs {
             system = "x86_64-linux";
           };
-        };
+        });
         lightquantum-meow = {
           deployment = {
             targetHost = "meow";

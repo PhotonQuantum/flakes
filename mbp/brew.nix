@@ -1,7 +1,12 @@
 { ... }:
 {
   homebrew.enable = true;
-  homebrew.onActivation.cleanup = "uninstall";
+  homebrew.global.autoUpdate = false;
+  homebrew.onActivation = {
+    autoUpdate = true;
+    upgrade = true;
+    cleanup = "uninstall";
+  };
   homebrew.taps = [
     "homebrew/cask"
     "homebrew/cask-fonts"

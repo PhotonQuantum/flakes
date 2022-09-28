@@ -116,6 +116,11 @@
         jetbrains-mono
         sarasa-gothic
       ];
+      wasmPackages = with pkgs; [
+        binaryen
+        twiggy
+        wasmtime
+      ];
     in
     with pkgs; [
       rnix-lsp
@@ -134,7 +139,7 @@
       bun
       gmp
       lq.universal-ctags-pcre2
-    ] ++ cargoPackages ++ gitPackages ++ migratedPackages ++ fontPackages;
+    ] ++ cargoPackages ++ gitPackages ++ migratedPackages ++ fontPackages ++ wasmPackages;
 
   security.pam.enableSudoTouchIdAuth = true;
 

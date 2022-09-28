@@ -112,10 +112,6 @@
         zig
         ngrok
       ];
-      fontPackages = with pkgs; [
-        jetbrains-mono
-        sarasa-gothic
-      ];
       wasmPackages = with pkgs; [
         binaryen
         twiggy
@@ -139,7 +135,15 @@
       bun
       gmp
       lq.universal-ctags-pcre2
-    ] ++ cargoPackages ++ gitPackages ++ migratedPackages ++ fontPackages ++ wasmPackages;
+    ] ++ cargoPackages ++ gitPackages ++ migratedPackages ++ wasmPackages;
+
+  fonts = {
+    fontDir.enable = true;
+    fonts = with pkgs; [
+      jetbrains-mono
+      sarasa-gothic
+    ];
+  };
 
   security.pam.enableSudoTouchIdAuth = true;
 

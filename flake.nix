@@ -58,12 +58,12 @@
             unstable = inputs.nixpkgs-unstable.legacyPackages.${prev.system};
           };
         in
-        ({ config, pkgs, ... }: {
+        { config, pkgs, ... }: {
           nixpkgs.overlays = [
             # overlay-unstable
             lq.overlay
           ];
-        });
+        };
       with-env = unstable: f:
         let
           nixpkgs = if unstable then inputs.nixpkgs-unstable else inputs.nixpkgs;

@@ -75,9 +75,9 @@
         plugins = [ "git" "sudo" "cp" ];
       };
       initExtra = ''
-        export FPATH="/opt/homebrew/share/zsh/site-functions${FPATH+:$FPATH}";
-        export MANPATH="/opt/homebrew/share/man${MANPATH+:$MANPATH}:";
-        export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}";
+        export FPATH="/opt/homebrew/share/zsh/site-functions''${FPATH+:$FPATH}";
+        export MANPATH="/opt/homebrew/share/man''${MANPATH+:$MANPATH}:";
+        export INFOPATH="/opt/homebrew/share/info:''${INFOPATH:-}";
         function git-sign {
             FILTER_BRANCH_SQUELCH_WARNING=1 git filter-branch --commit-filter 'git commit-tree -S "$@";' $1..HEAD
         }

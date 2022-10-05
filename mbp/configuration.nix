@@ -16,6 +16,7 @@
     shells = [ pkgs.zsh ]; # Default shell
     variables = {
       # System variables
+      SHELL = "${pkgs.zsh}/bin/zsh";
       EDITOR = "nvim";
       VISUAL = "nvim";
       HOMEBREW_PREFIX = "/opt/homebrew";
@@ -60,7 +61,7 @@
 
       migratedPackages = with pkgs; [
         asciinema
-        pkgconfig
+        pkg-config
         atool
         autoconf
         automake
@@ -134,7 +135,7 @@
       pinentry_mac
       bun
       gmp
-      lq.universal-ctags-pcre2
+      config.nur.repos.lightquantum.universal-ctags-pcre2
     ] ++ cargoPackages ++ gitPackages ++ migratedPackages ++ wasmPackages;
 
   fonts = {

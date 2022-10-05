@@ -3,7 +3,8 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-22.05"; # Using stable nix channel to avoid surprises.
-    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable"; # malob requires this
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable"; # malob requires this
+    nur.url = github:nix-community/NUR;
     darwin = {
       # Manage darwin systems
       url = "github:lnl7/nix-darwin";
@@ -26,19 +27,17 @@
     };
     nixvim = {
       url = "github:pta2002/nixvim";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     colmena = {
       # Deploy to remote systems
       url = "github:zhaofengli/colmena";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    lq = {
-      url = "github:PhotonQuantum/nix-overlay";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs.stable.follows = "nixpkgs";
     };
   };
 
-  outputs = { self, nixvim, lq, ... }@inputs:
+  outputs = { self, nixvim, nur, ... }@inputs:
     let
       hm-modules = [
         nixvim.homeManagerModules.nixvim
@@ -61,7 +60,6 @@
         { config, pkgs, ... }: {
           nixpkgs.overlays = [
             # overlay-unstable
-            lq.overlay
           ];
         };
       with-env = unstable: f:
@@ -97,6 +95,7 @@
             system = "aarch64-darwin";
             modules =
               [
+                nur.nixosModules.nur
                 overlays-module
                 ./mbp/configuration.nix
                 home-manager.darwinModules.home-manager

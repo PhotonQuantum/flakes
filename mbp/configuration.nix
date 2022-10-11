@@ -27,6 +27,7 @@
     systemPath = [
       "/opt/homebrew/bin"
       "/opt/homebrew/sbin"
+      "/Library/Tex/texbin"
     ];
   };
 

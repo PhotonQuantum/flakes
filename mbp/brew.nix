@@ -1,7 +1,7 @@
 _:
 {
   homebrew.enable = true;
-  homebrew.global.autoUpdate = false;
+  homebrew.global.autoUpdate = true;
   homebrew.onActivation = {
     autoUpdate = true;
     upgrade = true;
@@ -11,6 +11,7 @@ _:
     "homebrew/cask"
     "homebrew/cask-fonts"
     "homebrew/cask-drivers"
+    "homebrew/services"
     "mongodb/brew"
     "photonquantum/tap"
     "homebrew/cask-versions"

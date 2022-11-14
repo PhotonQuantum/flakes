@@ -19,16 +19,17 @@
     ];
   };
 
-  home.file = with pkgs; let
+  home.file.".cargo/config".source = with pkgs; let
     format = pkgs.formats.toml { };
   in
-  {
-    ".cargo/config".source = format.generate "config" {
+  (
+    format.generate "config" {
       build.rustc-wrapper = "${sccache}/bin/sccache";
       target.x86_64-apple-darwin.rustflags = [ "-C" "link-arg=-fuse-ld=${zld}/bin/zld" ];
       target.aarch64-apple-darwin.rustflags = [ "-C" "link-arg=-fuse-ld=${zld}/bin/zld" ];
-    };
-  };
+    }
+  );
+
   home.file.".phoenix.js".source = ./phoenix.js;
 
   programs = {

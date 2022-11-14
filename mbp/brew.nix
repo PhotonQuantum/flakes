@@ -71,6 +71,7 @@ _:
     "kekaexternalhelper"
     "keyboard-lock"
     "lark"
+    "macfuse"
     "mactex"
     "mongodb-compass"
     "nightowl"

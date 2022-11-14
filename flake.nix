@@ -29,6 +29,13 @@
 
   outputs = { self, nur, darwin, nixpkgs, home-manager, nixvim, ... }@inputs:
     let
+      generated-overlay = {
+        nixpkgs.overlays = [
+          (final: prev: {
+            generated = (import ./_sources/generated.nix) { inherit (final) fetchurl fetchgit fetchFromGitHub; };
+          })
+        ];
+      };
       hm-config = system: path:
         let
           nur-modules = import nur {
@@ -55,6 +62,7 @@
         (hm-config "x86_64-linux" ./meow/home.nix)
       ];
       mbp-modules = [
+        generated-overlay
         nur.nixosModules.nur
         ./mbp/configuration.nix
         home-manager.darwinModules.home-manager

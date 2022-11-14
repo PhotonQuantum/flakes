@@ -158,51 +158,26 @@
         {
           name = "input";
           file = "init.zsh";
-          src = pkgs.fetchFromGitHub {
-            owner = "zimfw";
-            repo = "input";
-            rev = "bcff8c8504ea7efd0fc8c696dfdc8762e4bfbbb6";
-            sha256 = "jH1aTY7vvbA5zygdwUhOloREwjOPftXU/GGuxElTvFE=";
-          };
+          inherit (pkgs.generated.zimfw_input) src;
         }
         {
           name = "completion";
           file = "init.zsh";
-          src = pkgs.fetchFromGitHub {
-            owner = "zimfw";
-            repo = "completion";
-            rev = "6a78111576cd0c653e0fbeb1ead5d2de3b490440";
-            sha256 = "dFFkeQkoGpi4aJkkq4gXExcAKLN/XtwvqT6TRA09nnA=";
-          };
+          inherit (pkgs.generated.zimfw_completion) src;
         }
         {
           name = "git";
           file = "init.zsh";
-          src = pkgs.fetchFromGitHub {
-            owner = "zimfw";
-            repo = "git";
-            rev = "e9e5a824ec3cb032b8d9c0b2af07b81b3366444d";
-            sha256 = "+jObnCjJVqCZzoCHgPyFTJJuxwrmqCiDzqFPCuqTX34=";
-          };
+          inherit (pkgs.generated.zimfw_git) src;
         }
         {
           name = "utility";
           file = "init.zsh";
-          src = pkgs.fetchFromGitHub {
-            owner = "zimfw";
-            repo = "utility";
-            rev = "2696a4da0dfb901753f92c071437606c5156cc0f";
-            sha256 = "GmiaToncT/C4/qoN+9ierFY54FGZejUvlomDZoi9qH8=";
-          };
+          inherit (pkgs.generated.zimfw_utility) src;
         }
         {
           name = "zsh-completions";
-          src = pkgs.fetchFromGitHub {
-            owner = "zsh-users";
-            repo = "zsh-completions";
-            rev = "57330ba11b1d10ba6abba35c2d79973834fb65a6";
-            sha256 = "1oOuazjCcExjiPruDvnLj9J/EnAH65o/okpXRmL/k08=";
-          };
+          inherit (pkgs.generated.zsh_completions) src;
         }
         {
           name = "you-should-use";

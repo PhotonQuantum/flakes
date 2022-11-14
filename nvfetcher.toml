@@ -1,0 +1,19 @@
+[zimfw_input]
+src.git = "https://github.com/zimfw/input"
+fetch.github = "zimfw/input"
+
+[zimfw_completion]
+src.git = "https://github.com/zimfw/completion"
+fetch.github = "zimfw/completion"
+
+[zimfw_utility]
+src.git = "https://github.com/zimfw/utility"
+fetch.github = "zimfw/utility"
+
+[zimfw_git]
+src.git = "https://github.com/zimfw/git"
+fetch.github = "zimfw/git"
+
+[zsh_completions]
+src.git = "https://github.com/zsh-users/zsh-completions"
+fetch.github = "zsh-users/zsh-completions"

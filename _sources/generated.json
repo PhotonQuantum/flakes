@@ -1,0 +1,97 @@
+{
+    "zimfw_completion": {
+        "cargoLocks": null,
+        "extract": null,
+        "name": "zimfw_completion",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "zimfw",
+            "repo": "completion",
+            "rev": "6a78111576cd0c653e0fbeb1ead5d2de3b490440",
+            "sha256": "sha256-dFFkeQkoGpi4aJkkq4gXExcAKLN/XtwvqT6TRA09nnA=",
+            "type": "github"
+        },
+        "version": "6a78111576cd0c653e0fbeb1ead5d2de3b490440"
+    },
+    "zimfw_git": {
+        "cargoLocks": null,
+        "extract": null,
+        "name": "zimfw_git",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "zimfw",
+            "repo": "git",
+            "rev": "ecd06b6ac9ef0fcfc333331ab891043dcc5cf311",
+            "sha256": "sha256-i66Yyx9BehGMnc2j31JcFe5jxqJSdO/546IxifH8MCc=",
+            "type": "github"
+        },
+        "version": "ecd06b6ac9ef0fcfc333331ab891043dcc5cf311"
+    },
+    "zimfw_input": {
+        "cargoLocks": null,
+        "extract": null,
+        "name": "zimfw_input",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "zimfw",
+            "repo": "input",
+            "rev": "bcff8c8504ea7efd0fc8c696dfdc8762e4bfbbb6",
+            "sha256": "sha256-jH1aTY7vvbA5zygdwUhOloREwjOPftXU/GGuxElTvFE=",
+            "type": "github"
+        },
+        "version": "bcff8c8504ea7efd0fc8c696dfdc8762e4bfbbb6"
+    },
+    "zimfw_utility": {
+        "cargoLocks": null,
+        "extract": null,
+        "name": "zimfw_utility",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "zimfw",
+            "repo": "utility",
+            "rev": "2696a4da0dfb901753f92c071437606c5156cc0f",
+            "sha256": "sha256-GmiaToncT/C4/qoN+9ierFY54FGZejUvlomDZoi9qH8=",
+            "type": "github"
+        },
+        "version": "2696a4da0dfb901753f92c071437606c5156cc0f"
+    },
+    "zsh_completions": {
+        "cargoLocks": null,
+        "extract": null,
+        "name": "zsh_completions",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "zsh-users",
+            "repo": "zsh-completions",
+            "rev": "45b5a8a78da4d9b0228e69b23867a8ecf0f42f5e",
+            "sha256": "sha256-NXERzZqG0pQrwqm9uedOpf5xcD/As4LAd4bVVsT6m4w=",
+            "type": "github"
+        },
+        "version": "45b5a8a78da4d9b0228e69b23867a8ecf0f42f5e"
+    }
+}

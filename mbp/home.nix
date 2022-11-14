@@ -205,7 +205,7 @@
         }
       ];
       initExtra = ''
-        export FPATH="/opt/homebrew/share/zsh/site-functions''${FPATH+:$FPATH}";
+        # export FPATH="/opt/homebrew/share/zsh/site-functions''${FPATH+:$FPATH}";
         export MANPATH="/opt/homebrew/share/man''${MANPATH+:$MANPATH}:";
         export INFOPATH="/opt/homebrew/share/info:''${INFOPATH:-}";
         function git-sign {

@@ -103,7 +103,7 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    docker-compose_2
+    docker-compose
     curl
     wget
     lazydocker

@@ -1,4 +1,4 @@
-{ system, config, nixpkgs, pkgs, ... }:
+{ system, config, inputs, pkgs, ... }:
 
 {
   imports = [
@@ -156,6 +156,7 @@
     experimental-features = [ "nix-command" "flakes" ]; # Enable flakes support
     auto-optimise-store = true;
   };
+  nix.registry.nixpkgs.flake = inputs.nixpkgs;
 
   programs.zsh.enable = true;
   programs.gnupg.agent = {

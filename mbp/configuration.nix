@@ -154,7 +154,6 @@
   nix.settings = {
     trusted-users = [ "lightquantum" ]; # Allow me to interact with the daemon without sudo
     experimental-features = [ "nix-command" "flakes" ]; # Enable flakes support
-    auto-optimise-store = true;
   };
   nix.registry.nixpkgs.flake = inputs.nixpkgs;
 

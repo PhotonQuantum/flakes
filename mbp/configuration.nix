@@ -136,7 +136,12 @@
       pinentry_mac
       bun
       gmp
+      ripgrep
       config.nur.repos.lightquantum.universal-ctags-pcre2
+      haskell-language-server
+      ghc
+      git-filter-repo
+      dotnet-sdk
     ] ++ cargoPackages ++ gitPackages ++ migratedPackages ++ wasmPackages;
 
   fonts = {

@@ -29,6 +29,8 @@
       target.aarch64-apple-darwin.rustflags = [ "-C" "link-arg=-fuse-ld=${zld}/bin/zld" ];
     };
   };
+  home.file.".phoenix.js".source = ./phoenix.js;
+
   programs = {
     aria2.enable = true;
     bat.enable = true;

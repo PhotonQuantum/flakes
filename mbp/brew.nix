@@ -77,6 +77,7 @@ _:
     "obs"
     "openinterminal"
     "paw"
+    "phoenix"
     "postman"
     "qbittorrent"
     "qlmarkdown"

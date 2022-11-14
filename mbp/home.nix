@@ -17,6 +17,11 @@
       "$HOME/opt/GNAT/2020/bin"
       "$HOME/Library/pnpm"
     ];
+    wallpapers = [
+      ../wallpaper/exodus.heic
+      ../wallpaper/landscape.heic
+    ];
+    defaultShell = pkgs.zsh;
   };
 
   home.file.".cargo/config".source = with pkgs; let

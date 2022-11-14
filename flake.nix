@@ -25,15 +25,21 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.stable.follows = "nixpkgs";
     };
-    flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixvim, nur, ... }@inputs:
+  outputs = { self, nur, darwin, nixpkgs, home-manager, nixvim, ... }@inputs:
     let
-      hm-modules = [
-        nixvim.homeManagerModules.nixvim
-      ];
-      hm-config = path:
+      hm-config = system: path:
+        let
+          nur-modules = import nur {
+            nurpkgs = nixpkgs.legacyPackages.${system};
+          };
+          hm-modules = [
+            nixvim.homeManagerModules.nixvim
+            nur-modules.repos.lightquantum.modules.chsh
+            nur-modules.repos.lightquantum.modules.wallpaper
+          ];
+        in
         {
           home-manager = {
             useGlobalPkgs = true;
@@ -45,13 +51,13 @@
       meow-modules = [
         home-manager.nixosModules.home-manager
         ./meow/configuration.nix
-        (hm-config ./meow/home.nix)
+        (hm-config "x86_64-linux" ./meow/home.nix)
       ];
       mbp-modules = [
         nur.nixosModules.nur
         ./mbp/configuration.nix
         home-manager.darwinModules.home-manager
-        (hm-config ./mbp/home.nix)
+        (hm-config "aarch64-darwin" ./mbp/home.nix)
       ];
     in
     {

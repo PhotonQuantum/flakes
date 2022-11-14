@@ -46,6 +46,7 @@
             useUserPackages = true;
             users.lightquantum = import path;
             sharedModules = hm-modules;
+            extraSpecialArgs = { inherit nixvim; };
           };
         };
       meow-modules = [

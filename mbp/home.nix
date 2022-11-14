@@ -35,6 +35,37 @@
     lsd.enable = true;
     htop.enable = true;
     lf.enable = true;
+    kitty = {
+      enable = true;
+      theme = "One Half Dark";
+      keybindings =
+        let tabKeyBindings = with builtins; listToAttrs (builtins.map
+          (idx: {
+            name = "cmd+${toString idx}";
+            value = "goto_tab ${toString idx}";
+          })
+          (genList (x: x + 1) 9));
+        in
+        pkgs.lib.mergeAttrs tabKeyBindings {
+          "cmd+shift+l" = "send_text application ;z";
+        };
+      font = {
+        package = pkgs.sarasa-gothic;
+        name = "Sarasa Term SC";
+        size = 16;
+      };
+      settings = {
+        bold_font = "Sarasa Term SC Bold";
+        italic_font = "Sarasa Term SC Italic";
+        bold_italic_font = "Sarasa Term SC Bold Italic";
+        background_opacity = "0.98";
+        hide_window_decorations = "titlebar-only";
+        tab_bar_edge = "top";
+        tab_bar_style = "powerline";
+        tab_powerline_style = "slanted";
+        tab_title_template = "{fmt.fg.red}{bell_symbol}{activity_symbol}{fmt.fg.tab}{title} {index}";
+      };
+    };
     gh.enable = true;
     skim.enable = true;
     opam.enable = true;
@@ -68,6 +99,7 @@
         vim = "nvim";
         ls = "lsd";
         coqtags = "fd -e v . . ~/.opam/default/lib/coq/theories -X ctags --options=/Users/lightquantum/.config/coq.ctags";
+        ssh = "kitty +kitten ssh";
       };
       enableSyntaxHighlighting = true;
       enableAutosuggestions = true;
@@ -158,6 +190,18 @@
         zle -N down-line-or-beginning-search
         bindkey "$terminfo[kcuu1]" up-line-or-beginning-search # Up
         bindkey "$terminfo[kcud1]" down-line-or-beginning-search # Down
+
+        function set-title-precmd() {
+          printf '\033]0;%s\007' "''${''${PWD/#$HOME/~}##*/}"
+        }
+
+        function set-title-preexec() {
+          printf '\033]0;%s\007' "''${1%% *}"
+        }
+
+        autoload -Uz add-zsh-hook
+        add-zsh-hook precmd set-title-precmd
+        add-zsh-hook preexec set-title-preexec
       '';
       envExtra = ". $HOME/.cargo/env";
     };

@@ -33,10 +33,53 @@
 
   programs = {
     aria2.enable = true;
-    bat.enable = true;
+    bat = {
+      enable = true;
+      config = {
+        theme = "TwoDark";
+      };
+    };
     lsd.enable = true;
     htop.enable = true;
-    lf.enable = true;
+    lf = with pkgs;
+      let
+        cleaner = writeShellScript "cleaner" "kitty +icat --clear --silent --transfer-mode file";
+      in
+      {
+        enable = true;
+        previewer.source = lib.getExe pistol;
+        settings = {
+          hidden = true;
+          incsearch = true;
+          smartcase = true;
+        };
+        extraConfig = ''
+          set cleaner ${cleaner}
+        '';
+      };
+    pistol = {
+      enable = true;
+      config = with pkgs; let
+        vidthumb = writeShellApplication {
+          name = "vidthumb";
+          # ffmpegthumbnailer is not available on darwin, use homebrew to manage instead.
+          runtimeInputs = [ jq ];
+          text = builtins.readFile ./kitty/vidthumb.sh;
+        };
+        batViewer = "${lib.getExe bat} --style=plain --paging=never --color=always %pistol-filename%";
+        kittyViewer = x:
+          "sh: kitty +icat --silent --transfer-mode file --place %pistol-extra0%x%pistol-extra1%@%pistol-extra2%x%pistol-extra3% "
+          + x "%pistol-filename% && exit 1";
+        imageViewer = kittyViewer (x: x);
+        videoViewer = kittyViewer (x: "$(${lib.getExe vidthumb} %pistol-filename%)");
+      in
+      {
+        "text/*" = batViewer;
+        "application/json" = batViewer;
+        "image/*" = imageViewer;
+        "video/*" = videoViewer;
+      };
+    };
     kitty = {
       enable = true;
       theme = "One Half Dark";

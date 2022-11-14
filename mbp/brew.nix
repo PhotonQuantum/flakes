@@ -21,6 +21,7 @@ _:
     "pipenv"
     "pipx"
     "pnpm"
+    "ffmpegthumbnailer"
     "mongodb-database-tools"
     {
       name = "tmexclude";

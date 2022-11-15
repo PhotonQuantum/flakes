@@ -111,7 +111,6 @@
         wget
         yarn
         yasm
-        zig
         ngrok
       ];
       wasmPackages = with pkgs; [

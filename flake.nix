@@ -2,8 +2,7 @@
   description = "LightQuantum's Nix Flakes";
 
   inputs = {
-    # nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    nixpkgs.url = "github:NixOS/nixpkgs/428f22c3596f5bf0b3f1a0e3308816baf99a3fc8";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nur.url = github:nix-community/NUR;
     darwin = {
       # Manage darwin systems

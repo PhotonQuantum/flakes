@@ -87,6 +87,7 @@
           enable = true;
           completion = {
             completeopt = "menu,menuone,noselect";
+            keyword_length = 2;
           };
           snippet.expand = ''
             function(args)

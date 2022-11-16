@@ -122,12 +122,6 @@
             { name = "luasnip"; }
           ];
         };
-        cmp_luasnip.enable = true;
-        cmp-nvim-lsp.enable = true;
-        cmp-nvim-lsp-document-symbol.enable = true;
-        cmp-nvim-lsp-signature-help.enable = true;
-        cmp-buffer.enable = true;
-        cmp-path.enable = true;
         copilot.enable = true;
         telescope = {
           enable = true;

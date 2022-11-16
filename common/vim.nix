@@ -68,6 +68,7 @@
       colorschemes.onedark.enable = true;
       plugins = {
         nix.enable = true;
+        trouble.enable = true;
         treesitter = {
           enable = true;
           indent = true;
@@ -178,7 +179,8 @@
           "<C-Right>" = { action = "<cmd>BufferLineCycleNext<CR>"; };
           "<Leader>s" = { action = "<cmd>Telescope live_grep<CR>"; silent = true; };
           "<Leader>f" = { action = "<cmd>Telescope find_files<CR>"; silent = true; };
-          "<Leader>d" = { action = "<cmd>Telescope file_browser<CR>"; silent = true; };
+          "<Leader>b" = { action = "<cmd>Telescope file_browser<CR>"; silent = true; };
+          "<Leader>d" = { action = "<cmd>TroubleToggle document_diagnostics<CR>"; silent = true; };
           "<Leader>l" = {
             action = "<cmd>lua vim.lsp.buf.format{async=true}<CR>";
             silent = true;

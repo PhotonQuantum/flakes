@@ -12,6 +12,7 @@
         undofile = true;
         undodir = config.nixvim.helpers.mkRaw ''vim.fn.stdpath("data") .. "/undo"'';
         guifont = "Jetbrains Mono:h14";
+        hlsearch = true;
       };
       extraConfigLua = ''
         local rt = require("rust-tools")
@@ -200,6 +201,8 @@
           };
           "<leader>hs" = { action = "<cmd>Gitsigns stage_hunk<CR>"; silent = true; };
           "<leader>hd" = { action = "<cmd>Gitsigns reset_hunk<CR>"; silent = true; };
+          "*" = { action = ''<cmd>let @/=expand("<cword>")<CR>''; silent = true; };
+          "<2-LeftMouse>" = { action = ''<cmd>let @/=expand("<cword>")<CR>''; silent = true; };
           # "<leader>l" = { action = "<cmd>lua _select_lf()<CR>"; silent = true; };
         };
         visual = {
@@ -213,6 +216,7 @@
         insert = {
           "<S-CR>" = { action = "<Esc>"; };
           "<D-S-l>" = { action = "<cmd>lua vim.lsp.buf.format{async=true}<Return>"; };
+          "<2-LeftMouse>" = { action = ''<Esc><cmd>let @/=expand("<cword>")<CR>i''; silent = true; };
         };
         command = {
           "e!!" = { action = "e suda://%"; };

@@ -97,6 +97,19 @@
           '';
           mapping = {
             "<CR>" = "cmp.mapping.confirm({ select = true })";
+            "<Tab>" = ''cmp.mapping(function(fallback)
+                -- This little snippet will confirm with tab, and if no entry is selected, will confirm the first item
+                if (cmp.visible() and vim.b._copilot.suggestions == nil) then
+                  local entry = cmp.get_selected_entry()
+                  if not entry then
+                    cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+                  else
+                    cmp.confirm()
+                  end
+                else
+                  fallback()
+                end
+              end, {"i","s",}) '';
             "<Up>" = "cmp.mapping.select_prev_item()";
             "<Down>" = "cmp.mapping.select_next_item()";
           };
@@ -167,6 +180,7 @@
       globals = {
         mapleader = " ";
         macos_alt_is_meta = true;
+        copilot_assume_mapped = true;
       };
       maps = {
         normal = {

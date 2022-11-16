@@ -170,6 +170,7 @@
         toggleterm-nvim
         luasnip
         which-key-nvim
+        impatient-nvim
       ];
       globals = {
         mapleader = " ";

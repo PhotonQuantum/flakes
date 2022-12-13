@@ -255,7 +255,7 @@
       userEmail = "self@lightquantum.me";
       signing = {
         key = "A99DCF320110092028ECAC42E53ED56B7F20B7BB";
-        signByDefault = false;
+        signByDefault = true;
       };
       ignores = [
         "/.idea"

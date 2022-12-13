@@ -24,10 +24,6 @@ _:
     "ffmpegthumbnailer"
     "mongodb-database-tools"
     {
-      name = "tmexclude";
-      restart_service = "changed";
-    }
-    {
       name = "rabbitmq";
       restart_service = "changed";
     }
@@ -57,14 +53,13 @@ _:
     "cheatsheet"
     "clashx-pro"
     "deepl"
+    "discord"
     "docker"
     "dropbox"
     "figma"
     "font-iosevka-nerd-font"
     "gimp"
     "github"
-    "gitkraken"
-    "handbrake"
     "iina"
     "jetbrains-toolbox"
     "keka"
@@ -83,12 +78,12 @@ _:
     "postman"
     "qbittorrent"
     "qlmarkdown"
+    "qq"
     "raycast"
     "rectangle"
     "setapp"
     "shottr"
     "squirrel"
-    "steam"
     "syntax-highlight"
     "tencent-meeting"
     "tg-pro"

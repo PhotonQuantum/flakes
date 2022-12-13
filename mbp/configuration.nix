@@ -141,6 +141,10 @@
       ghc
       git-filter-repo
       dotnet-sdk
+      scala
+      sbt
+      yubikey-manager
+      nasm
     ] ++ cargoPackages ++ gitPackages ++ migratedPackages ++ wasmPackages;
 
   fonts = {

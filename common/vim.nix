@@ -177,6 +177,9 @@
         mapleader = " ";
         macos_alt_is_meta = true;
         copilot_assume_mapped = true;
+        copilot_filetypes = {
+          yaml = true;
+        };
       };
       maps = {
         normal = {

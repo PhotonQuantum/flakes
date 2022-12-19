@@ -92,7 +92,7 @@
         mosh
         mtr
         navi
-        ncdu
+        # ncdu  # TODO temporary comment out due to llvm 15
         ninja
         nodejs
         nodejs-16_x

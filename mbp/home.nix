@@ -65,7 +65,7 @@
       };
     pistol = {
       enable = true;
-      config = with pkgs; let
+      associations = with pkgs; let
         vidthumb = writeShellApplication {
           name = "vidthumb";
           # ffmpegthumbnailer is not available on darwin, use homebrew to manage instead.
@@ -79,12 +79,12 @@
         imageViewer = kittyViewer (x: x);
         videoViewer = kittyViewer (x: "$(${lib.getExe vidthumb} %pistol-filename%)");
       in
-      {
-        "text/*" = batViewer;
-        "application/json" = batViewer;
-        "image/*" = imageViewer;
-        "video/*" = videoViewer;
-      };
+      [
+        { mime = "text/*"; command = batViewer; }
+        { mime = "application/json"; command = batViewer; }
+        { mime = "image/*"; command = imageViewer; }
+        { mime = "video/*"; command = videoViewer; }
+      ];
     };
     kitty = {
       enable = true;

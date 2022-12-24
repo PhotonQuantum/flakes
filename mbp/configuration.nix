@@ -79,9 +79,11 @@
         hugo
         hyperfine
         imagemagick
-        python310
-        python310Packages.ipython
-        python310Packages.pip
+        (python310.withPackages (p: with p; [
+          ipython
+          pip
+          pygments
+        ]))
         jmeter
         mongosh
         tesseract

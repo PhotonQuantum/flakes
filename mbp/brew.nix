@@ -86,6 +86,7 @@ _:
     "squirrel"
     "syntax-highlight"
     "tencent-meeting"
+    "voov-meeting"
     "tg-pro"
     "thunder"
     "typora"

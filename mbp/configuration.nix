@@ -166,6 +166,15 @@
     experimental-features = [ "nix-command" "flakes" ]; # Enable flakes support
   };
   nix.registry.nixpkgs.flake = inputs.nixpkgs;
+  nix.buildMachines = [
+    {
+      hostName = "meow";
+      system = "x86_64-linux";
+      maxJobs = 1;
+      supportedFeatures = ["benchmark" "big-parallel" "kvm" "nixos-test"];
+    }
+  ];
+  nix.distributedBuilds = true;
 
   programs.zsh.enable = true;
   programs.gnupg.agent = {

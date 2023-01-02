@@ -183,15 +183,21 @@
 
   services.borgbackup.jobs = {
     synapse = {
-      paths = [ "/var/lib/postgresql" "/var/lib/matrix-synapse" ];
+      paths = [ "/var/backup/postgresql" "/var/lib/matrix-synapse" ];
       repo = "ssh://c96qu46z@c96qu46z.repo.borgbase.com/./repo";
       encryption.mode = "none";
       compression = "auto,lz4";
-      startAt = "daily";
+      startAt = "*-*-* 00:30:00";
       environment = {
         BORG_RSH = "ssh -i /var/keys/id_ed25519_borg";
       };
     };
+  };
+
+  services.postgresqlBackup = {
+    enable = true;
+    startAt = "*-*-* 00:15:00";
+    databases = [ "synapse" ];
   };
 
   services.postgresql = {
@@ -204,6 +210,14 @@
         LC_COLLATE = "C"
         LC_CTYPE = "C";
     '';
+    ensureUsers = [
+      {
+        name = "root";
+        ensurePermissions = {
+          "ALL TABLES IN SCHEMA public" = "ALL PRIVILEGES";
+        };
+      }
+    ];
   };
 
   services.matrix-synapse = {

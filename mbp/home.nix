@@ -3,6 +3,7 @@
 {
   imports = [
     ../common/vim.nix
+    ../secrets/ssh.nix
   ];
 
   home = {
@@ -38,6 +39,7 @@
   home.file.".phoenix.js".source = ./phoenix.js;
 
   programs = {
+    ssh.enable = true;
     aria2.enable = true;
     bat = {
       enable = true;

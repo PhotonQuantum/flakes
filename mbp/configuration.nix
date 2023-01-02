@@ -11,6 +11,9 @@
     home = "/Users/lightquantum";
     shell = [ pkgs.zsh ];
   };
+  users.users.root = {
+    home = "/var/root";
+  };
 
   environment = {
     shells = [ pkgs.zsh ]; # Default shell

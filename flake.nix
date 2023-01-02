@@ -35,7 +35,7 @@
           })
         ];
       };
-      hm-config = system: path:
+      hm-config = system: userPathMap:
         let
           nur-modules = import nur {
             nurpkgs = nixpkgs.legacyPackages.${system};
@@ -45,12 +45,13 @@
             nur-modules.repos.lightquantum.modules.chsh
             nur-modules.repos.lightquantum.modules.wallpaper
           ];
+          users = builtins.mapAttrs (name: path: import path) userPathMap;
         in
         {
           home-manager = {
             useGlobalPkgs = true;
             useUserPackages = true;
-            users.lightquantum = import path;
+            users = users;
             sharedModules = hm-modules;
             extraSpecialArgs = { inherit nixvim; };
           };
@@ -58,14 +59,19 @@
       meow-modules = [
         home-manager.nixosModules.home-manager
         ./meow/configuration.nix
-        (hm-config "x86_64-linux" ./meow/home.nix)
+        (hm-config "x86_64-linux" {
+          lightquantum = ./meow/home.nix;
+        })
       ];
       mbp-modules = [
         generated-overlay
         nur.nixosModules.nur
         ./mbp/configuration.nix
         home-manager.darwinModules.home-manager
-        (hm-config "aarch64-darwin" ./mbp/home.nix)
+        (hm-config "aarch64-darwin" {
+          lightquantum = ./mbp/home.nix;
+          root = ./mbp/home-root.nix;
+        })
       ];
     in
     {

@@ -17,6 +17,8 @@ _:
     "homebrew/cask-versions"
   ];
   homebrew.brews = [
+    "dlib"
+    "libpng"
     "miniserve"
     "pipenv"
     "pipx"

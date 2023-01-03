@@ -157,7 +157,7 @@
   services.borgbackup.repos = {
     aliyun = {
       path = "/var/lib/borgbackup/aliyun";
-      quota = "10G";
+      quota = "30G";
       user = "borg-aliyun";
       authorizedKeys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOvwlbYZzoGg+MYu9HyXhTor07AyoAEbRKpUpNi15LVu"
@@ -173,7 +173,7 @@
     };
     projects = {
       path = "/var/lib/borgbackup/projects";
-      quota = "100G";
+      quota = "500G";
       user = "borg-projects";
       authorizedKeys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL3wabckxXT3q9ih7Y070OKjI3lf3+VuLrfilj3FzpK8"

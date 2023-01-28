@@ -22,6 +22,7 @@ _:
     "miniserve"
     "pipenv"
     "pipx"
+    "pdm"
     "pnpm"
     "ffmpegthumbnailer"
     "mongodb-database-tools"

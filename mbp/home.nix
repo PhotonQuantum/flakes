@@ -252,6 +252,7 @@
       enable = true;
       settings = {
         git_status.disabled = true;
+        ocaml.detect_files = [ "dune" "dune-project" "jbuild" "jbuild-ignore" ".merlin" "_CoqProject" ];
       };
     };
     lazygit = {

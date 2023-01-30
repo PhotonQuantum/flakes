@@ -63,7 +63,6 @@ _:
     "font-iosevka-nerd-font"
     "gimp"
     "github"
-    "httpie"
     "iina"
     "jetbrains-toolbox"
     "keka"

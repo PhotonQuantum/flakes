@@ -90,6 +90,11 @@
     };
     kitty = {
       enable = true;
+      package = pkgs.kitty.overrideAttrs
+        (old: {
+          doCheck = false;
+          doInstallCheck = false;
+        });
       theme = "One Half Dark";
       keybindings =
         let tabKeyBindings = with builtins; listToAttrs (builtins.map

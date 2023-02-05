@@ -15,7 +15,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixvim = {
-      url = "github:pta2002/nixvim";
+      url = "github:PhotonQuantum/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     colmena = {

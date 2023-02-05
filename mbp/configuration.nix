@@ -100,10 +100,8 @@
         # ncdu  # TODO temporary comment out due to llvm 15
         ninja
         nodejs
-        nodejs-16_x
         neofetch
         # mongodb
-        nodejs-14_x
         ocamlPackages.zarith
         opencv
         openjdk
@@ -142,8 +140,8 @@
       gmp
       ripgrep
       config.nur.repos.lightquantum.universal-ctags-pcre2
-      haskell-language-server
-      ghc
+      # haskell-language-server   # TODO removed due to pr#184041
+      # ghc   # maybe we should manage haskell stuff by ghcup?
       git-filter-repo
       dotnet-sdk
       scala

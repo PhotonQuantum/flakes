@@ -15,10 +15,12 @@ _:
     "mongodb/brew"
     "photonquantum/tap"
     "homebrew/cask-versions"
+    "minio/stable"
   ];
   homebrew.brews = [
     "dlib"
     "libpng"
+    "minio"
     "miniserve"
     "pipenv"
     "pipx"

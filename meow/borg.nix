@@ -26,6 +26,16 @@
       environment = {
         BORG_RSH = "ssh -i /var/keys/id_ed25519_borg";
       };
+      prune = {
+        keep = {
+          within = "10H";
+          hourly = 2;
+          daily = 7;
+          weekly = 4;
+          monthly = 6;
+          yearly = 2;
+        };
+      };
     };
   };
 

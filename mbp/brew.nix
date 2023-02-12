@@ -86,6 +86,7 @@ _:
     "qq"
     "raycast"
     "rectangle"
+    "redisinsight"
     "setapp"
     "shottr"
     "squirrel"

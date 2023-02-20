@@ -15,6 +15,7 @@ _:
     "mongodb/brew"
     "photonquantum/tap"
     "homebrew/cask-versions"
+    "messense/macos-cross-toolchains"
     "minio/stable"
   ];
   homebrew.brews = [
@@ -28,6 +29,7 @@ _:
     "pdm"
     "pnpm"
     "ffmpegthumbnailer"
+    "messense/macos-cross-toolchains/x86_64-unknown-linux-musl"
     "mongodb-database-tools"
     {
       name = "rabbitmq";

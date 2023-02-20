@@ -73,7 +73,6 @@
         bitwarden-cli
         borgbackup
         calc
-        cmake
         ffmpeg
         frp
         gawk

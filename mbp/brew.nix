@@ -18,6 +18,7 @@ _:
     "minio/stable"
   ];
   homebrew.brews = [
+    "cmake"
     "dlib"
     "libpng"
     "minio"

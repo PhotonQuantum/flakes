@@ -64,6 +64,7 @@ _:
     "discord"
     "docker"
     "dropbox"
+    "feishu"
     "figma"
     "font-iosevka-nerd-font"
     "gimp"

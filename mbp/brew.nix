@@ -106,5 +106,6 @@ _:
     "warp"
     "yubico-yubikey-manager"
     "zoom"
+    "zotero"
   ];
 }

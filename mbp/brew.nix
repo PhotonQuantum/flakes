@@ -28,6 +28,8 @@ _:
     "pipx"
     "pdm"
     "pnpm"
+    "sqlx-cli"
+    "textidote"
     "ffmpegthumbnailer"
     "messense/macos-cross-toolchains/x86_64-unknown-linux-musl"
     "mongodb-database-tools"
@@ -47,6 +49,11 @@ _:
       name = "mysql";
       restart_service = "changed";
     }
+    {
+      name = "postgresql";
+      restart_service = "changed";
+    }
+    "pg_cron"
   ];
   homebrew.casks = [
     "1password"
@@ -54,21 +61,20 @@ _:
     "apache-directory-studio"
     "apparency"
     "backuploupe"
-    "baidunetdisk"
     "bartender"
-    "caffeine"
     "charles"
     "cheatsheet"
     "clashx-pro"
     "deepl"
     "discord"
-    "docker"
     "dropbox"
     "feishu"
     "figma"
     "font-iosevka-nerd-font"
     "gimp"
     "github"
+    "grammarly-desktop"
+    "handbrake"
     "iina"
     "jetbrains-toolbox"
     "keka"
@@ -77,11 +83,13 @@ _:
     "lark"
     "macfuse"
     "mactex"
+    "mattermost"
     "mongodb-compass"
     "nightowl"
     "notion"
     "obs"
     "openinterminal"
+    "orbstack"
     "paw"
     "phoenix"
     "postman"
@@ -93,6 +101,7 @@ _:
     "redisinsight"
     "setapp"
     "shottr"
+    "slidepilot"
     "squirrel"
     "syntax-highlight"
     "tencent-meeting"
@@ -104,7 +113,6 @@ _:
     "vlc"
     "vorta"
     "warp"
-    "yubico-yubikey-manager"
     "zoom"
     "zotero"
   ];

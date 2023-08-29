@@ -18,7 +18,9 @@
       shellAliases = {
         vim = "nvim";
       };
-      enableSyntaxHighlighting = true;
+      syntaxHighlighting = {
+        enable = true;
+      };
       oh-my-zsh = {
         enable = true;
       };

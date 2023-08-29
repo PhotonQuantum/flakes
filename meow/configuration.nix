@@ -19,6 +19,9 @@
     trusted-users = [ "lightquantum" ];
     experimental-features = [ "nix-command" "flakes" ];
   };
+  nixpkgs.config.permittedInsecurePackages = [
+    "openssl-1.1.1u"
+  ];
 
   networking.firewall.allowedTCPPorts = [ 20401 20402 20403 20404 20480 20481 ];
   networking.firewall.allowedUDPPorts = [ 20403 ];

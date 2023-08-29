@@ -55,7 +55,7 @@
       in
       {
         enable = true;
-        previewer.source = lib.getExe pistol;
+        previewer.source = lib.getExe' pistol "pistol";
         settings = {
           hidden = true;
           incsearch = true;
@@ -159,7 +159,10 @@
         coqtags = "fd -e v . . ~/.opam/default/lib/coq/theories -X ctags --options=/Users/lightquantum/.config/coq.ctags";
         ssh = "kitty +kitten ssh";
       };
-      enableSyntaxHighlighting = true;
+
+      syntaxHighlighting = {
+        enable = true;
+      };
       enableAutosuggestions = true;
       plugins = [
         {

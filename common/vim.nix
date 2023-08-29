@@ -89,13 +89,15 @@
           enable = true;
           completion = {
             completeopt = "menu,menuone,noselect";
-            keyword_length = 2;
+            keywordLength = 2;
           };
-          snippet.expand = ''
+          snippet.expand = {
+            __raw = ''
             function(args)
               require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
             end
-          '';
+            '';
+          };
           mapping = {
             "<CR>" = "cmp.mapping.confirm({ select = true })";
             "<Tab>" = ''cmp.mapping(function(fallback)
@@ -123,7 +125,7 @@
             { name = "luasnip"; }
           ];
         };
-        copilot.enable = true;
+        copilot-vim.enable = true;
         telescope = {
           enable = true;
           extensions = {

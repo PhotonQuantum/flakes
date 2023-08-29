@@ -2,7 +2,7 @@ const topHalf = {
   left: 0,
   top: 0,
   right: 0,
-  bottom: 0.4,
+  bottom: 0.5,
 };
 guakeApp({
   key: "return",
@@ -10,7 +10,7 @@ guakeApp({
   appName: "kitty",
   position: topHalf,
   followsMouse: true,
-  hideOnBlur: true,
+  hideOnBlur: false,
 });
 
 

@@ -53,6 +53,7 @@
         cargo-update
         cargo-wipe
         cargo-outdated
+        bacon
       ];
 
       gitPackages = with pkgs; [
@@ -60,6 +61,7 @@
         git-crypt
         git-absorb
         git-branchless
+        git-filter-repo
         delta
       ];
 
@@ -120,16 +122,19 @@
         twiggy
         wasmtime
       ];
+      nixPackages = with pkgs; [
+        rnix-lsp
+        colmena
+        cachix
+        nix-output-monitor
+        nix-tree
+      ];
     in
     with pkgs; [
-      rnix-lsp
-      colmena
       bunyan-rs
       lazydocker
       diesel-cli
       typos
-      cachix
-      bacon
       dua
       fd
       smartmontools
@@ -141,13 +146,14 @@
       config.nur.repos.lightquantum.universal-ctags-pcre2
       # haskell-language-server   # TODO removed due to pr#184041
       # ghc   # maybe we should manage haskell stuff by ghcup?
-      git-filter-repo
       dotnet-sdk
       scala
       sbt
       yubikey-manager
       nasm
-    ] ++ cargoPackages ++ gitPackages ++ migratedPackages ++ wasmPackages;
+      gpg-tui
+      vimv
+    ] ++ cargoPackages ++ gitPackages ++ migratedPackages ++ wasmPackages ++ nixPackages;
 
   fonts = {
     fontDir.enable = true;
@@ -171,7 +177,7 @@
       hostName = "meow";
       system = "x86_64-linux";
       maxJobs = 1;
-      supportedFeatures = ["benchmark" "big-parallel" "kvm" "nixos-test"];
+      supportedFeatures = [ "benchmark" "big-parallel" "kvm" "nixos-test" ];
     }
   ];
   nix.distributedBuilds = true;

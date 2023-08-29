@@ -23,6 +23,11 @@
       fsType = "ext4";
     };
 
+  fileSystems."/mnt/data1T" =
+    { device = "/dev/disk/by-label/data1T";
+      fsType = "xfs";
+    };
+
   swapDevices =
     [ { device = "/dev/disk/by-uuid/bcb91069-4750-422d-8d15-e836fbcaf575"; }
     ];

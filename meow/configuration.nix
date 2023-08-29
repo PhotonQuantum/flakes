@@ -92,6 +92,10 @@
     wget
     lazydocker
     netdata # This is necessary to bring netdata-claim.sh to default shell.
+    vimv
+    xfsprogs
+    htop
+    tmux
   ];
 
   virtualisation.docker.enable = true;

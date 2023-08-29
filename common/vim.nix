@@ -74,7 +74,7 @@
           enable = true;
           indent = true;
           ensureInstalled = [ ];
-          nixGrammars = false;
+          # nixGrammars = false;
           parserInstallDir = "/Users/lightquantum/.config/nvim/ts";
           incrementalSelection = {
             enable = true;

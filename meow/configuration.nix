@@ -10,7 +10,7 @@
       # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ./borg.nix
-      ./matrix.nix
+      # ./matrix.nix
     ];
 
   nix.package = pkgs.nix;
@@ -19,6 +19,9 @@
     trusted-users = [ "lightquantum" ];
     experimental-features = [ "nix-command" "flakes" ];
   };
+
+  networking.firewall.allowedTCPPorts = [ 20401 20402 20403 20404 20480 20481 ];
+  networking.firewall.allowedUDPPorts = [ 20403 ];
 
   # Use the GRUB 2 boot loader.
   boot.loader.grub = {

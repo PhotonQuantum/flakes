@@ -37,6 +37,7 @@
   environment.systemPackages =
     let
       cargoPackages = with pkgs; [
+        cargo-about
         cargo-audit
         cargo-bloat
         cargo-cache

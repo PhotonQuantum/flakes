@@ -58,6 +58,7 @@ _:
   homebrew.casks = [
     "1password"
     "1password-cli"
+    "adobe-acrobat-reader"
     "apache-directory-studio"
     "apparency"
     "backuploupe"

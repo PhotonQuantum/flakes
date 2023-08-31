@@ -253,6 +253,7 @@
         fi
         unset __conda_setup
         # <<< conda initialize <<<
+        zmodload zsh/zprof
       '';
       envExtra = ". $HOME/.cargo/env";
     };

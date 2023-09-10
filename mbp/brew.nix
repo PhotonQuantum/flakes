@@ -84,6 +84,7 @@ _:
     "lark"
     "macfuse"
     "mactex"
+    "malus"
     "mattermost"
     "mongodb-compass"
     "nightowl"

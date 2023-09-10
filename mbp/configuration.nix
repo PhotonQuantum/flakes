@@ -73,7 +73,6 @@
         autoconf
         automake
         bison
-        bitwarden-cli
         borgbackup
         calc
         ffmpeg

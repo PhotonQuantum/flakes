@@ -260,7 +260,15 @@
     starship = {
       enable = true;
       settings = {
-        git_status.disabled = true;
+        git_status = {
+          ahead = "↑\${count}";
+          behind = "↓\${count}";
+          conflicted = "✖";
+          diverged = "⇅↑\${ahead_count}↓\${behind_count}";
+          modified = "※";
+          staged = "✓";
+          stashed = "";
+        };
         ocaml.detect_files = [ "dune" "dune-project" "jbuild" "jbuild-ignore" ".merlin" "_CoqProject" ];
       };
     };

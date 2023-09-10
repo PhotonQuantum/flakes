@@ -9,17 +9,17 @@
 
   users.users.lightquantum = {
     home = "/Users/lightquantum";
-    shell = [ pkgs.zsh ];
+    shell = [ pkgs.fish ];
   };
   users.users.root = {
     home = "/var/root";
   };
 
   environment = {
-    shells = [ pkgs.zsh ]; # Default shell
+    shells = [ pkgs.fish ]; # Default shell
     variables = {
       # System variables
-      SHELL = "${pkgs.zsh}/bin/zsh";
+      SHELL = "${pkgs.fish}/bin/fish";
       EDITOR = "nvim";
       VISUAL = "nvim";
       HOMEBREW_PREFIX = "/opt/homebrew";
@@ -186,6 +186,7 @@
   ];
 
   programs.zsh.enable = true;
+  programs.fish.enable = true;
   programs.gnupg.agent = {
     enable = true;
     enableSSHSupport = true;

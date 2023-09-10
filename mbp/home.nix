@@ -22,7 +22,7 @@
       ../wallpaper/exodus.heic
       ../wallpaper/landscape.heic
     ];
-    defaultShell = pkgs.zsh;
+    defaultShell = pkgs.fish;
   };
 
   home.file.".cargo/config".source = with pkgs; let
@@ -47,7 +47,10 @@
         theme = "TwoDark";
       };
     };
-    lsd.enable = true;
+    lsd = {
+      enable = true;
+      enableAliases = true;
+    };
     htop.enable = true;
     lf = with pkgs;
       let
@@ -151,11 +154,54 @@
       nix-direnv.enable = true;
     };
     home-manager.enable = true;
+    fish = {
+      enable = true;
+      shellAliases = {
+        vim = "nvim";
+        coqtags = "fd -e v . . ~/.opam/default/lib/coq/theories -X ctags --options=/Users/lightquantum/.config/coq.ctags";
+        ssh = "kitty +kitten ssh";
+        lf = "lfcd";
+      };
+      functions = {
+        init_conda = ''
+          if test -f /Users/lightquantum/miniconda3/bin/conda
+              eval /Users/lightquantum/miniconda3/bin/conda "shell.fish" "hook" $argv | source
+          end
+        '';
+        git_sign = ''
+          set FILTER_BRANCH_SQUELCH_WARNING 1
+          git filter-branch --commit-filter 'git commit-tree -S "$@";' $argv[1]..HEAD
+        '';
+        git_delete_bak = ''
+          set ref (git show-ref | awk '/ refs.original.refs/{print$2}')
+          git update-ref -d $ref
+        '';
+        lfcd = ''
+          set tmp (mktemp)
+          # `command` is needed in case `lfcd` is aliased to `lf`
+          command lf -last-dir-path=$tmp $argv
+          if test -f "$tmp"
+              set dir (cat $tmp)
+              rm -f $tmp
+              if test -d "$dir"
+                  if test "$dir" != (pwd)
+                      cd $dir
+                  end
+              end
+          end
+        '';
+        fish_greeting = "";
+      };
+      shellInit = ''
+        set -x MANPATH "/opt/homebrew/share/man" $MANPATH
+        set -x INFOPATH "/opt/homebrew/share/info" $INFOPATH
+        fish_add_path --prepend --global ~/.cargo/bin
+      '';
+    };
     zsh = {
       enable = true;
       shellAliases = {
         vim = "nvim";
-        ls = "lsd";
         coqtags = "fd -e v . . ~/.opam/default/lib/coq/theories -X ctags --options=/Users/lightquantum/.config/coq.ctags";
         ssh = "kitty +kitten ssh";
       };
@@ -241,17 +287,19 @@
 
         # >>> conda initialize >>>
         # !! Contents within this block are managed by 'conda init' !!
-        __conda_setup="$('/Users/lightquantum/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-        if [ $? -eq 0 ]; then
-            eval "$__conda_setup"
-        else
-            if [ -f "/Users/lightquantum/miniconda3/etc/profile.d/conda.sh" ]; then
-                . "/Users/lightquantum/miniconda3/etc/profile.d/conda.sh"
-            else
-                export PATH="/Users/lightquantum/miniconda3/bin:$PATH"
-            fi
-        fi
-        unset __conda_setup
+        function init_conda() {
+          __conda_setup="$('/Users/lightquantum/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+          if [ $? -eq 0 ]; then
+              eval "$__conda_setup"
+          else
+              if [ -f "/Users/lightquantum/miniconda3/etc/profile.d/conda.sh" ]; then
+                  . "/Users/lightquantum/miniconda3/etc/profile.d/conda.sh"
+              else
+                  export PATH="/Users/lightquantum/miniconda3/bin:$PATH"
+              fi
+          fi
+          unset __conda_setup
+        }
         # <<< conda initialize <<<
         zmodload zsh/zprof
       '';

@@ -196,7 +196,46 @@
         set -x MANPATH "/opt/homebrew/share/man" $MANPATH
         set -x INFOPATH "/opt/homebrew/share/info" $INFOPATH
         fish_add_path --prepend --global ~/.cargo/bin
+        set fish_escape_delay_ms 300
       '';
+      plugins = [
+        {
+          name = "Done";
+          inherit (pkgs.generated.fish_done) src;
+        }
+        {
+          name = "sponge";
+          inherit (pkgs.generated.fish_sponge) src;
+        }
+        {
+          name = "autopairs";
+          inherit (pkgs.generated.fish_autopairs) src;
+        }
+        {
+          name = "puffer_fish";
+          inherit (pkgs.generated.fish_puffer_fish) src;
+        }
+        # {
+        #   name = "async_prmopt";
+        #   inherit (pkgs.generated.fish_async_prompt) src;
+        # }
+        {
+          name = "abbreviation_tips";
+          inherit (pkgs.generated.fish_abbreviation_tips) src;
+        }
+        {
+          name = "jump";
+          inherit (pkgs.generated.fish_jump) src;
+        }
+        {
+          name = "sudope";
+          inherit (pkgs.generated.fish_sudope) src;
+        }
+        {
+          name = "brew";
+          inherit (pkgs.generated.fish_brew) src;
+        }
+      ];
     };
     zsh = {
       enable = true;

@@ -17,3 +17,39 @@ fetch.github = "zimfw/git"
 [zsh_completions]
 src.git = "https://github.com/zsh-users/zsh-completions"
 fetch.github = "zsh-users/zsh-completions"
+
+[fish_done]
+src.git = "https://github.com/franciscolourenco/done"
+fetch.github = "franciscolourenco/done"
+
+[fish_sponge]
+src.git = "https://github.com/meaningful-ooo/sponge"
+fetch.github = "meaningful-ooo/sponge"
+
+[fish_autopairs]
+src.git = "https://github.com/jorgebucaran/autopair.fish"
+fetch.github = "jorgebucaran/autopair.fish"
+
+[fish_puffer_fish]
+src.git = "https://github.com/nickeb96/puffer-fish"
+fetch.github = "nickeb96/puffer-fish"
+
+[fish_async_prompt]
+src.git = "https://github.com/acomagu/fish-async-prompt"
+fetch.github = "acomagu/fish-async-prompt"
+
+[fish_abbreviation_tips]
+src.git = "https://github.com/Gazorby/fish-abbreviation-tips"
+fetch.github = "Gazorby/fish-abbreviation-tips"
+
+[fish_jump]
+src.git = "https://github.com/oh-my-fish/plugin-jump"
+fetch.github = "oh-my-fish/plugin-jump"
+
+[fish_sudope]
+src.git = "https://github.com/oh-my-fish/plugin-sudope"
+fetch.github = "oh-my-fish/plugin-sudope"
+
+[fish_brew]
+src.git = "https://github.com/oh-my-fish/plugin-brew"
+fetch.github = "oh-my-fish/plugin-brew"

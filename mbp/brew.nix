@@ -29,6 +29,7 @@ _:
     "pdm"
     "pnpm"
     "sqlx-cli"
+    "terminal-notifier"
     "textidote"
     "ffmpegthumbnailer"
     "messense/macos-cross-toolchains/x86_64-unknown-linux-musl"

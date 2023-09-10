@@ -11,7 +11,7 @@
     homeDirectory = "/Users/lightquantum";
     stateVersion = "22.05";
     sessionVariables = {
-      PNPM_PATH = "$HOME/Library/pnpm";
+      PNPM_HOME = "$HOME/Library/pnpm";
     };
     sessionPath = [
       "$HOME/.local/bin"

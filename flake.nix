@@ -31,7 +31,7 @@
       generated-overlay = {
         nixpkgs.overlays = [
           (final: prev: {
-            generated = (import ./_sources/generated.nix) { inherit (final) fetchurl fetchgit fetchFromGitHub; };
+            generated = (import ./_sources/generated.nix) { inherit (final) fetchurl fetchgit fetchFromGitHub dockerTools; };
           })
         ];
       };

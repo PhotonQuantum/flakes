@@ -1,6 +1,7 @@
 {
     "zimfw_completion": {
         "cargoLocks": null,
+        "date": "2023-03-07",
         "extract": null,
         "name": "zimfw_completion",
         "passthru": null,
@@ -12,14 +13,15 @@
             "name": null,
             "owner": "zimfw",
             "repo": "completion",
-            "rev": "6a78111576cd0c653e0fbeb1ead5d2de3b490440",
-            "sha256": "sha256-dFFkeQkoGpi4aJkkq4gXExcAKLN/XtwvqT6TRA09nnA=",
+            "rev": "e544206fae7d08a9853a9dc34af2f840ed5753e4",
+            "sha256": "sha256-k+MO31FuQ+W5RYJ0HgKmqvlzdGz1zkuWUf7l+WP5tbg=",
             "type": "github"
         },
-        "version": "6a78111576cd0c653e0fbeb1ead5d2de3b490440"
+        "version": "e544206fae7d08a9853a9dc34af2f840ed5753e4"
     },
     "zimfw_git": {
         "cargoLocks": null,
+        "date": "2023-08-07",
         "extract": null,
         "name": "zimfw_git",
         "passthru": null,
@@ -31,14 +33,15 @@
             "name": null,
             "owner": "zimfw",
             "repo": "git",
-            "rev": "ecd06b6ac9ef0fcfc333331ab891043dcc5cf311",
-            "sha256": "sha256-i66Yyx9BehGMnc2j31JcFe5jxqJSdO/546IxifH8MCc=",
+            "rev": "41550514356b808ff264ee42bec387a800b81cae",
+            "sha256": "sha256-TU9l+wj6O5eus6l/vCUu5KJt3YKEAjpOiKSTIqMRfp8=",
             "type": "github"
         },
-        "version": "ecd06b6ac9ef0fcfc333331ab891043dcc5cf311"
+        "version": "41550514356b808ff264ee42bec387a800b81cae"
     },
     "zimfw_input": {
         "cargoLocks": null,
+        "date": "2023-08-10",
         "extract": null,
         "name": "zimfw_input",
         "passthru": null,
@@ -50,14 +53,15 @@
             "name": null,
             "owner": "zimfw",
             "repo": "input",
-            "rev": "bcff8c8504ea7efd0fc8c696dfdc8762e4bfbbb6",
-            "sha256": "sha256-jH1aTY7vvbA5zygdwUhOloREwjOPftXU/GGuxElTvFE=",
+            "rev": "b2a8a80071dc781dd1b075a5161d2a0225140916",
+            "sha256": "sha256-alS02tiio5hfNviAdJ/uOhoNs4ESr7+dxLaJIY4Os3A=",
             "type": "github"
         },
-        "version": "bcff8c8504ea7efd0fc8c696dfdc8762e4bfbbb6"
+        "version": "b2a8a80071dc781dd1b075a5161d2a0225140916"
     },
     "zimfw_utility": {
         "cargoLocks": null,
+        "date": "2023-07-13",
         "extract": null,
         "name": "zimfw_utility",
         "passthru": null,
@@ -69,14 +73,15 @@
             "name": null,
             "owner": "zimfw",
             "repo": "utility",
-            "rev": "2696a4da0dfb901753f92c071437606c5156cc0f",
-            "sha256": "sha256-GmiaToncT/C4/qoN+9ierFY54FGZejUvlomDZoi9qH8=",
+            "rev": "e52d7415b848d7d3ce079dbe0bda798f8c4d7cde",
+            "sha256": "sha256-QWaQ8laTj4+Lq4+JeEySaJOshq9R5foEtA7GbPr6vwc=",
             "type": "github"
         },
-        "version": "2696a4da0dfb901753f92c071437606c5156cc0f"
+        "version": "e52d7415b848d7d3ce079dbe0bda798f8c4d7cde"
     },
     "zsh_completions": {
         "cargoLocks": null,
+        "date": "2023-09-01",
         "extract": null,
         "name": "zsh_completions",
         "passthru": null,
@@ -88,10 +93,10 @@
             "name": null,
             "owner": "zsh-users",
             "repo": "zsh-completions",
-            "rev": "45b5a8a78da4d9b0228e69b23867a8ecf0f42f5e",
-            "sha256": "sha256-NXERzZqG0pQrwqm9uedOpf5xcD/As4LAd4bVVsT6m4w=",
+            "rev": "ab99231c263904ed39def379f32077a210f78c00",
+            "sha256": "sha256-rzLPgRieTBwmv6kLczrRN+sikU+xwmXXde2nZ9TA41M=",
             "type": "github"
         },
-        "version": "45b5a8a78da4d9b0228e69b23867a8ecf0f42f5e"
+        "version": "ab99231c263904ed39def379f32077a210f78c00"
     }
 }

@@ -53,9 +53,6 @@
     };
     htop.enable = true;
     lf = with pkgs;
-      let
-        cleaner = writeShellScript "cleaner" "kitty +icat --clear --silent --transfer-mode file";
-      in
       {
         enable = true;
         previewer.source = lib.getExe' pistol "pistol";
@@ -64,31 +61,15 @@
           incsearch = true;
           smartcase = true;
         };
-        extraConfig = ''
-          set cleaner ${cleaner}
-        '';
       };
     pistol = {
       enable = true;
       associations = with pkgs; let
-        vidthumb = writeShellApplication {
-          name = "vidthumb";
-          # ffmpegthumbnailer is not available on darwin, use homebrew to manage instead.
-          runtimeInputs = [ jq ];
-          text = builtins.readFile ./kitty/vidthumb.sh;
-        };
         batViewer = "${lib.getExe bat} --style=plain --paging=never --color=always %pistol-filename%";
-        kittyViewer = x:
-          "sh: kitty +icat --silent --transfer-mode file --place %pistol-extra0%x%pistol-extra1%@%pistol-extra2%x%pistol-extra3% "
-          + x "%pistol-filename% && exit 1";
-        imageViewer = kittyViewer (x: x);
-        videoViewer = kittyViewer (x: "$(${lib.getExe vidthumb} %pistol-filename%)");
       in
       [
         { mime = "text/*"; command = batViewer; }
         { mime = "application/json"; command = batViewer; }
-        { mime = "image/*"; command = imageViewer; }
-        { mime = "video/*"; command = videoViewer; }
       ];
     };
     kitty = {

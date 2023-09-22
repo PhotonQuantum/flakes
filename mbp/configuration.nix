@@ -124,6 +124,7 @@
       ];
       nixPackages = with pkgs; [
         rnix-lsp
+        nil
         colmena
         cachix
         nix-output-monitor

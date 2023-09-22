@@ -107,7 +107,23 @@
           font_size = 14.0,
         }
 
-        config.keys = {}
+        config.keys = {
+          {
+            key = "p",
+            mods = "CMD|SHIFT",
+            action = wezterm.action.ActivateCommandPalette
+          },
+          {
+            key = 'UpArrow',
+            mods = 'SHIFT',
+            action = act.ScrollToPrompt(-1)
+          },
+          {
+            key = 'DownArrow',
+            mods = 'SHIFT',
+            action = act.ScrollToPrompt(1)
+          },
+        }
         for i = 1, 9 do
           table.insert(config.keys, {
             key = tostring(i),
@@ -116,6 +132,14 @@
           })
         end
 
+        config.mouse_bindings = {
+          {
+            event = { Down = { streak = 4, button = 'Left' } },
+            action = wezterm.action.SelectTextAtMouseCursor 'SemanticZone',
+            mods = 'NONE',
+          },
+        }
+        
         return config
       '';
     };
@@ -225,7 +249,7 @@
         fish_add_path --prepend --global ~/.cargo/bin
         fish_add_path --prepend --global ~/.nargo/bin
         set fish_escape_delay_ms 300
-      '';
+      '' + (builtins.readFile ./wezterm.fish);
       plugins = [
         {
           name = "Done";

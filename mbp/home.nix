@@ -72,14 +72,60 @@
         { mime = "application/json"; command = batViewer; }
       ];
     };
-    kitty = {
+    wezterm = {
       enable = true;
+      extraConfig = ''
+        local wezterm = require 'wezterm'
+        local act = wezterm.action
+        local config = {}
+
+        config.font = wezterm.font "Sarasa Term SC"
+        config.font_size = 16.0
+
+        config.window_background_opacity = 0.9
+        config.macos_window_background_blur = 20
+
+        function get_appearance()
+          if wezterm.gui then
+            return wezterm.gui.get_appearance()
+          end
+          return 'Dark'
+        end
+        function scheme_for_appearance(appearance)
+          if appearance:find 'Dark' then
+            return 'OneDark (base16)'
+          else
+            return 'One Light (base16)'
+          end
+        end
+        config.color_scheme = scheme_for_appearance(get_appearance())
+
+        config.window_decorations = "RESIZE"
+        config.hide_tab_bar_if_only_one_tab = true
+        config.window_frame = {
+          font = wezterm.font { family = 'Sarasa Term SC', weight = 'Bold' },
+          font_size = 14.0,
+        }
+
+        config.keys = {}
+        for i = 1, 9 do
+          table.insert(config.keys, {
+            key = tostring(i),
+            mods = 'CMD',
+            action = act.ActivateTab(i - 1),
+          })
+        end
+
+        return config
+      '';
+    };
+    kitty = {
+      # enable = true;
       package = pkgs.kitty.overrideAttrs
         (old: {
           doCheck = false;
           doInstallCheck = false;
         });
-      theme = "One Half Dark";
       keybindings =
         let tabKeyBindings = with builtins; listToAttrs (builtins.map
           (idx: {
@@ -140,7 +186,7 @@
       shellAliases = {
         vim = "nvim";
         coqtags = "fd -e v . . ~/.opam/default/lib/coq/theories -X ctags --options=/Users/lightquantum/.config/coq.ctags";
-        ssh = "kitty +kitten ssh";
+        # ssh = "kitty +kitten ssh";
         lf = "lfcd";
       };
       functions = {
@@ -224,7 +270,7 @@
       shellAliases = {
         vim = "nvim";
         coqtags = "fd -e v . . ~/.opam/default/lib/coq/theories -X ctags --options=/Users/lightquantum/.config/coq.ctags";
-        ssh = "kitty +kitten ssh";
+        # ssh = "kitty +kitten ssh";
       };
 
       syntaxHighlighting = {

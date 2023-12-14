@@ -68,7 +68,7 @@
 
       migratedPackages = with pkgs; [
         asciinema
-        pkg-config
+        # pkg-config
         atool
         autoconf
         automake
@@ -129,6 +129,8 @@
         cachix
         nix-output-monitor
         nix-tree
+        nixfmt
+        nixpkgs-fmt
       ];
     in
     with pkgs; [
@@ -144,7 +146,7 @@
       bun
       gmp
       ripgrep
-      config.nur.repos.lightquantum.universal-ctags-pcre2
+      universal-ctags
       # haskell-language-server   # TODO removed due to pr#184041
       # ghc   # maybe we should manage haskell stuff by ghcup?
       dotnet-sdk

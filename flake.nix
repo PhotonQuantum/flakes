@@ -24,9 +24,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.stable.follows = "nixpkgs";
     };
+    yazi.url = "github:sxyazi/yazi";
   };
 
-  outputs = { self, nur, darwin, nixpkgs, home-manager, nixvim, ... }@inputs:
+  outputs = { self, nur, darwin, nixpkgs, home-manager, nixvim, yazi, ... }@inputs:
     let
       generated-overlay = {
         nixpkgs.overlays = [
@@ -53,7 +54,7 @@
             useUserPackages = true;
             users = users;
             sharedModules = hm-modules;
-            extraSpecialArgs = { inherit nixvim; };
+            extraSpecialArgs = { inherit system nixvim yazi; };
           };
         };
       meow-modules = [

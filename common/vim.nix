@@ -184,51 +184,163 @@
           yaml = true;
         };
       };
-      maps = {
-        normal = {
-          "H" = { action = "^"; };
-          "L" = { action = "$"; };
-          "ZA" = { action = "<cmd>w suda://%<Return>:q<CR>"; };
-          "<C-w>" = { action = "<cmd>bd<CR>"; silent = true; };
-          "<C-b>" = { action = "<cmd>BufferLinePick<CR>"; };
-          "<C-Left>" = { action = "<cmd>BufferLineCyclePrev<CR>"; };
-          "<C-Right>" = { action = "<cmd>BufferLineCycleNext<CR>"; };
-          "<Leader>s" = { action = "<cmd>Telescope live_grep<CR>"; silent = true; };
-          "<Leader>f" = { action = "<cmd>Telescope find_files<CR>"; silent = true; };
-          "<Leader>b" = { action = "<cmd>Telescope file_browser<CR>"; silent = true; };
-          "<Leader>d" = { action = "<cmd>TroubleToggle document_diagnostics<CR>"; silent = true; };
-          "<Leader>l" = {
-            action = "<cmd>lua vim.lsp.buf.format{async=true}<CR>";
+      keymaps = [
+        {
+          key = "H";
+          action = "^";
+        }
+        {
+          key = "L";
+          action = "$";
+        }
+        {
+          mode = ["i" "v"];
+          key = "<S-CR>";
+          action = "<Esc>";
+        }
+        {
+          mode = "n";
+          key = "ZA";
+          action = "<cmd>w suda://%<Return>:q<CR>";
+        }
+        {
+          mode = "n";
+          key = "<C-w>";
+          action = "<cmd>bd<CR>";
+          options = {
             silent = true;
+            desc = "Close buffer";
           };
-          "<leader>g" = {
-            action = "<cmd>lua _lazygit_toggle()<CR>";
+        }
+        {
+          mode = "n";
+          key = "<C-b>";
+          action = "<cmd>BufferLinePick<CR>";
+          options = {
+            desc = "Pick buffer";
+          };
+        }
+        {
+          mode = ["l" "i"];
+          key = "<C-S-[>";
+          action = "<cmd>BufferLineCyclePrev<CR>";
+          options = {
+            desc = "Previous buffer";
+          };
+        }
+        {
+          mode = ["l" "i"];
+          key = "<C-S-]>";
+          action = "<cmd>BufferLineCycleNext<CR>";
+          options = {
+            desc = "Next buffer";
+          };
+        }
+        {
+          mode = "n";
+          key = "<Leader>s";
+          action = "<cmd>Telescope live_grep<CR>";
+          options = {
             silent = true;
+            desc = "Search";
           };
-          "<leader>hs" = { action = "<cmd>Gitsigns stage_hunk<CR>"; silent = true; };
-          "<leader>hd" = { action = "<cmd>Gitsigns reset_hunk<CR>"; silent = true; };
-          "*" = { action = ''<cmd>let @/=expand("<cword>")<CR>''; silent = true; };
-          "<2-LeftMouse>" = { action = ''<cmd>let @/=expand("<cword>")<CR>''; silent = true; };
-          # "<leader>l" = { action = "<cmd>lua _select_lf()<CR>"; silent = true; };
-        };
-        visual = {
-          "H" = { action = "^"; };
-          "L" = { action = "$"; };
-          "ih" = "<cmd><C-U>Gitsigns select_hunk<CR>";
-        };
-        operator = {
-          "ih" = "<cmd><C-U>Gitsigns select_hunk<CR>";
-        };
-        insert = {
-          "<S-CR>" = { action = "<Esc>"; };
-          "<D-S-l>" = { action = "<cmd>lua vim.lsp.buf.format{async=true}<Return>"; };
-          "<2-LeftMouse>" = { action = ''<Esc><cmd>let @/=expand("<cword>")<CR>i''; silent = true; };
-        };
-        command = {
-          "e!!" = { action = "e suda://%"; };
-          "r!!" = { action = "e suda://%"; };
-          "w!!" = { action = "w suda://%"; };
-        };
-      };
+        }
+        {
+          mode = "n";
+          key = "<Leader>f";
+          action = "<cmd>Telescope find_files<CR>";
+          options = {
+            silent = true;
+            desc = "Find files";
+          };
+        }
+        {
+          mode = "n";
+          key = "<Leader>b";
+          action = "<cmd>Telescope file_browser<CR>";
+          options = {
+            silent = true;
+            desc = "File browser";
+          };
+        }
+        {
+          mode = "n";
+          key = "<Leader>d";
+          action = "<cmd>TroubleToggle document_diagnostics<CR>";
+          options = {
+            silent = true;
+            desc = "Document diagnostics";
+          };
+        }
+        {
+          mode = ["l" "i"];
+          key = "<D-M-l>";
+          action = "<cmd>lua vim.lsp.buf.format{async=true}<CR>";
+          options = {
+            silent = true;
+            desc = "Format";
+          };
+        }
+        {
+          mode = "n";
+          key = "<leader>g";
+          action = "<cmd>lua _lazygit_toggle<CR>";
+          options = {
+            silent = true;
+            desc = "Lazygit";
+          };
+        }
+        {
+          mode = "n";
+          key = "<leader>hs";
+          action = "<cmd>Gitsigns stage_hunk<CR>";
+          options = {
+            silent = true;
+            desc = "Stage hunk";
+          };
+        }
+        {
+          mode = "n";
+          key = "<leader>hd";
+          action = "<cmd>Gitsigns reset_hunk<CR>";
+          options = {
+            silent = true;
+            desc = "Reset hunk";
+          };
+        }
+        {
+          mode = "n";
+          key = "*";
+          action = "<cmd>let @/=expand(\"<cword>\")<CR>";
+          options = {
+            silent = true;
+            desc = "Search word under cursor";
+          };
+        }
+        {
+          mode = ["n" "i"];
+          key = "<2-LeftMouse>";
+          action = "<cmd>let @/=expand(\"<cword>\")<CR>";
+          options = {
+            silent = true;
+            desc = "Search word under cursor";
+          };
+        }
+        {
+          mode = "c";
+          key = "e!!";
+          action = "e suda://%";
+        }
+        {
+          mode = "c";
+          key = "r!!";
+          action = "e suda://%";
+        }
+        {
+          mode = "c";
+          key = "w!!";
+          action = "w suda://%";
+        }
+      ];
     };
 }

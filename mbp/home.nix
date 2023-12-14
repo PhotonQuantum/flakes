@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, system, yazi, ... }:
 
 {
   imports = [
@@ -44,7 +44,7 @@
     bat = {
       enable = true;
       config = {
-        theme = "TwoDark";
+        theme = "base16";
       };
     };
     lsd = {
@@ -62,6 +62,59 @@
           smartcase = true;
         };
       };
+    yazi = {
+      enable = true;
+      enableFishIntegration = true;
+      package = yazi.packages.${system}.yazi;
+      keymap =
+        let
+          recursiveMerge = with lib; attrList:
+            let
+              f = attrPath:
+                zipAttrsWith (n: values:
+                  if tail values == [ ]
+                  then head values
+                  else if all isList values
+                  then unique (concatLists values)
+                  else if all isAttrs values
+                  then f (attrPath ++ [ n ]) values
+                  else last values
+                );
+            in
+            f [ ] attrList;
+          preset = builtins.fromTOML (builtins.readFile ./yazi/keymap_preset.toml);
+          user = {
+            manager.keymap =
+              [
+                { on = [ "<C-c>" ]; exec = "escape"; desc = "Exit visual mode, clear selected, or cancel search"; }
+                { on = [ "<C-u>" ]; exec = "arrow -5"; desc = "Move cursor up 5 lines"; }
+                { on = [ "<C-d>" ]; exec = "arrow 5"; desc = "Move cursor down 5 lines"; }
+                { on = [ "n" ]; exec = "find_arrow"; }
+                { on = [ "N" ]; exec = "find_arrow --previous"; }
+              ];
+            input.keymap = [
+              { on = [ "<C-c>" ]; exec = "close"; desc = "Cancel input"; }
+              { on = [ "<S-Enter>" ]; exec = "escape"; desc = "Go back the normal mode, or cancel input"; }
+              { on = [ "H" ]; exec = "move -999"; desc = "Move to the BOL"; }
+              { on = [ "L" ]; exec = "move 999"; desc = "Move to the EOL"; }
+            ];
+          };
+        in
+        recursiveMerge [ preset user ];
+      settings = {
+        manager = {
+          layout = [ 1 3 4 ];
+        };
+        opener.archive = [
+          { exec = "aunpack \"$1\""; display_name = "Extract here"; }
+        ];
+      };
+      theme = {
+        manager = {
+          syntect_theme = ./yazi/TwoDark.tmTheme;
+        };
+      };
+    };
     pistol = {
       enable = true;
       associations = with pkgs; let
@@ -139,6 +192,8 @@
             mods = 'NONE',
           },
         }
+
+        config.enable_kitty_keyboard = true
         
         return config
       '';
@@ -151,12 +206,13 @@
           doInstallCheck = false;
         });
       keybindings =
-        let tabKeyBindings = with builtins; listToAttrs (builtins.map
-          (idx: {
-            name = "cmd+${toString idx}";
-            value = "goto_tab ${toString idx}";
-          })
-          (genList (x: x + 1) 9));
+        let
+          tabKeyBindings = with builtins; listToAttrs (builtins.map
+            (idx: {
+              name = "cmd+${toString idx}";
+              value = "goto_tab ${toString idx}";
+            })
+            (genList (x: x + 1) 9));
         in
         pkgs.lib.mergeAttrs tabKeyBindings {
           "cmd+shift+l" = "send_text application ;z";
@@ -213,6 +269,7 @@
         # ssh = "kitty +kitten ssh";
         lf = "lfcd";
       };
+      shellAbbrs = import ./fish/git_abbr.nix;
       functions = {
         init_conda = ''
           if test -f /Users/lightquantum/miniconda3/bin/conda

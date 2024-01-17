@@ -89,6 +89,7 @@ _:
     "keyboard-lock"
     "keycastr"
     "lark"
+    "latest"
     "macfuse"
     "macgpt"
     "mactex"

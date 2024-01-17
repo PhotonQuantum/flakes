@@ -37,6 +37,20 @@
   );
 
   home.file.".phoenix.js".source = ./phoenix.js;
+  home.file."Library/Application Support/Google/Chrome/NativeMessagingHosts/gpgmejson.json".source = let
+    format = pkgs.formats.json { };
+    in (
+      format.generate "config" {
+        name = "gpgmejson";
+        description = "JavaScript binding for GnuPG";
+        path = "${pkgs.gpgme.dev}/bin/gpgme-json";
+        type = "stdio";
+        allowed_origins = [
+          "chrome-extension://kajibbejlbohfaggdiogboambcijhkke/"
+        ];
+      }
+    );
+
 
   programs = {
     ssh.enable = true;

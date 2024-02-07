@@ -156,6 +156,7 @@
       nasm
       gpg-tui
       vimv
+      xcaddy
     ] ++ cargoPackages ++ gitPackages ++ migratedPackages ++ wasmPackages ++ nixPackages;
 
   fonts = {

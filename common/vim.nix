@@ -93,9 +93,9 @@
           };
           snippet.expand = {
             __raw = ''
-            function(args)
-              require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
-            end
+              function(args)
+                require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+              end
             '';
           };
           mapping = {
@@ -194,7 +194,7 @@
           action = "$";
         }
         {
-          mode = ["i" "v"];
+          mode = [ "i" "v" ];
           key = "<S-CR>";
           action = "<Esc>";
         }
@@ -221,7 +221,7 @@
           };
         }
         {
-          mode = ["l" "i"];
+          mode = [ "l" "i" ];
           key = "<C-S-[>";
           action = "<cmd>BufferLineCyclePrev<CR>";
           options = {
@@ -229,7 +229,7 @@
           };
         }
         {
-          mode = ["l" "i"];
+          mode = [ "l" "i" ];
           key = "<C-S-]>";
           action = "<cmd>BufferLineCycleNext<CR>";
           options = {
@@ -273,7 +273,7 @@
           };
         }
         {
-          mode = ["l" "i"];
+          mode = [ "l" "i" ];
           key = "<D-M-l>";
           action = "<cmd>lua vim.lsp.buf.format{async=true}<CR>";
           options = {
@@ -318,7 +318,7 @@
           };
         }
         {
-          mode = ["n" "i"];
+          mode = [ "n" "i" ];
           key = "<2-LeftMouse>";
           action = "<cmd>let @/=expand(\"<cword>\")<CR>";
           options = {

@@ -125,7 +125,15 @@
             { name = "luasnip"; }
           ];
         };
-        copilot-vim.enable = true;
+        copilot-vim = {
+          enable = true;
+          filetypes = {
+            yaml = true;
+          };
+          extraConfig = {
+            assume_mapped = true;
+          };
+        };
         telescope = {
           enable = true;
           extensions = {
@@ -179,10 +187,6 @@
       globals = {
         mapleader = " ";
         macos_alt_is_meta = true;
-        copilot_assume_mapped = true;
-        copilot_filetypes = {
-          yaml = true;
-        };
       };
       keymaps = [
         {

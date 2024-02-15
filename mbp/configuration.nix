@@ -37,7 +37,7 @@
   environment.systemPackages =
     let
       cargoPackages = with pkgs; [
-        cargo-about
+        # cargo-about # fixing
         cargo-audit
         cargo-bloat
         cargo-cache
@@ -83,7 +83,7 @@
         hugo
         hyperfine
         imagemagick
-        (python310.withPackages (p: with p; [
+        (python3.withPackages (p: with p; [
           ipython
           pip
           pygments

@@ -103,10 +103,6 @@
             manager.keymap =
               [
                 { on = [ "<C-c>" ]; exec = "escape"; desc = "Exit visual mode, clear selected, or cancel search"; }
-                { on = [ "<C-u>" ]; exec = "arrow -5"; desc = "Move cursor up 5 lines"; }
-                { on = [ "<C-d>" ]; exec = "arrow 5"; desc = "Move cursor down 5 lines"; }
-                { on = [ "n" ]; exec = "find_arrow"; }
-                { on = [ "N" ]; exec = "find_arrow --previous"; }
               ];
             input.keymap = [
               { on = [ "<C-c>" ]; exec = "close"; desc = "Cancel input"; }
@@ -122,7 +118,7 @@
           layout = [ 1 3 4 ];
         };
         opener.archive = [
-          { exec = "aunpack \"$1\""; display_name = "Extract here"; }
+          { exec = "aunpack \"$1\""; desc = "Extract here"; }
         ];
       };
       theme = {

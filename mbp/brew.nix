@@ -39,23 +39,23 @@ _:
     "mongodb-database-tools"
     {
       name = "rabbitmq";
-      restart_service = "changed";
+      # restart_service = "changed";
     }
     {
       name = "mongodb-community";
-      restart_service = "changed";
+      # restart_service = "changed";
     }
     {
       name = "redis";
-      restart_service = "changed";
+      # restart_service = "changed";
     }
     {
       name = "mysql";
-      restart_service = "changed";
+      # restart_service = "changed";
     }
     {
       name = "postgresql";
-      restart_service = "changed";
+      # restart_service = "changed";
     }
     "pg_cron"
   ];

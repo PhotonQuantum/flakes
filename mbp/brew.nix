@@ -24,6 +24,7 @@ _:
     "borgbackup-fuse"
     "cmake"
     "dlib"
+    "jdupes"
     "libpng"
     "minio"
     "miniserve"

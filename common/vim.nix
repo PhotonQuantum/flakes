@@ -85,52 +85,52 @@
             };
           };
         };
-        nvim-cmp = {
-          enable = true;
-          completion = {
-            completeopt = "menu,menuone,noselect";
-            keywordLength = 2;
-          };
-          snippet.expand = {
-            __raw = ''
-              function(args)
-                require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
-              end
-            '';
-          };
-          mapping = {
-            "<CR>" = "cmp.mapping.confirm({ select = true })";
-            "<Tab>" = ''cmp.mapping(function(fallback)
-                -- This little snippet will confirm with tab, and if no entry is selected, will confirm the first item
-                if (cmp.visible() and vim.b._copilot.suggestions == nil) then
-                  local entry = cmp.get_selected_entry()
-                  if not entry then
-                    cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
-                  else
-                    cmp.confirm()
-                  end
-                else
-                  fallback()
-                end
-              end, {"i","s",}) '';
-            "<Up>" = "cmp.mapping.select_prev_item()";
-            "<Down>" = "cmp.mapping.select_next_item()";
-          };
-          sources = [
-            { name = "nvim_lsp"; }
-            { name = "nvim_lsp_document_symbol"; }
-            { name = "nvim_lsp_signature_help"; }
-            { name = "buffer"; }
-            { name = "path"; }
-            { name = "luasnip"; }
-          ];
-        };
+        # nvim-cmp = {
+        #   enable = true;
+        #   completion = {
+        #     completeopt = "menu,menuone,noselect";
+        #     keywordLength = 2;
+        #   };
+        #   snippet.expand = {
+        #     __raw = ''
+        #       function(args)
+        #         require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+        #       end
+        #     '';
+        #   };
+        #   mapping = {
+        #     "<CR>" = "cmp.mapping.confirm({ select = true })";
+        #     "<Tab>" = ''cmp.mapping(function(fallback)
+        #         -- This little snippet will confirm with tab, and if no entry is selected, will confirm the first item
+        #         if (cmp.visible() and vim.b._copilot.suggestions == nil) then
+        #           local entry = cmp.get_selected_entry()
+        #           if not entry then
+        #             cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+        #           else
+        #             cmp.confirm()
+        #           end
+        #         else
+        #           fallback()
+        #         end
+        #       end, {"i","s",}) '';
+        #     "<Up>" = "cmp.mapping.select_prev_item()";
+        #     "<Down>" = "cmp.mapping.select_next_item()";
+        #   };
+        #   sources = [
+        #     { name = "nvim_lsp"; }
+        #     { name = "nvim_lsp_document_symbol"; }
+        #     { name = "nvim_lsp_signature_help"; }
+        #     { name = "buffer"; }
+        #     { name = "path"; }
+        #     { name = "luasnip"; }
+        #   ];
+        # };
         copilot-vim = {
           enable = true;
-          filetypes = {
-            yaml = true;
-          };
-          extraConfig = {
+          settings = {
+            filetypes = {
+              yaml = true;
+            };
             assume_mapped = true;
           };
         };

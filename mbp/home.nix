@@ -381,7 +381,7 @@
       syntaxHighlighting = {
         enable = true;
       };
-      enableAutosuggestions = true;
+      autosuggestion.enable = true;
       plugins = [
         {
           name = "input";

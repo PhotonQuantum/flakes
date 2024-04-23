@@ -123,7 +123,7 @@
         wasmtime
       ];
       nixPackages = with pkgs; [
-        rnix-lsp
+        # rnix-lsp
         nil
         colmena
         cachix

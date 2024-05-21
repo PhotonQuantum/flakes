@@ -157,6 +157,8 @@
       gpg-tui
       vimv
       xcaddy
+      typst
+      typstyle
     ] ++ cargoPackages ++ gitPackages ++ migratedPackages ++ wasmPackages ++ nixPackages;
 
   fonts = {

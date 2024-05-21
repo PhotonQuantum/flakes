@@ -5,7 +5,7 @@
     {
       enable = true;
       extraPackages = with pkgs; [ rust-analyzer ];
-      options = {
+      opts = {
         number = true;
         relativenumber = true;
         clipboard = "unnamedplus";

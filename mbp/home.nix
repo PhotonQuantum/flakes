@@ -1,5 +1,22 @@
 { pkgs, lib, system, osConfig, yazi, ... }:
 
+let
+  recursiveMerge = with lib; attrList:
+    let
+      f = attrPath:
+        zipAttrsWith (n: values:
+          if tail values == [ ]
+          then head values
+          else if all isList values
+          then unique (concatLists values)
+          else if all isAttrs values
+          then f (attrPath ++ [ n ]) values
+          else last values
+        );
+    in
+    f [ ] attrList;
+  compose = with pkgs.lib; l: flip pipe (reverseList l);
+in
 {
   imports = [
     ../common/vim.nix
@@ -84,20 +101,6 @@
       package = yazi.packages.${system}.yazi;
       keymap =
         let
-          recursiveMerge = with lib; attrList:
-            let
-              f = attrPath:
-                zipAttrsWith (n: values:
-                  if tail values == [ ]
-                  then head values
-                  else if all isList values
-                  then unique (concatLists values)
-                  else if all isAttrs values
-                  then f (attrPath ++ [ n ]) values
-                  else last values
-                );
-            in
-            f [ ] attrList;
           preset = builtins.fromTOML (builtins.readFile ./yazi/keymap_preset.toml);
           user = {
             manager.keymap =
@@ -249,7 +252,10 @@
     gh.enable = true;
     skim.enable = true;
     opam.enable = true;
-    nix-index.enable = true;
+    nix-index = {
+      enable = true;
+      enableFishIntegration = false;
+    };
     gpg = {
       enable = true;
       scdaemonSettings = {
@@ -311,6 +317,24 @@
           end
         '';
         fish_greeting = "";
+        fish_right_prompt = "";
+        fish_prompt_loading_indicator = {
+          argumentNames = "last_prompt";
+          body = ''
+            echo -n "$last_prompt" | head -n2 | tail -n1 | read -zl last_prompt_line
+            echo -n "$last_prompt_line" | cut -d, -f1-2 | read -l last_prompt_directory
+
+            starship module directory | read -zl current_prompt_directory
+
+            echo
+            if [ "$last_prompt_directory" = "$current_prompt_directory" ]
+                echo "$last_prompt" | tail -n2
+            else
+                echo "$current_prompt_directory"
+                starship module character
+            end
+          '';
+        };
       };
       shellInit = ''
         set -x MANPATH "/opt/homebrew/share/man" $MANPATH
@@ -318,7 +342,9 @@
         fish_add_path --prepend --global ~/.cargo/bin
         fish_add_path --prepend --global ~/.nargo/bin
         set fish_escape_delay_ms 300
-      '' + (builtins.readFile ./wezterm.fish);
+        builtin functions -e fish_mode_prompt
+        eval (${pkgs.starship}/bin/starship init fish)
+      '' + builtins.readFile ./wezterm.fish;
       loginShellInit =
         let
           # This naive quoting is good enough in this case. There shouldn't be any
@@ -327,7 +353,8 @@
           dquote = str: "\"" + str + "\"";
 
           makeBinPathList = map (path: path + "/bin");
-        in ''
+        in
+        ''
           fish_add_path --move --prepend --path ${lib.concatMapStringsSep " " dquote (makeBinPathList osConfig.environment.profiles)}
           set fish_user_paths $fish_user_paths
         '';
@@ -348,10 +375,10 @@
           name = "puffer_fish";
           inherit (pkgs.generated.fish_puffer_fish) src;
         }
-        # {
-        #   name = "async_prmopt";
-        #   inherit (pkgs.generated.fish_async_prompt) src;
-        # }
+        {
+          name = "async_prompt";
+          inherit (pkgs.generated.fish_async_prompt) src;
+        }
         {
           name = "abbreviation_tips";
           inherit (pkgs.generated.fish_abbreviation_tips) src;
@@ -479,18 +506,32 @@
     };
     starship = {
       enable = true;
-      settings = {
-        git_status = {
-          ahead = "↑\${count}";
-          behind = "↓\${count}";
-          conflicted = "✖";
-          diverged = "⇅↑\${ahead_count}↓\${behind_count}";
-          modified = "※";
-          staged = "✓";
-          stashed = "";
-        };
-        ocaml.detect_files = [ "dune" "dune-project" "jbuild" "jbuild-ignore" ".merlin" "_CoqProject" ];
-      };
+      enableFishIntegration = false; # Fish integration is handled by `fish` module
+      settings =
+        let
+          presets = with builtins;
+            map (compose [ fromTOML readFile (s: ./starship + "/${s}") ])
+              (compose [ attrNames (lib.filterAttrs (_: kind: kind == "regular")) readDir ]
+                (./starship));
+        in
+        {
+          git_status = {
+            ahead = "↑\${count}";
+            behind = "↓\${count}";
+            conflicted = "✖";
+            diverged = "⇅↑\${ahead_count}↓\${behind_count}";
+            modified = "※";
+            staged = "✓";
+            stashed = "";
+            untracked = "";
+            ignore_submodules = true;
+          };
+          ocaml.detect_files = [ "dune" "dune-project" "jbuild" "jbuild-ignore" ".merlin" "_CoqProject" ];
+          character = {
+            success_symbol = "[⊢](bold green) ";
+            error_symbol = "[⊢](bold red) ";
+          };
+        } // recursiveMerge presets;
     };
     lazygit = {
       enable = true;

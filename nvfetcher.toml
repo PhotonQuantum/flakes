@@ -37,6 +37,7 @@ fetch.github = "nickeb96/puffer-fish"
 [fish_async_prompt]
 src.git = "https://github.com/acomagu/fish-async-prompt"
 fetch.github = "acomagu/fish-async-prompt"
+pinned = true
 
 [fish_abbreviation_tips]
 src.git = "https://github.com/Gazorby/fish-abbreviation-tips"

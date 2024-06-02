@@ -88,14 +88,10 @@
           pip
           pygments
         ]))
-        jmeter
         mongosh
-        tesseract
         just
         mdbook
-        minisat
         # miniserve
-        mosh
         mtr
         navi
         # ncdu  # TODO temporary comment out due to llvm 15
@@ -110,7 +106,6 @@
         p7zip
         pandoc
         flyctl
-        swiProlog
         topgrade
         wget
         yarn

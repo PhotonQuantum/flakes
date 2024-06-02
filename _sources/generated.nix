@@ -123,15 +123,15 @@
   };
   zimfw_git = {
     pname = "zimfw_git";
-    version = "de3a9f1553994d9fe5e6187f40ceac8afbfd1707";
+    version = "52c6e846cfea3d418c19d3b1a0d526726f219fe4";
     src = fetchFromGitHub {
       owner = "zimfw";
       repo = "git";
-      rev = "de3a9f1553994d9fe5e6187f40ceac8afbfd1707";
+      rev = "52c6e846cfea3d418c19d3b1a0d526726f219fe4";
       fetchSubmodules = false;
-      sha256 = "sha256-mTmcp6hmtWc6012vaznbXdIojoRT5rux1HZ54VxtPY4=";
+      sha256 = "sha256-ZiD2Rl7Eq52KBq0IMcuq+Qd7MaZxNUt9yuTUwfXv+Rc=";
     };
-    date = "2023-09-28";
+    date = "2024-05-08";
   };
   zimfw_input = {
     pname = "zimfw_input";
@@ -147,26 +147,26 @@
   };
   zimfw_utility = {
     pname = "zimfw_utility";
-    version = "6b74db5656509e5fe657901a9f0f52b6c7499904";
+    version = "2d738fb414fbae6e19b2b44ec6f0d5046ffea102";
     src = fetchFromGitHub {
       owner = "zimfw";
       repo = "utility";
-      rev = "6b74db5656509e5fe657901a9f0f52b6c7499904";
+      rev = "2d738fb414fbae6e19b2b44ec6f0d5046ffea102";
       fetchSubmodules = false;
-      sha256 = "sha256-5p2SlB7OuycvDV7c/mCr5ddUw+npZfCD+LfMeyBeGtE=";
+      sha256 = "sha256-DSCTGbJpNeEE3pkqSPtGTk9BoI/J6eak0fS3c6/1a8k=";
     };
-    date = "2023-12-09";
+    date = "2024-05-04";
   };
   zsh_completions = {
     pname = "zsh_completions";
-    version = "efaa595ae93ce03836a1610dfd3364f081da8f3b";
+    version = "978e79e12c44b5b1d3e1e2920c537002087b82c2";
     src = fetchFromGitHub {
       owner = "zsh-users";
       repo = "zsh-completions";
-      rev = "efaa595ae93ce03836a1610dfd3364f081da8f3b";
+      rev = "978e79e12c44b5b1d3e1e2920c537002087b82c2";
       fetchSubmodules = false;
-      sha256 = "sha256-9FIeMsI/RUeUwuyX9w8Hn91RLj14SL85BLPbAf32E0k=";
+      sha256 = "sha256-J2L/jO8lWNGC4Bob+2mH7OEJ+U2g+NVkbPA1OdnIrp0=";
     };
-    date = "2024-04-17";
+    date = "2024-05-21";
   };
 }

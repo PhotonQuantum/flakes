@@ -170,7 +170,7 @@
       };
       extraPlugins = with pkgs.vimPlugins; [
         quick-scope
-        suda-vim
+        vim-suda
         vim-startuptime
         telescope-file-browser-nvim
         auto-session

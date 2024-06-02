@@ -150,8 +150,8 @@ in
         config.font = wezterm.font "Sarasa Term SC"
         config.font_size = 16.0
 
-        config.window_background_opacity = 0.9
-        config.macos_window_background_blur = 20
+        config.window_background_opacity = 0.8
+        config.macos_window_background_blur = 80
 
         function get_appearance()
           if wezterm.gui then

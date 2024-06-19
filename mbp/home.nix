@@ -42,7 +42,7 @@ in
     defaultShell = pkgs.fish;
   };
 
-  home.file.".cargo/config".source = with pkgs; let
+  home.file.".cargo/config.toml".source = with pkgs; let
     format = pkgs.formats.toml { };
   in
   (

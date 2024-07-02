@@ -40,6 +40,7 @@ in
       ../wallpaper/landscape.heic
     ];
     defaultShell = pkgs.fish;
+    disableMacPowerButton = true;
   };
 
   home.file.".cargo/config.toml".source = with pkgs; let

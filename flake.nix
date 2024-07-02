@@ -43,6 +43,7 @@
           };
           hm-modules = [
             nixvim.homeManagerModules.nixvim
+            ./modules/power_mac.nix
             nur-modules.repos.lightquantum.modules.chsh
             nur-modules.repos.lightquantum.modules.wallpaper
           ];

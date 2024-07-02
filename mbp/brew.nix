@@ -82,6 +82,7 @@ _:
     "handbrake"
     "iina"
     "jetbrains-toolbox"
+    "karabiner-elements"
     "keka"
     "kekaexternalhelper"
     "keyboard-lock"

@@ -37,7 +37,7 @@
   environment.systemPackages =
     let
       cargoPackages = with pkgs; [
-        # cargo-about # fixing
+        cargo-about
         bacon
         cargo-audit
         cargo-bloat
@@ -69,7 +69,7 @@
       migratedPackages = with pkgs; [
         # miniserve
         # mongodb
-        # ncdu  # TODO temporary comment out due to llvm 15
+        ncdu
         # pkg-config
         asciinema
         atool
@@ -130,7 +130,7 @@
     in
     with pkgs; [
       # ghc   # maybe we should manage haskell stuff by ghcup?
-      # haskell-language-server   # TODO removed due to pr#184041
+      haskell-language-server
       bun
       bunyan-rs
       diesel-cli

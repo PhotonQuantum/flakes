@@ -68,7 +68,6 @@ _:
     "apache-directory-studio"
     "backuploupe"
     # "bartender" // managed by setapp
-    "charles"
     "cheatsheet"
     "clashx-pro"
     "deepl"
@@ -94,7 +93,6 @@ _:
     "mactex"
     "malus"
     "mathpix-snipping-tool"
-    "mattermost"
     "monitorcontrol"
     "nightowl"
     "notion"

@@ -38,6 +38,7 @@
     let
       cargoPackages = with pkgs; [
         # cargo-about # fixing
+        bacon
         cargo-audit
         cargo-bloat
         cargo-cache
@@ -48,27 +49,29 @@
         cargo-modules
         cargo-msrv
         cargo-nextest
+        cargo-outdated
         cargo-readme
         cargo-sort
         cargo-udeps
         cargo-update
         cargo-wipe
-        cargo-outdated
-        bacon
       ];
 
       gitPackages = with pkgs; [
-        git-machete
-        git-crypt
+        delta
         git-absorb
         git-branchless
+        git-crypt
         git-filter-repo
-        delta
+        git-machete
       ];
 
       migratedPackages = with pkgs; [
-        asciinema
+        # miniserve
+        # mongodb
+        # ncdu  # TODO temporary comment out due to llvm 15
         # pkg-config
+        asciinema
         atool
         autoconf
         automake
@@ -76,6 +79,7 @@
         borgbackup
         calc
         ffmpeg
+        flyctl
         frp
         gawk
         go
@@ -83,34 +87,30 @@
         hugo
         hyperfine
         imagemagick
-        (python3.withPackages (p: with p; [
-          ipython
-          pip
-          pygments
-        ]))
-        mongosh
         just
         mdbook
-        # miniserve
+        mongosh
         mtr
         navi
-        # ncdu  # TODO temporary comment out due to llvm 15
+        neofetch
+        ngrok
         ninja
         nodejs
-        neofetch
-        # mongodb
         ocamlPackages.zarith
         opencv
         openjdk
         openssl_3
         p7zip
         pandoc
-        flyctl
         topgrade
         wget
         yarn
         yasm
-        ngrok
+        (python3.withPackages (p: with p; [
+          ipython
+          pip
+          pygments
+        ]))
       ];
       wasmPackages = with pkgs; [
         binaryen
@@ -119,9 +119,9 @@
       ];
       nixPackages = with pkgs; [
         # rnix-lsp
-        nil
-        colmena
         cachix
+        colmena
+        nil
         nix-output-monitor
         nix-tree
         nixfmt
@@ -129,31 +129,31 @@
       ];
     in
     with pkgs; [
+      # ghc   # maybe we should manage haskell stuff by ghcup?
+      # haskell-language-server   # TODO removed due to pr#184041
+      bun
       bunyan-rs
-      lazydocker
       diesel-cli
-      typos
+      dotnet-sdk
       dua
       fd
-      smartmontools
-      gnupg
-      pinentry_mac
-      bun
       gmp
-      ripgrep
-      universal-ctags
-      # haskell-language-server   # TODO removed due to pr#184041
-      # ghc   # maybe we should manage haskell stuff by ghcup?
-      dotnet-sdk
-      scala
-      sbt
-      yubikey-manager
-      nasm
+      gnupg
       gpg-tui
-      vimv
-      xcaddy
+      lazydocker
+      nasm
+      pinentry_mac
+      ripgrep
+      sbt
+      scala
+      smartmontools
+      typos
       typst
       typstyle
+      universal-ctags
+      vimv
+      xcaddy
+      yubikey-manager
     ] ++ cargoPackages ++ gitPackages ++ migratedPackages ++ wasmPackages ++ nixPackages;
 
   fonts = {

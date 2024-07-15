@@ -69,62 +69,68 @@
       colorschemes.onedark.enable = true;
       plugins = {
         nix.enable = true;
-        trouble.enable = true;
+        auto-save.enable = true;
+        auto-session.enable = true;
+        dressing.enable = true;
+        gitsigns.enable = true;
+        wakatime.enable = true;
+        which-key.enable = true;
         treesitter = {
           enable = true;
-          indent = true;
-          ensureInstalled = [ ];
-          # nixGrammars = false;
-          parserInstallDir = "/Users/lightquantum/.config/nvim/ts";
-          incrementalSelection = {
-            enable = true;
-            keymaps = {
-              initSelection = "¬";
-              nodeDecremental = "˙";
-              nodeIncremental = "¬";
+          settings = {
+            indent.enable = true;
+            ensure_installed = [ ];
+            parser_install_dir = "/Users/lightquantum/.config/nvim/ts";
+            incremental_selection = {
+              enable = true;
+              keymaps = {
+                init_selection = "¬";
+                node_decremental = "˙";
+                node_incremental = "¬";
+              };
             };
           };
         };
-        # nvim-cmp = {
-        #   enable = true;
-        #   completion = {
-        #     completeopt = "menu,menuone,noselect";
-        #     keywordLength = 2;
-        #   };
-        #   snippet.expand = {
-        #     __raw = ''
-        #       function(args)
-        #         require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
-        #       end
-        #     '';
-        #   };
-        #   mapping = {
-        #     "<CR>" = "cmp.mapping.confirm({ select = true })";
-        #     "<Tab>" = ''cmp.mapping(function(fallback)
-        #         -- This little snippet will confirm with tab, and if no entry is selected, will confirm the first item
-        #         if (cmp.visible() and vim.b._copilot.suggestions == nil) then
-        #           local entry = cmp.get_selected_entry()
-        #           if not entry then
-        #             cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
-        #           else
-        #             cmp.confirm()
-        #           end
-        #         else
-        #           fallback()
-        #         end
-        #       end, {"i","s",}) '';
-        #     "<Up>" = "cmp.mapping.select_prev_item()";
-        #     "<Down>" = "cmp.mapping.select_next_item()";
-        #   };
-        #   sources = [
-        #     { name = "nvim_lsp"; }
-        #     { name = "nvim_lsp_document_symbol"; }
-        #     { name = "nvim_lsp_signature_help"; }
-        #     { name = "buffer"; }
-        #     { name = "path"; }
-        #     { name = "luasnip"; }
-        #   ];
-        # };
+        cmp = {
+          enable = true;
+          settings = {
+            completion = {
+              completeopt = "menu,menuone,noselect";
+              keyword_length = 2;
+            };
+            snippet.expand = ''
+                function(args)
+                  require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+                end
+            '';
+            mapping = {
+              "<CR>" = "cmp.mapping.confirm({ select = true })";
+              "<Tab>" = ''cmp.mapping(function(fallback)
+                  -- This little snippet will confirm with tab, and if no entry is selected, will confirm the first item
+                  if (cmp.visible() and vim.b._copilot.suggestions == nil) then
+                    local entry = cmp.get_selected_entry()
+                    if not entry then
+                      cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+                    else
+                      cmp.confirm()
+                    end
+                  else
+                    fallback()
+                  end
+                end, {"i","s",}) '';
+              "<Up>" = "cmp.mapping.select_prev_item()";
+              "<Down>" = "cmp.mapping.select_next_item()";
+            };
+            sources = [
+              { name = "nvim_lsp"; }
+              { name = "nvim_lsp_document_symbol"; }
+              { name = "nvim_lsp_signature_help"; }
+              { name = "buffer"; }
+              { name = "path"; }
+              { name = "luasnip"; }
+            ];
+          };
+        };
         copilot-vim = {
           enable = true;
           settings = {
@@ -138,8 +144,8 @@
           enable = true;
           extensions = {
             frecency.enable = true;
+            file-browser.enable = true;
           };
-          enabledExtensions = [ "file_browser" ];
         };
         lualine = {
           enable = true;
@@ -169,20 +175,14 @@
         nvim-tree.enable = true;
       };
       extraPlugins = with pkgs.vimPlugins; [
-        quick-scope
-        vim-suda
-        vim-startuptime
-        telescope-file-browser-nvim
-        auto-session
-        auto-save-nvim
         # rust-tools-nvim
-        gitsigns-nvim
-        dressing-nvim
-        lualine-lsp-progress
-        toggleterm-nvim
-        luasnip
-        which-key-nvim
         impatient-nvim
+        lualine-lsp-progress
+        luasnip
+        quick-scope
+        toggleterm-nvim
+        vim-startuptime
+        vim-suda
       ];
       globals = {
         mapleader = " ";

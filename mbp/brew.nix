@@ -8,66 +8,50 @@ _:
     cleanup = "uninstall";
   };
   homebrew.taps = [
-    "homebrew/cask"
-    "homebrew/cask-fonts"
+    "borgbackup/tap"
     "homebrew/cask-drivers"
-    "homebrew/services"
-    "mongodb/brew"
-    "photonquantum/tap"
+    "homebrew/cask-fonts"
     "homebrew/cask-versions"
+    "homebrew/cask"
+    "homebrew/services"
     "messense/macos-cross-toolchains"
     "minio/stable"
-    "borgbackup/tap"
+    "mongodb/brew"
+    "photonquantum/tap"
   ];
   homebrew.brews = [
     "autoconf"
     "borgbackup-fuse"
     "cmake"
     "dlib"
+    "ffmpegthumbnailer"
     "jdupes"
     "libpng"
+    "messense/macos-cross-toolchains/x86_64-unknown-linux-musl"
     "minio"
     "miniserve"
+    "mongodb-community"
+    "mongodb-database-tools"
+    "mysql"
+    "pdm"
+    "pg_cron"
     "pipenv"
     "pipx"
-    "pdm"
     "pnpm"
+    "postgresql"
+    "rabbitmq"
+    "redis"
     "sqlx-cli"
     "terminal-notifier"
     "textidote"
-    "ffmpegthumbnailer"
-    "messense/macos-cross-toolchains/x86_64-unknown-linux-musl"
-    "mongodb-database-tools"
-    {
-      name = "rabbitmq";
-      # restart_service = "changed";
-    }
-    {
-      name = "mongodb-community";
-      # restart_service = "changed";
-    }
-    {
-      name = "redis";
-      # restart_service = "changed";
-    }
-    {
-      name = "mysql";
-      # restart_service = "changed";
-    }
-    {
-      name = "postgresql";
-      # restart_service = "changed";
-    }
-    "pg_cron"
   ];
   homebrew.casks = [
-    "1password"
     "1password-cli"
+    "1password"
     "adguard"
     "adobe-acrobat-reader"
     "apache-directory-studio"
     "backuploupe"
-    # "bartender" // managed by setapp
     "cheatsheet"
     "clashx-pro"
     "deepl"
@@ -114,15 +98,16 @@ _:
     "steam"
     "syntax-highlight"
     "tencent-meeting"
-    "voov-meeting"
     "tg-pro"
     "thunder"
     "typora"
     "visual-studio-code"
     "vlc"
+    "voov-meeting"
     "vorta"
     "warp"
     "zoom"
     "zotero"
+    # "bartender" // managed by setapp
   ];
 }

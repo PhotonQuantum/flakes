@@ -36,8 +36,10 @@ in
       "$HOME/Library/pnpm"
     ];
     wallpapers = [
-      ../wallpaper/exodus.heic
-      ../wallpaper/landscape.heic
+      ../wallpaper/celeste.png
+      ../wallpaper/celeste.png
+      # ../wallpaper/exodus.heic
+      # ../wallpaper/landscape.heic
     ];
     defaultShell = pkgs.fish;
     disableMacPowerButton = true;

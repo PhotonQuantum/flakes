@@ -98,14 +98,19 @@
           modules = meow-modules;
         };
       };
-      darwinConfigurations = {
-        lightquantum-mbp = darwin.lib.darwinSystem {
-          inputs = { inherit darwin nixpkgs home-manager; };
-          system = "aarch64-darwin";
-          modules = mbp-modules;
-          specialArgs = { inherit inputs; };
-        };
-      };
+      darwinConfigurations =
+        let
+          conf = darwin.lib.darwinSystem {
+            inputs = { inherit darwin nixpkgs home-manager; };
+            system = "aarch64-darwin";
+            modules = mbp-modules;
+            specialArgs = { inherit inputs; };
+          };
+        in
+        {
+          lightquantum-mbp = conf;
+        } //
+        builtins.listToAttrs (builtins.map (n: { name = "lightquantum-mbp-${toString n}"; value = conf; }) (builtins.genList (x: x + 1) 8));
 
       colmena = {
         meta = {

@@ -60,7 +60,11 @@
       gitPackages = with pkgs; [
         delta
         git-absorb
-        git-branchless
+        (git-branchless.overrideAttrs
+          (old: {
+            doCheck = false;
+            doInstallCheck = false;
+          }))
         git-crypt
         git-filter-repo
         git-machete
@@ -172,7 +176,7 @@
     trusted-users = [ "lightquantum" ]; # Allow me to interact with the daemon without sudo
     experimental-features = [ "nix-command" "flakes" ]; # Enable flakes support
   };
-  nix.registry.nixpkgs.flake = inputs.nixpkgs;
+  # nix.registry.nixpkgs.flake = inputs.nixpkgs;
   nix.buildMachines = [
     {
       hostName = "meow";
@@ -196,4 +200,6 @@
   services = {
     nix-daemon.enable = true;
   };
+
+  system.stateVersion = 5;
 }

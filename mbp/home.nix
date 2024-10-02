@@ -344,6 +344,8 @@ in
         set -x INFOPATH "/opt/homebrew/share/info" $INFOPATH
         fish_add_path --prepend --global ~/.cargo/bin
         fish_add_path --prepend --global ~/.nargo/bin
+        fish_add_path --prepend --global ~/.ghcup/bin
+        fish_add_path --prepend --global ~/.elan/bin
         set fish_escape_delay_ms 300
         builtin functions -e fish_mode_prompt
         eval (${pkgs.starship}/bin/starship init fish)

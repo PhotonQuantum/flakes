@@ -147,6 +147,7 @@
       sbt
       scala
       smartmontools
+      tex-fmt
       typos
       typst
       typstyle

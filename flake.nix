@@ -25,15 +25,24 @@
       inputs.stable.follows = "nixpkgs";
     };
     yazi.url = "github:sxyazi/yazi";
+    tex-fmt = {
+      url = "github:WGUNDERWOOD/tex-fmt";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nur, darwin, nixpkgs, home-manager, nixvim, yazi, ... }@inputs:
+  outputs = { self, nur, darwin, nixpkgs, home-manager, nixvim, yazi, tex-fmt, ... }@inputs:
     let
       generated-overlay = {
         nixpkgs.overlays = [
           (final: prev: {
             generated = (import ./_sources/generated.nix) { inherit (final) fetchurl fetchgit fetchFromGitHub dockerTools; };
           })
+        ];
+      };
+      tex-fmt-overlay = {
+        nixpkgs.overlays = [
+          tex-fmt.overlays.default
         ];
       };
       hm-config = system: userPathMap:
@@ -67,6 +76,7 @@
       ];
       mbp-modules = [
         generated-overlay
+        tex-fmt-overlay
         nur.nixosModules.nur
         ./mbp/configuration.nix
         home-manager.darwinModules.home-manager

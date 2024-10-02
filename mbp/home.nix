@@ -1,4 +1,4 @@
-{ pkgs, lib, system, osConfig, yazi, ... }:
+{ pkgs, lib, system, osConfig, yazi, pyproject-nix, ... }:
 
 let
   recursiveMerge = with lib; attrList:
@@ -44,6 +44,8 @@ in
     defaultShell = pkgs.fish;
     disableMacPowerButton = true;
   };
+  
+  home.Xcompose = import ./Xcompose.nix;
 
   home.file.".cargo/config.toml".source = with pkgs; let
     format = pkgs.formats.toml { };

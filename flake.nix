@@ -29,9 +29,13 @@
       url = "github:WGUNDERWOOD/tex-fmt";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    pyproject-nix = {
+      url = "github:nix-community/pyproject.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nur, darwin, nixpkgs, home-manager, nixvim, yazi, tex-fmt, ... }@inputs:
+  outputs = { self, nur, darwin, nixpkgs, home-manager, nixvim, yazi, tex-fmt, pyproject-nix, ... }@inputs:
     let
       generated-overlay = {
         nixpkgs.overlays = [
@@ -53,6 +57,7 @@
           hm-modules = [
             nixvim.homeManagerModules.nixvim
             ./modules/power_mac.nix
+            ./modules/Xcompose_mac.nix
             nur-modules.repos.lightquantum.modules.chsh
             nur-modules.repos.lightquantum.modules.wallpaper
           ];
@@ -64,7 +69,7 @@
             useUserPackages = true;
             users = users;
             sharedModules = hm-modules;
-            extraSpecialArgs = { inherit system nixvim yazi; };
+            extraSpecialArgs = { inherit system nixvim yazi pyproject-nix; };
           };
         };
       meow-modules = [

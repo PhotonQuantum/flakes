@@ -256,7 +256,7 @@ in
     };
     gh.enable = true;
     skim.enable = true;
-    opam.enable = true;
+    # opam.enable = true;
     nix-index = {
       enable = true;
       enableFishIntegration = false;

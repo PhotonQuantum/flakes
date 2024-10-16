@@ -30,6 +30,7 @@ _:
     "libpng"
     "messense/macos-cross-toolchains/x86_64-unknown-linux-musl"
     "miniserve"
+    "opam"
     "pdm"
     "pg_cron"
     "pipenv"

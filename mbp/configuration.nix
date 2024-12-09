@@ -159,12 +159,14 @@
       vimv
       xcaddy
       yubikey-manager
+      minisat
     ] ++ cargoPackages ++ gitPackages ++ migratedPackages ++ wasmPackages ++ nixPackages;
 
   fonts = {
     packages = with pkgs; [
       jetbrains-mono
       sarasa-gothic
+      ibm-plex
     ];
   };
 

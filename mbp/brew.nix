@@ -80,7 +80,6 @@ _:
     "obs"
     "openinterminal"
     "orbstack"
-    "paw"
     "phoenix"
     "postman"
     "qlmarkdown"
@@ -89,7 +88,6 @@ _:
     "raycast"
     "rectangle"
     "setapp"
-    "shottr"
     "slidepilot"
     "squirrel"
     "steam"
@@ -104,6 +102,7 @@ _:
     "vorta"
     "zoom"
     "zotero"
+    "zulip"
     # "bartender" // managed by setapp
   ];
 }

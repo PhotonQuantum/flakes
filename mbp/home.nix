@@ -353,6 +353,7 @@ in
         set fish_escape_delay_ms 300
         builtin functions -e fish_mode_prompt
         eval (${pkgs.starship}/bin/starship init fish)
+        test -r ~/.opam/opam-init/init.fish && source ~/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
       '' + builtins.readFile ./wezterm.fish;
       loginShellInit =
         let

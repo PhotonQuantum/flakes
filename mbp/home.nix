@@ -214,6 +214,8 @@ in
         }
 
         config.enable_kitty_keyboard = true
+
+        config.front_end = "WebGpu"
         
         return config
       '';

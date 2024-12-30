@@ -1,17 +1,29 @@
-{ pkgs, lib, system, osConfig, yazi, pyproject-nix, ... }:
+{
+  pkgs,
+  lib,
+  system,
+  osConfig,
+  yazi,
+  ...
+}:
 
 let
-  recursiveMerge = with lib; attrList:
+  recursiveMerge =
+    with lib;
+    attrList:
     let
-      f = attrPath:
-        zipAttrsWith (n: values:
-          if tail values == [ ]
-          then head values
-          else if all isList values
-          then unique (concatLists values)
-          else if all isAttrs values
-          then f (attrPath ++ [ n ]) values
-          else last values
+      f =
+        attrPath:
+        zipAttrsWith (
+          n: values:
+          if tail values == [ ] then
+            head values
+          else if all isList values then
+            unique (concatLists values)
+          else if all isAttrs values then
+            f (attrPath ++ [ n ]) values
+          else
+            last values
         );
     in
     f [ ] attrList;
@@ -44,37 +56,40 @@ in
     defaultShell = pkgs.fish;
     disableMacPowerButton = true;
   };
-  
+
   home.Xcompose = import ./Xcompose.nix;
 
-  home.file.".cargo/config.toml".source = with pkgs; let
-    format = pkgs.formats.toml { };
-  in
-  (
-    format.generate "config" {
+  home.file.".cargo/config.toml".source =
+    with pkgs;
+    let
+      format = pkgs.formats.toml { };
+    in
+    (format.generate "config" {
       build.rustc-wrapper = "${sccache}/bin/sccache";
-      target.x86_64-apple-darwin.rustflags = [ "-C" "link-arg=-fuse-ld=${zld}/bin/zld" ];
-      target.aarch64-apple-darwin.rustflags = [ "-C" "link-arg=-fuse-ld=${zld}/bin/zld" ];
-    }
-  );
+      target.x86_64-apple-darwin.rustflags = [
+        "-C"
+        "link-arg=-fuse-ld=${zld}/bin/zld"
+      ];
+      target.aarch64-apple-darwin.rustflags = [
+        "-C"
+        "link-arg=-fuse-ld=${zld}/bin/zld"
+      ];
+    });
 
   home.file.".phoenix.js".source = ./phoenix.js;
   home.file."Library/Application Support/Google/Chrome/NativeMessagingHosts/gpgmejson.json".source =
     let
       format = pkgs.formats.json { };
     in
-    (
-      format.generate "config" {
-        name = "gpgmejson";
-        description = "JavaScript binding for GnuPG";
-        path = "${pkgs.gpgme.dev}/bin/gpgme-json";
-        type = "stdio";
-        allowed_origins = [
-          "chrome-extension://kajibbejlbohfaggdiogboambcijhkke/"
-        ];
-      }
-    );
-
+    (format.generate "config" {
+      name = "gpgmejson";
+      description = "JavaScript binding for GnuPG";
+      path = "${pkgs.gpgme.dev}/bin/gpgme-json";
+      type = "stdio";
+      allowed_origins = [
+        "chrome-extension://kajibbejlbohfaggdiogboambcijhkke/"
+      ];
+    });
 
   programs = {
     ssh.enable = true;
@@ -90,16 +105,15 @@ in
       enableAliases = true;
     };
     htop.enable = true;
-    lf = with pkgs;
-      {
-        enable = true;
-        previewer.source = lib.getExe' pistol "pistol";
-        settings = {
-          hidden = true;
-          incsearch = true;
-          smartcase = true;
-        };
+    lf = with pkgs; {
+      enable = true;
+      previewer.source = lib.getExe' pistol "pistol";
+      settings = {
+        hidden = true;
+        incsearch = true;
+        smartcase = true;
       };
+    };
     yazi = {
       enable = true;
       enableFishIntegration = true;
@@ -108,25 +122,54 @@ in
         let
           preset = builtins.fromTOML (builtins.readFile ./yazi/keymap_preset.toml);
           user = {
-            manager.keymap =
-              [
-                { on = [ "<C-c>" ]; exec = "escape"; desc = "Exit visual mode, clear selected, or cancel search"; }
-              ];
+            manager.keymap = [
+              {
+                on = [ "<C-c>" ];
+                exec = "escape";
+                desc = "Exit visual mode, clear selected, or cancel search";
+              }
+            ];
             input.keymap = [
-              { on = [ "<C-c>" ]; exec = "close"; desc = "Cancel input"; }
-              { on = [ "<S-Enter>" ]; exec = "escape"; desc = "Go back the normal mode, or cancel input"; }
-              { on = [ "H" ]; exec = "move -999"; desc = "Move to the BOL"; }
-              { on = [ "L" ]; exec = "move 999"; desc = "Move to the EOL"; }
+              {
+                on = [ "<C-c>" ];
+                exec = "close";
+                desc = "Cancel input";
+              }
+              {
+                on = [ "<S-Enter>" ];
+                exec = "escape";
+                desc = "Go back the normal mode, or cancel input";
+              }
+              {
+                on = [ "H" ];
+                exec = "move -999";
+                desc = "Move to the BOL";
+              }
+              {
+                on = [ "L" ];
+                exec = "move 999";
+                desc = "Move to the EOL";
+              }
             ];
           };
         in
-        recursiveMerge [ preset user ];
+        recursiveMerge [
+          preset
+          user
+        ];
       settings = {
         manager = {
-          layout = [ 1 3 4 ];
+          layout = [
+            1
+            3
+            4
+          ];
         };
         opener.archive = [
-          { exec = "aunpack \"$1\""; desc = "Extract here"; }
+          {
+            exec = "aunpack \"$1\"";
+            desc = "Extract here";
+          }
         ];
       };
       theme = {
@@ -137,13 +180,21 @@ in
     };
     pistol = {
       enable = true;
-      associations = with pkgs; let
-        batViewer = "${lib.getExe bat} --style=plain --paging=never --color=always %pistol-filename%";
-      in
-      [
-        { mime = "text/*"; command = batViewer; }
-        { mime = "application/json"; command = batViewer; }
-      ];
+      associations =
+        with pkgs;
+        let
+          batViewer = "${lib.getExe bat} --style=plain --paging=never --color=always %pistol-filename%";
+        in
+        [
+          {
+            mime = "text/*";
+            command = batViewer;
+          }
+          {
+            mime = "application/json";
+            command = batViewer;
+          }
+        ];
     };
     wezterm = {
       enable = true;
@@ -216,25 +267,26 @@ in
         config.enable_kitty_keyboard = true
 
         config.front_end = "WebGpu"
-        
+
         return config
       '';
     };
     kitty = {
       # enable = true;
-      package = pkgs.kitty.overrideAttrs
-        (old: {
-          doCheck = false;
-          doInstallCheck = false;
-        });
+      package = pkgs.kitty.overrideAttrs (old: {
+        doCheck = false;
+        doInstallCheck = false;
+      });
       keybindings =
         let
-          tabKeyBindings = with builtins; listToAttrs (builtins.map
-            (idx: {
-              name = "cmd+${toString idx}";
-              value = "goto_tab ${toString idx}";
-            })
-            (genList (x: x + 1) 9));
+          tabKeyBindings =
+            with builtins;
+            listToAttrs (
+              builtins.map (idx: {
+                name = "cmd+${toString idx}";
+                value = "goto_tab ${toString idx}";
+              }) (genList (x: x + 1) 9)
+            );
         in
         pkgs.lib.mergeAttrs tabKeyBindings {
           "cmd+shift+l" = "send_text application ;z";
@@ -278,7 +330,14 @@ in
       package = pkgs.topgrade;
       settings = {
         assume_yes = true;
-        disable = [ "brew_cask" "brew_formula" "mas" "nix" "shell" "node" ];
+        disable = [
+          "brew_cask"
+          "brew_formula"
+          "mas"
+          "nix"
+          "shell"
+          "node"
+        ];
       };
     };
     direnv = {
@@ -343,18 +402,20 @@ in
           '';
         };
       };
-      shellInit = ''
-        set -x MANPATH "/opt/homebrew/share/man" $MANPATH
-        set -x INFOPATH "/opt/homebrew/share/info" $INFOPATH
-        fish_add_path --prepend --global ~/.cargo/bin
-        fish_add_path --prepend --global ~/.nargo/bin
-        fish_add_path --prepend --global ~/.ghcup/bin
-        fish_add_path --prepend --global ~/.elan/bin
-        set fish_escape_delay_ms 300
-        builtin functions -e fish_mode_prompt
-        eval (${pkgs.starship}/bin/starship init fish)
-        test -r ~/.opam/opam-init/init.fish && source ~/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
-      '' + builtins.readFile ./wezterm.fish;
+      shellInit =
+        ''
+          set -x MANPATH "/opt/homebrew/share/man" $MANPATH
+          set -x INFOPATH "/opt/homebrew/share/info" $INFOPATH
+          fish_add_path --prepend --global ~/.cargo/bin
+          fish_add_path --prepend --global ~/.nargo/bin
+          fish_add_path --prepend --global ~/.ghcup/bin
+          fish_add_path --prepend --global ~/.elan/bin
+          set fish_escape_delay_ms 300
+          builtin functions -e fish_mode_prompt
+          eval (${pkgs.starship}/bin/starship init fish)
+          test -r ~/.opam/opam-init/init.fish && source ~/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
+        ''
+        + builtins.readFile ./wezterm.fish;
       loginShellInit =
         let
           # This naive quoting is good enough in this case. There shouldn't be any
@@ -365,7 +426,9 @@ in
           makeBinPathList = map (path: path + "/bin");
         in
         ''
-          fish_add_path --move --prepend --path ${lib.concatMapStringsSep " " dquote (makeBinPathList osConfig.environment.profiles)}
+          fish_add_path --move --prepend --path ${
+            lib.concatMapStringsSep " " dquote (makeBinPathList osConfig.environment.profiles)
+          }
           set fish_user_paths $fish_user_paths
         '';
       plugins = [
@@ -519,10 +582,21 @@ in
       enableFishIntegration = false; # Fish integration is handled by `fish` module
       settings =
         let
-          presets = with builtins;
-            map (compose [ fromTOML readFile (s: ./starship + "/${s}") ])
-              (compose [ attrNames (lib.filterAttrs (_: kind: kind == "regular")) readDir ]
-                (./starship));
+          presets =
+            with builtins;
+            map
+              (compose [
+                fromTOML
+                readFile
+                (s: ./starship + "/${s}")
+              ])
+              (
+                compose [
+                  attrNames
+                  (lib.filterAttrs (_: kind: kind == "regular"))
+                  readDir
+                ] (./starship)
+              );
         in
         {
           git_status = {
@@ -536,12 +610,20 @@ in
             untracked = "";
             ignore_submodules = true;
           };
-          ocaml.detect_files = [ "dune" "dune-project" "jbuild" "jbuild-ignore" ".merlin" "_CoqProject" ];
+          ocaml.detect_files = [
+            "dune"
+            "dune-project"
+            "jbuild"
+            "jbuild-ignore"
+            ".merlin"
+            "_CoqProject"
+          ];
           character = {
             success_symbol = "[⊢](bold green) ";
             error_symbol = "[⊢](bold red) ";
           };
-        } // recursiveMerge presets;
+        }
+        // recursiveMerge presets;
     };
     lazygit = {
       enable = true;

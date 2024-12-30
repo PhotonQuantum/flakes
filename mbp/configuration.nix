@@ -1,4 +1,4 @@
-{ system, config, inputs, pkgs, ... }:
+{ pkgs, ... }:
 
 {
   imports = [
@@ -60,11 +60,10 @@
       gitPackages = with pkgs; [
         delta
         git-absorb
-        (git-branchless.overrideAttrs
-          (old: {
-            doCheck = false;
-            doInstallCheck = false;
-          }))
+        (git-branchless.overrideAttrs (old: {
+          doCheck = false;
+          doInstallCheck = false;
+        }))
         git-crypt
         git-filter-repo
         git-machete
@@ -110,11 +109,13 @@
         wget
         yarn
         yasm
-        (python3.withPackages (p: with p; [
-          ipython
-          pip
-          pygments
-        ]))
+        (python3.withPackages (
+          p: with p; [
+            ipython
+            pip
+            pygments
+          ]
+        ))
       ];
       wasmPackages = with pkgs; [
         binaryen
@@ -128,11 +129,12 @@
         nil
         nix-output-monitor
         nix-tree
-        nixfmt
+        nixfmt-rfc-style
         nixpkgs-fmt
       ];
     in
-    with pkgs; [
+    with pkgs;
+    [
       # ghc   # maybe we should manage haskell stuff by ghcup?
       haskell-language-server
       bun
@@ -160,7 +162,12 @@
       xcaddy
       yubikey-manager
       minisat
-    ] ++ cargoPackages ++ gitPackages ++ migratedPackages ++ wasmPackages ++ nixPackages;
+    ]
+    ++ cargoPackages
+    ++ gitPackages
+    ++ migratedPackages
+    ++ wasmPackages
+    ++ nixPackages;
 
   fonts = {
     packages = with pkgs; [
@@ -176,7 +183,10 @@
   nix.gc.automatic = true;
   nix.settings = {
     trusted-users = [ "lightquantum" ]; # Allow me to interact with the daemon without sudo
-    experimental-features = [ "nix-command" "flakes" ]; # Enable flakes support
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ]; # Enable flakes support
   };
   # nix.registry.nixpkgs.flake = inputs.nixpkgs;
   nix.buildMachines = [
@@ -184,7 +194,12 @@
       hostName = "meow";
       system = "x86_64-linux";
       maxJobs = 1;
-      supportedFeatures = [ "benchmark" "big-parallel" "kvm" "nixos-test" ];
+      supportedFeatures = [
+        "benchmark"
+        "big-parallel"
+        "kvm"
+        "nixos-test"
+      ];
     }
   ];
   nix.distributedBuilds = true;

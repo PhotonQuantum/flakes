@@ -35,12 +35,31 @@
     };
   };
 
-  outputs = { self, nur, darwin, nixpkgs, home-manager, nixvim, yazi, tex-fmt, pyproject-nix, ... }@inputs:
+  outputs =
+    {
+      self,
+      nur,
+      darwin,
+      nixpkgs,
+      home-manager,
+      nixvim,
+      yazi,
+      tex-fmt,
+      pyproject-nix,
+      ...
+    }@inputs:
     let
       generated-overlay = {
         nixpkgs.overlays = [
           (final: prev: {
-            generated = (import ./_sources/generated.nix) { inherit (final) fetchurl fetchgit fetchFromGitHub dockerTools; };
+            generated = (import ./_sources/generated.nix) {
+              inherit (final)
+                fetchurl
+                fetchgit
+                fetchFromGitHub
+                dockerTools
+                ;
+            };
           })
         ];
       };
@@ -49,7 +68,8 @@
           tex-fmt.overlays.default
         ];
       };
-      hm-config = system: userPathMap:
+      hm-config =
+        system: userPathMap:
         let
           nur-modules = import nur {
             nurpkgs = nixpkgs.legacyPackages.${system};
@@ -69,7 +89,14 @@
             useUserPackages = true;
             users = users;
             sharedModules = hm-modules;
-            extraSpecialArgs = { inherit system nixvim yazi pyproject-nix; };
+            extraSpecialArgs = {
+              inherit
+                system
+                nixvim
+                yazi
+                pyproject-nix
+                ;
+            };
           };
         };
       meow-modules = [
@@ -109,8 +136,13 @@
         in
         {
           lightquantum-mbp = conf;
-        } //
-        builtins.listToAttrs (builtins.map (n: { name = "lightquantum-mbp-${toString n}"; value = conf; }) (builtins.genList (x: x + 1) 8));
+        }
+        // builtins.listToAttrs (
+          builtins.map (n: {
+            name = "lightquantum-mbp-${toString n}";
+            value = conf;
+          }) (builtins.genList (x: x + 1) 8)
+        );
 
       colmena = {
         meta = {

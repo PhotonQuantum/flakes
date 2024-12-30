@@ -1,5 +1,4 @@
-_:
-{
+_: {
   homebrew.enable = true;
   homebrew.global.autoUpdate = true;
   homebrew.onActivation = {

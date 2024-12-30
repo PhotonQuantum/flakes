@@ -16,6 +16,6 @@ in
       attrs = project.renderers.buildPythonPackage { inherit python; };
     in
     # Pass attributes to buildPythonPackage.
-      # Here is a good spot to add on any missing or custom attributes.
+    # Here is a good spot to add on any missing or custom attributes.
     python.pkgs.buildPythonPackage (attrs);
 }

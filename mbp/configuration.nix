@@ -9,7 +9,7 @@
 
   users.users.lightquantum = {
     home = "/Users/lightquantum";
-    shell = [ pkgs.fish ];
+    shell = pkgs.fish;
   };
   users.users.root = {
     home = "/var/root";

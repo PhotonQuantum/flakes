@@ -2,7 +2,7 @@
   description = "LightQuantum's Nix Flakes";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nur.url = "github:nix-community/NUR";
     darwin = {
       # Manage darwin systems
@@ -108,7 +108,6 @@
       mbp-modules = [
         generated-overlay
         tex-fmt-overlay
-        nur.nixosModules.nur
         ./mbp/configuration.nix
         home-manager.darwinModules.home-manager
         (hm-config "aarch64-darwin" {

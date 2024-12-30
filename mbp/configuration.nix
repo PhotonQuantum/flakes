@@ -188,7 +188,6 @@
       "flakes"
     ]; # Enable flakes support
   };
-  # nix.registry.nixpkgs.flake = inputs.nixpkgs;
   nix.buildMachines = [
     {
       hostName = "meow";

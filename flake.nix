@@ -47,7 +47,7 @@
       tex-fmt,
       pyproject-nix,
       ...
-    }@inputs:
+    }:
     let
       generated-overlay = {
         nixpkgs.overlays = [
@@ -128,10 +128,8 @@
       darwinConfigurations =
         let
           conf = darwin.lib.darwinSystem {
-            inputs = { inherit darwin nixpkgs home-manager; };
             system = "aarch64-darwin";
             modules = mbp-modules;
-            specialArgs = { inherit inputs; };
           };
         in
         {

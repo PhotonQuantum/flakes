@@ -37,7 +37,6 @@
 
   outputs =
     {
-      self,
       nur,
       darwin,
       nixpkgs,

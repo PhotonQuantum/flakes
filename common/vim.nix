@@ -167,7 +167,7 @@
         servers = {
           eslint.enable = true;
           pyright.enable = true;
-          nil_ls.enable = true;
+          nixd.enable = true;
           # rnix-lsp.enable = true;
           # rust-analyzer.enable = true;
         };

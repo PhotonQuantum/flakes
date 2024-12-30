@@ -126,6 +126,7 @@
         # rnix-lsp
         cachix
         colmena
+        nixd
         nil
         nix-output-monitor
         nix-tree

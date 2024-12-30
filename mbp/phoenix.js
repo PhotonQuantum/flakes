@@ -7,7 +7,7 @@ const topHalf = {
 guakeApp({
   key: "return",
   modifiers: ["cmd"],
-  appName: "WezTerm",
+  appName: "Ghostty",
   position: topHalf,
   followsMouse: true,
   hideOnBlur: false,

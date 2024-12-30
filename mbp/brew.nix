@@ -58,6 +58,7 @@ _:
     "dropbox"
     "font-iosevka-nerd-font"
     "github"
+    "ghostty"
     "grammarly-desktop"
     "handbrake"
     "iina"

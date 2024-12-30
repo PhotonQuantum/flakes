@@ -184,6 +184,7 @@
   nix.gc.automatic = true;
   nix.settings = {
     trusted-users = [ "lightquantum" ]; # Allow me to interact with the daemon without sudo
+    download-buffer-size = 134217728;
     experimental-features = [
       "nix-command"
       "flakes"

@@ -6,7 +6,7 @@ with lib;
   options = {
     home.Xcompose = mkOption
       {
-        type = with types; nullOr (attrsOf string);
+        type = with types; nullOr (attrsOf str);
         default = null;
       };
   };

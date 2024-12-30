@@ -10,7 +10,7 @@
         relativenumber = true;
         clipboard = "unnamedplus";
         undofile = true;
-        undodir = config.nixvim.helpers.mkRaw ''vim.fn.stdpath("data") .. "/undo"'';
+        undodir = config.lib.nixvim.mkRaw ''vim.fn.stdpath("data") .. "/undo"'';
         guifont = "Jetbrains Mono:h14";
         hlsearch = true;
       };
@@ -99,9 +99,9 @@
               keyword_length = 2;
             };
             snippet.expand = ''
-                function(args)
-                  require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
-                end
+              function(args)
+                require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+              end
             '';
             mapping = {
               "<CR>" = "cmp.mapping.confirm({ select = true })";
@@ -149,16 +149,16 @@
         };
         lualine = {
           enable = true;
-          sections = {
-            lualine_c = [
-              {
-                name = "filename";
-                extraConfig = {
+          settings = {
+            sections = {
+              lualine_c = [
+                {
+                  __unkeyed = "filename";
                   path = 3;
-                };
-              }
-              "lsp_progress"
-            ];
+                }
+                "lsp_progress"
+              ];
+            };
           };
         };
         bufferline.enable = true;
@@ -167,12 +167,17 @@
           servers = {
             eslint.enable = true;
             pyright.enable = true;
-            nil-ls.enable = true;
+            nil_ls.enable = true;
             # rnix-lsp.enable = true;
             # rust-analyzer.enable = true;
           };
         };
         nvim-tree.enable = true;
+        mini = {
+          enable = true;
+          modules.icons = { };
+          mockDevIcons = true;
+        };
       };
       extraPlugins = with pkgs.vimPlugins; [
         # rust-tools-nvim

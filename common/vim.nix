@@ -13,181 +13,177 @@
       guifont = "Jetbrains Mono:h14";
       hlsearch = true;
     };
+    globals = {
+      startuptime_exe_path = "/etc/profiles/per-user/${config.home.username}/bin/nvim";
+    };
     extraConfigLua = ''
-      -- local rt = require("rust-tools")
-      require("which-key").setup { }
-
-      -- rt.setup({
-      --   server = {
-      --     on_attach = function(_, bufnr)
-      --       -- Hover actions
-      --       vim.keymap.set("n", "<C-space>", rt.hover_actions.hover_actions, { buffer = bufnr })
-      --       -- Code action groups
-      --       vim.keymap.set("n", "<Leader>a", rt.code_action_group.code_action_group, { buffer = bufnr })
-      --     end,
-      --   },
-      -- })
-      require('gitsigns').setup()
-
-      require("toggleterm").setup {
-        open_mapping = [[<C-\>]],
-        direction = "float"
-      }
-      local Terminal = require("toggleterm.terminal").Terminal
-      local lazygit = Terminal:new({
-              cmd = "lazygit",
-              direction = "float",
-              hidden = true
+      require('smear_cursor').setup({
+        legacy_computing_symbols_support = true,
       })
-
-      function _lazygit_toggle()
-        lazygit:toggle()
-      end
-
-      function _select_lf()
-        local tempfile = os.tmpname()
-        local lf = Terminal:new({
-          cmd = "lf -selection-path=" .. tempfile,
-          direction = "float",
-          hidden = true,
-          on_close = function(term)
-            local f = io.open(tempfile, "r")
-            local selection = f:read("*all")
-            f:close()
-            os.remove(tempfile)
-            vim.cmd("e " .. selection)
-          end,
-        })
-        lf:toggle()
-      end
-
-      require("auto-session").setup {
-        log_level = "error"
-      }
     '';
-    colorschemes.onedark.enable = true;
-    plugins = {
-      nix.enable = true;
-      auto-save.enable = true;
-      auto-session.enable = true;
-      dressing.enable = true;
-      gitsigns.enable = true;
-      wakatime.enable = true;
-      which-key.enable = true;
-      treesitter = {
-        enable = true;
-        settings = {
-          indent.enable = true;
-          ensure_installed = [ ];
-          parser_install_dir = "/Users/lightquantum/.config/nvim/ts";
-          incremental_selection = {
+    luaLoader.enable = true;
+    colorschemes.catppuccin = {
+      enable = true;
+      lazyLoad.enable = true;
+      settings = {
+        flavour = "auto";
+        integrations = {
+          copilot_vim = true;
+          lsp_trouble = true;
+          which_key = true;
+        };
+      };
+    };
+    plugins =
+      let
+        lazy = [
+          "auto-save"
+          "which-key"
+          "trouble"
+          "treesitter"
+          "telescope"
+        ];
+        lazyLoadInject = {
+          lazyLoad = {
             enable = true;
-            keymaps = {
-              init_selection = "¬";
-              node_decremental = "˙";
-              node_incremental = "¬";
+            settings = {
+              event = "DeferredUIEnter";
             };
           };
         };
-      };
-      cmp = {
-        enable = true;
-        settings = {
-          completion = {
-            completeopt = "menu,menuone,noselect";
-            keyword_length = 2;
+        plugs = {
+          nix.enable = true;
+          auto-save.enable = true;
+          auto-session.enable = true;
+          dressing.enable = true;
+          gitsigns.enable = true;
+          wakatime.enable = true;
+          which-key.enable = true;
+          lz-n.enable = true;
+          treesitter = {
+            enable = true;
+            settings = {
+              indent.enable = true;
+              highlight.enable = true;
+              incremental_selection = {
+                enable = true;
+                keymaps = {
+                  init_selection = "¬";
+                  node_decremental = "˙";
+                  node_incremental = "¬";
+                };
+              };
+            };
           };
-          snippet.expand = ''
-            function(args)
-              require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
-            end
-          '';
-          mapping = {
-            "<CR>" = "cmp.mapping.confirm({ select = true })";
-            "<Tab>" = ''
-              cmp.mapping(function(fallback)
-                                -- This little snippet will confirm with tab, and if no entry is selected, will confirm the first item
-                                if (cmp.visible() and vim.b._copilot.suggestions == nil) then
-                                  local entry = cmp.get_selected_entry()
-                                  if not entry then
-                                    cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
-                                  else
-                                    cmp.confirm()
-                                  end
-                                else
-                                  fallback()
-                                end
-                              end, {"i","s",}) '';
-            "<Up>" = "cmp.mapping.select_prev_item()";
-            "<Down>" = "cmp.mapping.select_next_item()";
+          cmp = {
+            enable = true;
+            settings = {
+              completion = {
+                completeopt = "menu,menuone,noselect";
+                keyword_length = 2;
+              };
+              snippet.expand = ''
+                function(args)
+                  require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+                end
+              '';
+              mapping = {
+                "<CR>" = "cmp.mapping.confirm({ select = true })";
+                "<Tab>" = ''
+                  cmp.mapping(function(fallback)
+                                    -- This little snippet will confirm with tab, and if no entry is selected, will confirm the first item
+                                    if (cmp.visible() and vim.b._copilot.suggestions == nil) then
+                                      local entry = cmp.get_selected_entry()
+                                      if not entry then
+                                        cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+                                      else
+                                        cmp.confirm()
+                                      end
+                                    else
+                                      fallback()
+                                    end
+                                  end, {"i","s",}) '';
+                "<Up>" = "cmp.mapping.select_prev_item()";
+                "<Down>" = "cmp.mapping.select_next_item()";
+              };
+              sources = [
+                { name = "nvim_lsp"; }
+                { name = "nvim_lsp_document_symbol"; }
+                { name = "nvim_lsp_signature_help"; }
+                { name = "buffer"; }
+                { name = "path"; }
+                { name = "luasnip"; }
+              ];
+            };
           };
-          sources = [
-            { name = "nvim_lsp"; }
-            { name = "nvim_lsp_document_symbol"; }
-            { name = "nvim_lsp_signature_help"; }
-            { name = "buffer"; }
-            { name = "path"; }
-            { name = "luasnip"; }
-          ];
-        };
-      };
-      copilot-vim = {
-        enable = true;
-        settings = {
-          filetypes = {
-            yaml = true;
+          copilot-vim = {
+            enable = true;
+            settings = {
+              filetypes = {
+                "*" = true;
+              };
+              assume_mapped = true;
+            };
           };
-          assume_mapped = true;
-        };
-      };
-      telescope = {
-        enable = true;
-        extensions = {
-          frecency.enable = true;
-          file-browser.enable = true;
-        };
-      };
-      lualine = {
-        enable = true;
-        settings = {
-          sections = {
-            lualine_c = [
-              {
-                __unkeyed = "filename";
-                path = 3;
-              }
-              "lsp_progress"
-            ];
+          telescope = {
+            enable = true;
+            extensions = {
+              frecency.enable = true;
+              file-browser.enable = true;
+            };
           };
+          lualine = {
+            enable = true;
+            settings = {
+              theme = "catppuccin";
+              sections = {
+                lualine_c = [
+                  {
+                    __unkeyed = "filename";
+                    path = 3;
+                  }
+                  "lsp_progress"
+                ];
+              };
+            };
+          };
+          bufferline = {
+            enable = true;
+            # settings = {
+            #   highlights = config.lib.nixvim.mkRaw ''require("catppuccin.groups.integrations.bufferline").get()'';
+            # };
+          };
+          lsp = {
+            enable = true;
+            servers = {
+              eslint.enable = true;
+              pyright.enable = true;
+              nixd.enable = true;
+              # rnix-lsp.enable = true;
+              # rust-analyzer.enable = true;
+            };
+          };
+          mini = {
+            enable = true;
+            modules.icons = { };
+            mockDevIcons = true;
+          };
+          vim-suda = {
+            enable = true;
+            settings = {
+              noninteractive = 1;
+            };
+          };
+          trouble.enable = true;
         };
-      };
-      bufferline.enable = true;
-      lsp = {
-        enable = true;
-        servers = {
-          eslint.enable = true;
-          pyright.enable = true;
-          nixd.enable = true;
-          # rnix-lsp.enable = true;
-          # rust-analyzer.enable = true;
-        };
-      };
-      nvim-tree.enable = true;
-      mini = {
-        enable = true;
-        modules.icons = { };
-        mockDevIcons = true;
-      };
-    };
+      in
+      builtins.foldl' (acc: name: acc // { "${name}" = plugs.${name} // lazyLoadInject; }) plugs lazy;
     extraPlugins = with pkgs.vimPlugins; [
-      # rust-tools-nvim
-      impatient-nvim
       lualine-lsp-progress
       luasnip
       quick-scope
-      toggleterm-nvim
       vim-startuptime
-      vim-suda
+      smear-cursor-nvim
     ];
     globals = {
       mapleader = " ";
@@ -300,15 +296,6 @@
         options = {
           silent = true;
           desc = "Format";
-        };
-      }
-      {
-        mode = "n";
-        key = "<leader>g";
-        action = "<cmd>lua _lazygit_toggle<CR>";
-        options = {
-          silent = true;
-          desc = "Lazygit";
         };
       }
       {

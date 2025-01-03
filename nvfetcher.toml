@@ -54,3 +54,7 @@ fetch.github = "oh-my-fish/plugin-sudope"
 [fish_brew]
 src.git = "https://github.com/oh-my-fish/plugin-brew"
 fetch.github = "oh-my-fish/plugin-brew"
+
+[sbarlua]
+src.git = "https://github.com/FelixKratz/SbarLua"
+fetch.github = "FelixKratz/SbarLua"

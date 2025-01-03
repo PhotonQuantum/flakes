@@ -109,29 +109,41 @@
     };
     date = "2021-04-11";
   };
+  sbarlua = {
+    pname = "sbarlua";
+    version = "437bd2031da38ccda75827cb7548e7baa4aa9978";
+    src = fetchFromGitHub {
+      owner = "FelixKratz";
+      repo = "SbarLua";
+      rev = "437bd2031da38ccda75827cb7548e7baa4aa9978";
+      fetchSubmodules = false;
+      sha256 = "sha256-F0UfNxHM389GhiPQ6/GFbeKQq5EvpiqQdvyf7ygzkPg=";
+    };
+    date = "2024-08-12";
+  };
   zimfw_completion = {
     pname = "zimfw_completion";
-    version = "ef4d8a554ea8bb81e8fdb2d789289e8844d3a10f";
+    version = "8a73f55e7ab0077ed34bfc3cb4db4e71afb7d952";
     src = fetchFromGitHub {
       owner = "zimfw";
       repo = "completion";
-      rev = "ef4d8a554ea8bb81e8fdb2d789289e8844d3a10f";
+      rev = "8a73f55e7ab0077ed34bfc3cb4db4e71afb7d952";
       fetchSubmodules = false;
-      sha256 = "sha256-5EAbnxu02UvRUG9MJurC1ccytKNf5PNKBvbV6L9PKlg=";
+      sha256 = "sha256-/UC+tLYInJD+RfTtasWNnOPXES1ucAPhWgY8Zej5NWk=";
     };
-    date = "2024-04-05";
+    date = "2024-10-21";
   };
   zimfw_git = {
     pname = "zimfw_git";
-    version = "52c6e846cfea3d418c19d3b1a0d526726f219fe4";
+    version = "7a57a6e85b316c8a3a1dc47d5420958655044f18";
     src = fetchFromGitHub {
       owner = "zimfw";
       repo = "git";
-      rev = "52c6e846cfea3d418c19d3b1a0d526726f219fe4";
+      rev = "7a57a6e85b316c8a3a1dc47d5420958655044f18";
       fetchSubmodules = false;
-      sha256 = "sha256-ZiD2Rl7Eq52KBq0IMcuq+Qd7MaZxNUt9yuTUwfXv+Rc=";
+      sha256 = "sha256-SprVNI3AKuw/XTOnJ0KgT9Tb2SxTmOb2QibsyZEYFg8=";
     };
-    date = "2024-05-08";
+    date = "2024-06-10";
   };
   zimfw_input = {
     pname = "zimfw_input";
@@ -147,26 +159,26 @@
   };
   zimfw_utility = {
     pname = "zimfw_utility";
-    version = "2d738fb414fbae6e19b2b44ec6f0d5046ffea102";
+    version = "fec84342585d61dff448c786ad4eeb082c450c54";
     src = fetchFromGitHub {
       owner = "zimfw";
       repo = "utility";
-      rev = "2d738fb414fbae6e19b2b44ec6f0d5046ffea102";
+      rev = "fec84342585d61dff448c786ad4eeb082c450c54";
       fetchSubmodules = false;
-      sha256 = "sha256-DSCTGbJpNeEE3pkqSPtGTk9BoI/J6eak0fS3c6/1a8k=";
+      sha256 = "sha256-XLuEEviudKNhAA9V0oqVlxvXdtXknoCXQlU2lF9mr1Q=";
     };
-    date = "2024-05-04";
+    date = "2024-10-01";
   };
   zsh_completions = {
     pname = "zsh_completions";
-    version = "978e79e12c44b5b1d3e1e2920c537002087b82c2";
+    version = "c160d09fddd28ceb3af5cf80e9253af80e450d96";
     src = fetchFromGitHub {
       owner = "zsh-users";
       repo = "zsh-completions";
-      rev = "978e79e12c44b5b1d3e1e2920c537002087b82c2";
+      rev = "c160d09fddd28ceb3af5cf80e9253af80e450d96";
       fetchSubmodules = false;
-      sha256 = "sha256-J2L/jO8lWNGC4Bob+2mH7OEJ+U2g+NVkbPA1OdnIrp0=";
+      sha256 = "sha256-EG6bwbwZW9Cya/BGZ83J5YEAUdfJ0UAQC7bRG7cFL2k=";
     };
-    date = "2024-05-21";
+    date = "2024-12-23";
   };
 }

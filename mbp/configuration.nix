@@ -3,6 +3,8 @@
 {
   imports = [
     ./brew.nix
+    ./aerospace/config.nix
+    ./sketchybar/config.nix
   ];
 
   nixpkgs.config.allowUnfree = true;
@@ -126,6 +128,7 @@
         # rnix-lsp
         cachix
         colmena
+        nh
         nixd
         nil
         nix-output-monitor
@@ -215,9 +218,7 @@
     enableSSHSupport = true;
   };
 
-  services = {
-    nix-daemon.enable = true;
-  };
+  services.nix-daemon.enable = true;
 
   system.stateVersion = 5;
 }

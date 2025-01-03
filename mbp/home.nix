@@ -33,6 +33,8 @@ in
   imports = [
     ../common/vim.nix
     ../secrets/ssh.nix
+    ./aerospace/home.nix
+    ./sketchybar/home.nix
   ];
 
   home = {
@@ -402,20 +404,19 @@ in
           '';
         };
       };
-      shellInit =
-        ''
-          set -x MANPATH "/opt/homebrew/share/man" $MANPATH
-          set -x INFOPATH "/opt/homebrew/share/info" $INFOPATH
-          fish_add_path --prepend --global ~/.cargo/bin
-          fish_add_path --prepend --global ~/.nargo/bin
-          fish_add_path --prepend --global ~/.ghcup/bin
-          fish_add_path --prepend --global ~/.elan/bin
-          set fish_escape_delay_ms 300
-          builtin functions -e fish_mode_prompt
-          eval (${pkgs.starship}/bin/starship init fish)
-          test -r ~/.opam/opam-init/init.fish && source ~/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
-        '';
-        # + builtins.readFile ./wezterm.fish;
+      shellInit = ''
+        set -x MANPATH "/opt/homebrew/share/man" $MANPATH
+        set -x INFOPATH "/opt/homebrew/share/info" $INFOPATH
+        fish_add_path --prepend --global ~/.cargo/bin
+        fish_add_path --prepend --global ~/.nargo/bin
+        fish_add_path --prepend --global ~/.ghcup/bin
+        fish_add_path --prepend --global ~/.elan/bin
+        set fish_escape_delay_ms 300
+        builtin functions -e fish_mode_prompt
+        eval (${pkgs.starship}/bin/starship init fish)
+        test -r ~/.opam/opam-init/init.fish && source ~/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
+      '';
+      # + builtins.readFile ./wezterm.fish;
       loginShellInit =
         let
           # This naive quoting is good enough in this case. There shouldn't be any

@@ -13,7 +13,7 @@
         enable-normalization-flatten-containers = true;
         enable-normalization-opposite-orientation-for-nested-containers = true;
         accordion-padding = 30;
-        default-root-container-layout = "tiles";
+        default-root-container-layout = "accordion";
         default-root-container-orientation = "auto";
         on-focused-monitor-changed = [ "move-mouse monitor-lazy-center" ];
         key-mapping.preset = "qwerty";
@@ -32,6 +32,20 @@
         ];
         on-focus-changed = [
           "exec-and-forget ${sketchybar} --trigger aerospace_focus_change"
+        ];
+        on-window-detected = [
+          {
+            "if".app-name-regex-substring = "qq|telegram|slack|discord|zulip";
+            run = [ "move-node-to-workspace 4" ];
+          }
+          {
+            "if".app-name-regex-substring = "code";
+            run = [ "move-node-to-workspace --focus-follows-window 3" ];
+          }
+          {
+            "if".app-name-regex-substring = "arc";
+            run = [ "move-node-to-workspace --focus-follows-window 2" ];
+          }
         ];
 
         gaps = {

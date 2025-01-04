@@ -77,7 +77,7 @@
 
             # All possible commands: https://nikitabobko.github.io/AeroSpace/commands
 
-            alt-enter =
+            cmd-enter =
               let
                 script = pkgs.writeText "ghostty.applescript" ''
                   tell application "Ghostty"

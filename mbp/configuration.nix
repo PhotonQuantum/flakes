@@ -146,6 +146,7 @@
       diesel-cli
       dotnet-sdk
       dua
+      element-desktop
       fd
       gmp
       gnupg

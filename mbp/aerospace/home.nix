@@ -35,7 +35,7 @@
         ];
         on-window-detected = [
           {
-            "if".app-name-regex-substring = "qq|telegram|slack|discord|zulip";
+            "if".app-name-regex-substring = "qq|telegram|slack|discord|zulip|element";
             run = [ "move-node-to-workspace 4" ];
           }
           {

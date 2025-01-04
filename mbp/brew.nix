@@ -55,6 +55,7 @@ _: {
     "deepl"
     "discord"
     "dropbox"
+    "element"
     "font-iosevka-nerd-font"
     "github"
     "ghostty"

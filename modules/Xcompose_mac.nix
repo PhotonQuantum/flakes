@@ -17,7 +17,7 @@ with lib;
   };
   config =
     let
-      gen-compose = (pkgs.callPackage ../gen-compose/default.nix { inherit pkgs pyproject-nix; }).package;
+      gen-compose = ../scripts/gen_compose.py;
       checkPrefixConflict =
         attrs:
         let
@@ -54,9 +54,16 @@ with lib;
         name = "Xcompose.yaml";
         text = builtins.toJSON (if checkPrefixConflict Xcompose then Xcompose else { });
       };
-      bindingsFile = pkgs.runCommand "keyBindings.dict" { } ''
-        ${gen-compose}/bin/gen-compose ${XcomposeFile} > $out
-      '';
+      bindingsFile =
+        let
+          python = pkgs.python3.withPackages (
+            ps: with ps; [
+              pyyaml
+              click
+            ]
+          );
+        in
+        pkgs.runCommand "keyBindings.dict" { } "${python}/bin/python ${gen-compose} ${XcomposeFile} > $out";
     in
     {
       home.file."Library/KeyBindings/DefaultKeyBinding.dict" = mkIf (Xcompose != null) {

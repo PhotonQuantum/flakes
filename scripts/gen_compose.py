@@ -50,9 +50,11 @@ def object_hook(dict_, func: Callable, types: Union[Tuple[Type], Type] = dict):
         # for lists either apply function if type matched or recursive object_hook if dict
         elif isinstance(new[key], (list, tuple)):
             new[key] = type(new[key])(
-                object_hook(v, func, types) if
-                isinstance(v, MutableMapping) else func(v)
-                if isinstance(v, types) else v
+                (
+                    object_hook(v, func, types)
+                    if isinstance(v, MutableMapping)
+                    else func(v) if isinstance(v, types) else v
+                )
                 for v in new[key]
             )
 
@@ -63,9 +65,9 @@ def object_hook(dict_, func: Callable, types: Union[Tuple[Type], Type] = dict):
 
 
 @click.command()
-@click.argument('mappings', type=click.File(), nargs=-1)
-@click.option('--key', default='§', show_default=True, help='key to use as compose key')
-@click.option('-r', '--raw', is_flag=True, help='just keymap without prefix')
+@click.argument("mappings", type=click.File(), nargs=-1)
+@click.option("--key", default="§", show_default=True, help="key to use as compose key")
+@click.option("-r", "--raw", is_flag=True, help="just keymap without prefix")
 def main(mappings, raw, key):
     """Generate macos rebind file from compose json mapping"""
     all_maps = {}
@@ -127,14 +129,14 @@ def data_to_mac_dict(data):
       };
     };
     """
-    updated = object_hook(data, lambda value: f'INSERT:{value}', str)
+    updated = object_hook(data, lambda value: f"INSERT:{value}", str)
     text = json.dumps(updated, indent=2, ensure_ascii=False)
     repl = lambda value: f'("insertText:", "{value.groups()[0]}");'
     text = re.sub('"INSERT:(.+)",*', repl, text)
-    text = re.sub('},*', '};', text)
+    text = re.sub("},*", "};", text)
     text = re.sub('": ', '" = ', text)
     return text
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

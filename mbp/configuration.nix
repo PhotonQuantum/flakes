@@ -124,18 +124,29 @@
         twiggy
         wasmtime
       ];
-      nixPackages = with pkgs; [
-        # rnix-lsp
-        cachix
-        colmena
-        nh
-        nixd
-        nil
-        nix-output-monitor
-        nix-tree
-        nixfmt-rfc-style
-        nixpkgs-fmt
-      ];
+      nixPackages =
+        let
+          denix =
+            with pkgs;
+            writers.writePython3Bin "denix" {
+              libraries = [ python3Packages.click ];
+              flakeIgnore = [ "E501" "E265" ];
+            } (builtins.readFile ../scripts/denix.py);
+        in
+        with pkgs;
+        [
+          # rnix-lsp
+          cachix
+          colmena
+          denix
+          nh
+          nixd
+          nil
+          nix-output-monitor
+          nix-tree
+          nixfmt-rfc-style
+          nixpkgs-fmt
+        ];
     in
     with pkgs;
     [

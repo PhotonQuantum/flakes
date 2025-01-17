@@ -310,7 +310,14 @@ in
         tab_title_template = "{fmt.fg.red}{bell_symbol}{activity_symbol}{fmt.fg.tab}{title} {index}";
       };
     };
-    gh.enable = true;
+    gh = {
+      enable = true;
+      settings = {
+        aliases = {
+          "transfer" = "api repos/$1/transfer -f new_owner=$2";
+        };
+      };
+    };
     skim.enable = true;
     # opam.enable = true;
     nix-index = {

@@ -3,7 +3,6 @@
   lib,
   system,
   osConfig,
-  yazi,
   ...
 }:
 
@@ -108,7 +107,7 @@ in
     };
     htop.enable = true;
     lf = with pkgs; {
-      enable = true;
+      enable = false;
       previewer.source = lib.getExe' pistol "pistol";
       settings = {
         hidden = true;
@@ -119,69 +118,113 @@ in
     yazi = {
       enable = true;
       enableFishIntegration = true;
-      package = yazi.packages.${system}.yazi;
-      keymap =
-        let
-          preset = builtins.fromTOML (builtins.readFile ./yazi/keymap_preset.toml);
-          user = {
-            manager.keymap = [
-              {
-                on = [ "<C-c>" ];
-                exec = "escape";
-                desc = "Exit visual mode, clear selected, or cancel search";
-              }
-            ];
-            input.keymap = [
-              {
-                on = [ "<C-c>" ];
-                exec = "close";
-                desc = "Cancel input";
-              }
-              {
-                on = [ "<S-Enter>" ];
-                exec = "escape";
-                desc = "Go back the normal mode, or cancel input";
-              }
-              {
-                on = [ "H" ];
-                exec = "move -999";
-                desc = "Move to the BOL";
-              }
-              {
-                on = [ "L" ];
-                exec = "move 999";
-                desc = "Move to the EOL";
-              }
-            ];
-          };
-        in
-        recursiveMerge [
-          preset
-          user
-        ];
-      settings = {
-        manager = {
-          layout = [
-            1
-            3
-            4
-          ];
-        };
-        opener.archive = [
+      keymap = {
+        manager.prepend_keymap =
+          [
+            {
+              on = [ "<S-Enter>" ];
+              run = "escape";
+              desc = "Exit visual mode, clear selected, or cancel search";
+            }
+            {
+              on = [ "<Enter>" ];
+              run = "noop";
+              desc = "";
+            }
+            {
+              on = [ "l" ];
+              run = "plugin smart-enter";
+              desc = "Enter the child directory, or open the file";
+            }
+          ]
+          ++ builtins.genList (n: {
+            on = [ (toString n) ];
+            run = "plugin relative-motions --args=${toString n}";
+            desc = "Move in relative steps";
+          }) 9;
+        input.prepend_keymap = [
           {
-            exec = "aunpack \"$1\"";
-            desc = "Extract here";
+            on = [ "<S-Enter>" ];
+            run = "escape";
+            desc = "Go back the normal mode, or cancel input";
+          }
+          {
+            on = [ "H" ];
+            run = "move -999";
+            desc = "Move to the BOL";
+          }
+          {
+            on = [ "L" ];
+            run = "move 999";
+            desc = "Move to the EOL";
+          }
+        ];
+        pick.prepend_keymap = [
+          {
+            on = [ "<S-Enter>" ];
+            run = "close";
+            desc = "Cancel the picker";
+          }
+          {
+            on = [ "h" ];
+            run = "close";
+            desc = "Cancel the picker";
           }
         ];
       };
-      theme = {
+      settings = {
         manager = {
-          syntect_theme = ./yazi/TwoDark.tmTheme;
+          ratio = [
+            1
+            2
+            3
+          ];
+          show_symlink = false;
+          preview = {
+            wrap = "yes";
+          };
+        };
+        plugin = {
+          prepend_fetchers = [
+            {
+              id = "git";
+              name = "*";
+              run = "git";
+            }
+            {
+              id = "git";
+              name = "*";
+              run = "git";
+            }
+          ];
+        };
+        # opener.archive = [
+        #   {
+        #     run = "aunpack \"$1\"";
+        #     desc = "Extract here";
+        #   }
+        # ];
+      };
+      flavors = with pkgs.generated; {
+        catppuccin-latte = "${yazi_flavors.src}/catppuccin-latte.yazi";
+        catppuccin-mocha = "${yazi_flavors.src}/catppuccin-mocha.yazi";
+      };
+      plugins = with pkgs.generated; {
+        relative-motions = "${yazi_relative_motions.src}";
+        git = "${yazi_plugins.src}/git.yazi";
+        starship = "${yazi_starship.src}";
+        smart-enter = ./yazi/smart-enter.yazi;
+      };
+      initLua = ./yazi/init.lua;
+      theme = {
+        flavor = {
+          light = "catppuccin-latte";
+          dark = "catppuccin-mocha";
         };
       };
     };
     pistol = {
-      enable = true;
+      enable = false;
       associations =
         with pkgs;
         let
@@ -360,9 +403,10 @@ in
         vim = "nvim";
         coqtags = "fd -e v . . ~/.opam/default/lib/coq/theories -X ctags --options=/Users/lightquantum/.config/coq.ctags";
         # ssh = "kitty +kitten ssh";
-        lf = "lfcd";
       };
-      shellAbbrs = import ./fish/git_abbr.nix;
+      shellAbbrs = {
+        lf = "yy";
+      } // import ./fish/git_abbr.nix;
       functions = {
         init_conda = ''
           if test -f /Users/lightquantum/miniconda3/bin/conda

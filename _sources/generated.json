@@ -199,6 +199,86 @@
         },
         "version": "437bd2031da38ccda75827cb7548e7baa4aa9978"
     },
+    "yazi_flavors": {
+        "cargoLocks": null,
+        "date": "2025-01-17",
+        "extract": null,
+        "name": "yazi_flavors",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "PhotonQuantum",
+            "repo": "flavors",
+            "rev": "c8771150b8e9d8cc1d2e44b74f4c87d0324b25d9",
+            "sha256": "sha256-CoJXv15lPCVW7qyXd2Csj2ltFELlGkN6PKY5Iz6Md70=",
+            "type": "github"
+        },
+        "version": "c8771150b8e9d8cc1d2e44b74f4c87d0324b25d9"
+    },
+    "yazi_plugins": {
+        "cargoLocks": null,
+        "date": "2025-01-17",
+        "extract": null,
+        "name": "yazi_plugins",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "yazi-rs",
+            "repo": "plugins",
+            "rev": "e4aaf430ad7f81d2e358e3a60525c8ef3fa259fc",
+            "sha256": "sha256-dIj2YgLN04nFxmw7I/sdbJY2QCs+Nmb4eUtfLlPL53E=",
+            "type": "github"
+        },
+        "version": "e4aaf430ad7f81d2e358e3a60525c8ef3fa259fc"
+    },
+    "yazi_relative_motions": {
+        "cargoLocks": null,
+        "date": "2024-12-02",
+        "extract": null,
+        "name": "yazi_relative_motions",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "dedukun",
+            "repo": "relative-motions.yazi",
+            "rev": "df97039a04595a40a11024f321a865b3e9af5092",
+            "sha256": "sha256-csX8T2a5f7k6g2mlR+08rm0qBeWdI4ABuja+klIvwqw=",
+            "type": "github"
+        },
+        "version": "df97039a04595a40a11024f321a865b3e9af5092"
+    },
+    "yazi_starship": {
+        "cargoLocks": null,
+        "date": "2025-01-08",
+        "extract": null,
+        "name": "yazi_starship",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "Rolv-Apneseth",
+            "repo": "starship.yazi",
+            "rev": "4053c8c486f9cfd60f1f42fa5d80e97caef41eb1",
+            "sha256": "sha256-KTN3gf3VFGlBxgsQFMa/fdhoovapXo0X65IJjXcl98A=",
+            "type": "github"
+        },
+        "version": "4053c8c486f9cfd60f1f42fa5d80e97caef41eb1"
+    },
     "zimfw_completion": {
         "cargoLocks": null,
         "date": "2024-10-21",
@@ -281,7 +361,7 @@
     },
     "zsh_completions": {
         "cargoLocks": null,
-        "date": "2024-12-23",
+        "date": "2025-01-12",
         "extract": null,
         "name": "zsh_completions",
         "passthru": null,
@@ -293,10 +373,10 @@
             "name": null,
             "owner": "zsh-users",
             "repo": "zsh-completions",
-            "rev": "c160d09fddd28ceb3af5cf80e9253af80e450d96",
-            "sha256": "sha256-EG6bwbwZW9Cya/BGZ83J5YEAUdfJ0UAQC7bRG7cFL2k=",
+            "rev": "a7f01622f7bc6941d1c6297be6995fe1bbc9d4de",
+            "sha256": "sha256-lDlXqMHYHlX0RKFhCNjGwxsng0DI8+ErLWNGHLblsAw=",
             "type": "github"
         },
-        "version": "c160d09fddd28ceb3af5cf80e9253af80e450d96"
+        "version": "a7f01622f7bc6941d1c6297be6995fe1bbc9d4de"
     }
 }

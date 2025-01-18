@@ -24,7 +24,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.stable.follows = "nixpkgs";
     };
-    yazi.url = "github:sxyazi/yazi";
     tex-fmt = {
       url = "github:WGUNDERWOOD/tex-fmt";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -46,7 +45,6 @@
       nixpkgs,
       home-manager,
       nixvim,
-      yazi,
       tex-fmt,
       pyproject-nix,
       nh,
@@ -102,7 +100,6 @@
               inherit
                 system
                 nixvim
-                yazi
                 pyproject-nix
                 ;
             };

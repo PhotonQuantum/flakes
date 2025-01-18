@@ -121,6 +121,54 @@
     };
     date = "2024-08-12";
   };
+  yazi_flavors = {
+    pname = "yazi_flavors";
+    version = "c8771150b8e9d8cc1d2e44b74f4c87d0324b25d9";
+    src = fetchFromGitHub {
+      owner = "PhotonQuantum";
+      repo = "flavors";
+      rev = "c8771150b8e9d8cc1d2e44b74f4c87d0324b25d9";
+      fetchSubmodules = false;
+      sha256 = "sha256-CoJXv15lPCVW7qyXd2Csj2ltFELlGkN6PKY5Iz6Md70=";
+    };
+    date = "2025-01-17";
+  };
+  yazi_plugins = {
+    pname = "yazi_plugins";
+    version = "e4aaf430ad7f81d2e358e3a60525c8ef3fa259fc";
+    src = fetchFromGitHub {
+      owner = "yazi-rs";
+      repo = "plugins";
+      rev = "e4aaf430ad7f81d2e358e3a60525c8ef3fa259fc";
+      fetchSubmodules = false;
+      sha256 = "sha256-dIj2YgLN04nFxmw7I/sdbJY2QCs+Nmb4eUtfLlPL53E=";
+    };
+    date = "2025-01-17";
+  };
+  yazi_relative_motions = {
+    pname = "yazi_relative_motions";
+    version = "df97039a04595a40a11024f321a865b3e9af5092";
+    src = fetchFromGitHub {
+      owner = "dedukun";
+      repo = "relative-motions.yazi";
+      rev = "df97039a04595a40a11024f321a865b3e9af5092";
+      fetchSubmodules = false;
+      sha256 = "sha256-csX8T2a5f7k6g2mlR+08rm0qBeWdI4ABuja+klIvwqw=";
+    };
+    date = "2024-12-02";
+  };
+  yazi_starship = {
+    pname = "yazi_starship";
+    version = "4053c8c486f9cfd60f1f42fa5d80e97caef41eb1";
+    src = fetchFromGitHub {
+      owner = "Rolv-Apneseth";
+      repo = "starship.yazi";
+      rev = "4053c8c486f9cfd60f1f42fa5d80e97caef41eb1";
+      fetchSubmodules = false;
+      sha256 = "sha256-KTN3gf3VFGlBxgsQFMa/fdhoovapXo0X65IJjXcl98A=";
+    };
+    date = "2025-01-08";
+  };
   zimfw_completion = {
     pname = "zimfw_completion";
     version = "8a73f55e7ab0077ed34bfc3cb4db4e71afb7d952";
@@ -171,14 +219,14 @@
   };
   zsh_completions = {
     pname = "zsh_completions";
-    version = "c160d09fddd28ceb3af5cf80e9253af80e450d96";
+    version = "a7f01622f7bc6941d1c6297be6995fe1bbc9d4de";
     src = fetchFromGitHub {
       owner = "zsh-users";
       repo = "zsh-completions";
-      rev = "c160d09fddd28ceb3af5cf80e9253af80e450d96";
+      rev = "a7f01622f7bc6941d1c6297be6995fe1bbc9d4de";
       fetchSubmodules = false;
-      sha256 = "sha256-EG6bwbwZW9Cya/BGZ83J5YEAUdfJ0UAQC7bRG7cFL2k=";
+      sha256 = "sha256-lDlXqMHYHlX0RKFhCNjGwxsng0DI8+ErLWNGHLblsAw=";
     };
-    date = "2024-12-23";
+    date = "2025-01-12";
   };
 }

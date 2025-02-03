@@ -93,7 +93,10 @@ in
     });
 
   programs = {
-    ssh.enable = true;
+    ssh = {
+      enable = true;
+      includes = [ "~/.orbstack/ssh/config" ];
+    };
     aria2.enable = true;
     bat = {
       enable = true;

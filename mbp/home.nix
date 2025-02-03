@@ -1,7 +1,6 @@
 {
   pkgs,
   lib,
-  system,
   osConfig,
   ...
 }:
@@ -35,6 +34,10 @@ in
     ./aerospace/home.nix
     ./sketchybar/home.nix
   ];
+  nixpkgs.config = {
+    allowUnfree = true;
+    allowUnfreePredicate = _: true;
+  };
 
   home = {
     username = "lightquantum";

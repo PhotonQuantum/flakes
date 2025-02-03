@@ -4,6 +4,7 @@
   programs.nixvim = {
     enable = true;
     extraPackages = with pkgs; [ rust-analyzer ];
+    nixpkgs.useGlobalPackages = true;
     opts = {
       number = true;
       relativenumber = true;

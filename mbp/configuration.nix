@@ -7,7 +7,6 @@
     ./sketchybar/config.nix
   ];
 
-  nixpkgs.config.allowUnfree = true;
 
   users.users.lightquantum = {
     home = "/Users/lightquantum";
@@ -44,7 +43,7 @@
         cargo-audit
         cargo-bloat
         cargo-cache
-        cargo-expand
+        # cargo-expand FIXME until PR376038 is merged
         cargo-fuzz
         cargo-generate
         cargo-insta
@@ -130,7 +129,10 @@
             with pkgs;
             writers.writePython3Bin "denix" {
               libraries = [ python3Packages.click ];
-              flakeIgnore = [ "E501" "E265" ];
+              flakeIgnore = [
+                "E501"
+                "E265"
+              ];
             } (builtins.readFile ../scripts/denix.py);
         in
         with pkgs;
@@ -218,9 +220,12 @@
     }
   ];
   nix.distributedBuilds = true;
-  nixpkgs.config.permittedInsecurePackages = [
-    "openssl-1.1.1u"
-  ];
+  nixpkgs.config = {
+    permittedInsecurePackages = [
+      "openssl-1.1.1u"
+    ];
+    allowUnfree = true;
+  };
 
   programs.zsh.enable = true;
   programs.fish.enable = true;

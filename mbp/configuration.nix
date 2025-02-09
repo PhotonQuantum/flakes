@@ -43,7 +43,7 @@
         cargo-audit
         cargo-bloat
         cargo-cache
-        # cargo-expand FIXME until PR376038 is merged
+        cargo-expand
         cargo-fuzz
         cargo-generate
         cargo-insta

@@ -226,6 +226,7 @@
     ];
     allowUnfree = true;
   };
+  ids.gids.nixbld = 30000;  # NOTE this only works for current installation
 
   programs.zsh.enable = true;
   programs.fish.enable = true;
@@ -233,8 +234,6 @@
     enable = true;
     enableSSHSupport = true;
   };
-
-  services.nix-daemon.enable = true;
 
   system.stateVersion = 5;
 }

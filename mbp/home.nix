@@ -145,7 +145,7 @@ in
           ]
           ++ builtins.genList (n: {
             on = [ (toString n) ];
-            run = "plugin relative-motions --args=${toString n}";
+            run = "plugin relative-motions ${toString n}";
             desc = "Move in relative steps";
           }) 9;
         input.prepend_keymap = [

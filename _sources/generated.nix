@@ -123,51 +123,51 @@
   };
   yazi_flavors = {
     pname = "yazi_flavors";
-    version = "c8771150b8e9d8cc1d2e44b74f4c87d0324b25d9";
+    version = "614f2b5792ce0811b6527cb44cc5689876f71503";
     src = fetchFromGitHub {
       owner = "PhotonQuantum";
       repo = "flavors";
-      rev = "c8771150b8e9d8cc1d2e44b74f4c87d0324b25d9";
+      rev = "614f2b5792ce0811b6527cb44cc5689876f71503";
       fetchSubmodules = false;
-      sha256 = "sha256-CoJXv15lPCVW7qyXd2Csj2ltFELlGkN6PKY5Iz6Md70=";
+      sha256 = "sha256-Pe3HlBVvvwHRvUwDQMGI48c4BBmGB9RQJjA4kdpjl3U=";
     };
-    date = "2025-01-17";
+    date = "2025-03-04";
   };
   yazi_plugins = {
     pname = "yazi_plugins";
-    version = "e4aaf430ad7f81d2e358e3a60525c8ef3fa259fc";
+    version = "a1b678dfacfd2726fad364607aeaa7e1fded3cfa";
     src = fetchFromGitHub {
       owner = "yazi-rs";
       repo = "plugins";
-      rev = "e4aaf430ad7f81d2e358e3a60525c8ef3fa259fc";
+      rev = "a1b678dfacfd2726fad364607aeaa7e1fded3cfa";
       fetchSubmodules = false;
-      sha256 = "sha256-dIj2YgLN04nFxmw7I/sdbJY2QCs+Nmb4eUtfLlPL53E=";
+      sha256 = "sha256-Vvq7uau+UNcriuLE7YMK5rSOXvVaD0ElT59q+09WwdQ=";
     };
-    date = "2025-01-17";
+    date = "2025-03-04";
   };
   yazi_relative_motions = {
     pname = "yazi_relative_motions";
-    version = "df97039a04595a40a11024f321a865b3e9af5092";
+    version = "810306563e1928855f5cf61f83801544e3eb3788";
     src = fetchFromGitHub {
       owner = "dedukun";
       repo = "relative-motions.yazi";
-      rev = "df97039a04595a40a11024f321a865b3e9af5092";
+      rev = "810306563e1928855f5cf61f83801544e3eb3788";
       fetchSubmodules = false;
-      sha256 = "sha256-csX8T2a5f7k6g2mlR+08rm0qBeWdI4ABuja+klIvwqw=";
+      sha256 = "sha256-sIS7vtpY8z8D1nHMmr/uZoKREeGsIZuNSG8SnKkjREI=";
     };
-    date = "2024-12-02";
+    date = "2025-02-26";
   };
   yazi_starship = {
     pname = "yazi_starship";
-    version = "4053c8c486f9cfd60f1f42fa5d80e97caef41eb1";
+    version = "6c639b474aabb17f5fecce18a4c97bf90b016512";
     src = fetchFromGitHub {
       owner = "Rolv-Apneseth";
       repo = "starship.yazi";
-      rev = "4053c8c486f9cfd60f1f42fa5d80e97caef41eb1";
+      rev = "6c639b474aabb17f5fecce18a4c97bf90b016512";
       fetchSubmodules = false;
-      sha256 = "sha256-KTN3gf3VFGlBxgsQFMa/fdhoovapXo0X65IJjXcl98A=";
+      sha256 = "sha256-bhLUziCDnF4QDCyysRn7Az35RAy8ibZIVUzoPgyEO1A=";
     };
-    date = "2025-01-08";
+    date = "2025-02-23";
   };
   zimfw_completion = {
     pname = "zimfw_completion";
@@ -219,14 +219,14 @@
   };
   zsh_completions = {
     pname = "zsh_completions";
-    version = "a7f01622f7bc6941d1c6297be6995fe1bbc9d4de";
+    version = "6ea205dc14b76a0989c4d991df958cc44eaeee60";
     src = fetchFromGitHub {
       owner = "zsh-users";
       repo = "zsh-completions";
-      rev = "a7f01622f7bc6941d1c6297be6995fe1bbc9d4de";
+      rev = "6ea205dc14b76a0989c4d991df958cc44eaeee60";
       fetchSubmodules = false;
-      sha256 = "sha256-lDlXqMHYHlX0RKFhCNjGwxsng0DI8+ErLWNGHLblsAw=";
+      sha256 = "sha256-6B6fsIFzLiPvn4VlL8Llh4OQUyhuTL8LeOjtYqTUOqw=";
     };
-    date = "2025-01-12";
+    date = "2025-03-04";
   };
 }

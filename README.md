@@ -20,3 +20,9 @@ or,
 ```bash
 $ nix run nixpkgs#colmena apply
 ```
+
+And later I just need to run
+
+```bash
+$ nh darwin switch .
+```

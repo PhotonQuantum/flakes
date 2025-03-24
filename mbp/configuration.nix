@@ -141,6 +141,7 @@
           cachix
           colmena
           denix
+          devenv
           nh
           nixd
           nil

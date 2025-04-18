@@ -52,6 +52,7 @@ _: {
     "chatgpt"
     "cheatsheet"
     "clashx-pro"
+    "cursor"
     "deepl"
     "discord"
     "dropbox"

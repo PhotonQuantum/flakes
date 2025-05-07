@@ -103,10 +103,7 @@ in
         theme = "base16";
       };
     };
-    lsd = {
-      enable = true;
-      enableAliases = true;
-    };
+    lsd.enable = true;
     htop.enable = true;
     lf = with pkgs; {
       enable = false;

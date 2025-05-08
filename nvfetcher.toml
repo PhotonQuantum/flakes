@@ -74,3 +74,9 @@ fetch.github = "dedukun/relative-motions.yazi"
 [yazi_starship]
 src.git = "https://github.com/Rolv-Apneseth/starship.yazi"
 fetch.github = "Rolv-Apneseth/starship.yazi"
+
+[sketchybar_app_font]
+src.github = "kvndrsslr/sketchybar-app-font"
+src.use_latest_release = true
+src.use_release_name = true
+fetch.url = "https://github.com/kvndrsslr/sketchybar-app-font/releases/download/$ver/icon_map.lua"

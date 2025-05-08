@@ -121,6 +121,14 @@
     };
     date = "2024-08-12";
   };
+  sketchybar_app_font = {
+    pname = "sketchybar_app_font";
+    version = "v2.0.32";
+    src = fetchurl {
+      url = "https://github.com/kvndrsslr/sketchybar-app-font/releases/download/v2.0.32/icon_map.lua";
+      sha256 = "sha256-F41ayORRKxUgeWmhtYoMzXVNee0Zj3IYGZ0ix2z4iWA=";
+    };
+  };
   yazi_flavors = {
     pname = "yazi_flavors";
     version = "614f2b5792ce0811b6527cb44cc5689876f71503";
@@ -135,15 +143,15 @@
   };
   yazi_plugins = {
     pname = "yazi_plugins";
-    version = "b12a9ab085a8c2fe2b921e1547ee667b714185f9";
+    version = "864a0210d9ba1e8eb925160c2e2a25342031d8d3";
     src = fetchFromGitHub {
       owner = "yazi-rs";
       repo = "plugins";
-      rev = "b12a9ab085a8c2fe2b921e1547ee667b714185f9";
+      rev = "864a0210d9ba1e8eb925160c2e2a25342031d8d3";
       fetchSubmodules = false;
-      sha256 = "sha256-LWN0riaUazQl3llTNNUMktG+7GLAHaG/IxNj1gFhDRE=";
+      sha256 = "sha256-m3709h7/AHJAtoJ3ebDA40c77D+5dCycpecprjVqj/k=";
     };
-    date = "2025-04-13";
+    date = "2025-04-27";
   };
   yazi_relative_motions = {
     pname = "yazi_relative_motions";
@@ -159,15 +167,15 @@
   };
   yazi_starship = {
     pname = "yazi_starship";
-    version = "c0707544f1d526f704dab2da15f379ec90d613c2";
+    version = "6fde3b2d9dc9a12c14588eb85cf4964e619842e6";
     src = fetchFromGitHub {
       owner = "Rolv-Apneseth";
       repo = "starship.yazi";
-      rev = "c0707544f1d526f704dab2da15f379ec90d613c2";
+      rev = "6fde3b2d9dc9a12c14588eb85cf4964e619842e6";
       fetchSubmodules = false;
-      sha256 = "sha256-H8j+9jcdcpPFXVO/XQZL3zq1l5f/WiOm4YUxAMduSRs=";
+      sha256 = "sha256-+CSdghcIl50z0MXmFwbJ0koIkWIksm3XxYvTAwoRlDY=";
     };
-    date = "2025-04-09";
+    date = "2025-04-20";
   };
   zimfw_completion = {
     pname = "zimfw_completion";
@@ -219,14 +227,14 @@
   };
   zsh_completions = {
     pname = "zsh_completions";
-    version = "e5507e0d0c8879f960f4b8e7c6ddb813608d95ab";
+    version = "98dd809126c0748d7058eb7684dbb44d3f4e9c16";
     src = fetchFromGitHub {
       owner = "zsh-users";
       repo = "zsh-completions";
-      rev = "e5507e0d0c8879f960f4b8e7c6ddb813608d95ab";
+      rev = "98dd809126c0748d7058eb7684dbb44d3f4e9c16";
       fetchSubmodules = false;
-      sha256 = "sha256-cowscXUIpm6OviEPc4m4Nizl8Tv57Y8DQ2wohY5FWgE=";
+      sha256 = "sha256-6F4SvMxC/zXkzysNI8YdB/eNh7kImaOjyhEkvZuXVf4=";
     };
-    date = "2025-04-11";
+    date = "2025-05-08";
   };
 }

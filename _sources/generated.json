@@ -209,6 +209,21 @@
         },
         "version": "437bd2031da38ccda75827cb7548e7baa4aa9978"
     },
+    "sketchybar_app_font": {
+        "cargoLocks": null,
+        "date": null,
+        "extract": null,
+        "name": "sketchybar_app_font",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "name": null,
+            "sha256": "sha256-F41ayORRKxUgeWmhtYoMzXVNee0Zj3IYGZ0ix2z4iWA=",
+            "type": "url",
+            "url": "https://github.com/kvndrsslr/sketchybar-app-font/releases/download/v2.0.32/icon_map.lua"
+        },
+        "version": "v2.0.32"
+    },
     "yazi_flavors": {
         "cargoLocks": null,
         "date": "2025-03-04",
@@ -232,7 +247,7 @@
     },
     "yazi_plugins": {
         "cargoLocks": null,
-        "date": "2025-04-13",
+        "date": "2025-04-27",
         "extract": null,
         "name": "yazi_plugins",
         "passthru": null,
@@ -244,12 +259,12 @@
             "name": null,
             "owner": "yazi-rs",
             "repo": "plugins",
-            "rev": "b12a9ab085a8c2fe2b921e1547ee667b714185f9",
-            "sha256": "sha256-LWN0riaUazQl3llTNNUMktG+7GLAHaG/IxNj1gFhDRE=",
+            "rev": "864a0210d9ba1e8eb925160c2e2a25342031d8d3",
+            "sha256": "sha256-m3709h7/AHJAtoJ3ebDA40c77D+5dCycpecprjVqj/k=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "b12a9ab085a8c2fe2b921e1547ee667b714185f9"
+        "version": "864a0210d9ba1e8eb925160c2e2a25342031d8d3"
     },
     "yazi_relative_motions": {
         "cargoLocks": null,
@@ -274,7 +289,7 @@
     },
     "yazi_starship": {
         "cargoLocks": null,
-        "date": "2025-04-09",
+        "date": "2025-04-20",
         "extract": null,
         "name": "yazi_starship",
         "passthru": null,
@@ -286,12 +301,12 @@
             "name": null,
             "owner": "Rolv-Apneseth",
             "repo": "starship.yazi",
-            "rev": "c0707544f1d526f704dab2da15f379ec90d613c2",
-            "sha256": "sha256-H8j+9jcdcpPFXVO/XQZL3zq1l5f/WiOm4YUxAMduSRs=",
+            "rev": "6fde3b2d9dc9a12c14588eb85cf4964e619842e6",
+            "sha256": "sha256-+CSdghcIl50z0MXmFwbJ0koIkWIksm3XxYvTAwoRlDY=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "c0707544f1d526f704dab2da15f379ec90d613c2"
+        "version": "6fde3b2d9dc9a12c14588eb85cf4964e619842e6"
     },
     "zimfw_completion": {
         "cargoLocks": null,
@@ -379,7 +394,7 @@
     },
     "zsh_completions": {
         "cargoLocks": null,
-        "date": "2025-04-11",
+        "date": "2025-05-08",
         "extract": null,
         "name": "zsh_completions",
         "passthru": null,
@@ -391,11 +406,11 @@
             "name": null,
             "owner": "zsh-users",
             "repo": "zsh-completions",
-            "rev": "e5507e0d0c8879f960f4b8e7c6ddb813608d95ab",
-            "sha256": "sha256-cowscXUIpm6OviEPc4m4Nizl8Tv57Y8DQ2wohY5FWgE=",
+            "rev": "98dd809126c0748d7058eb7684dbb44d3f4e9c16",
+            "sha256": "sha256-6F4SvMxC/zXkzysNI8YdB/eNh7kImaOjyhEkvZuXVf4=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "e5507e0d0c8879f960f4b8e7c6ddb813608d95ab"
+        "version": "98dd809126c0748d7058eb7684dbb44d3f4e9c16"
     }
 }

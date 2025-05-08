@@ -17,7 +17,7 @@
   services.sketchybar = {
     enable = true;
     extraPackages = [
-      pkgs.aerospace-fork
+      pkgs.aerospace
     ];
   };
 }

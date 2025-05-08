@@ -4,10 +4,6 @@
     let
       sketchybar = "${pkgs.sketchybar}/bin/sketchybar";
       aerospace-settings = {
-        # fork special configs
-        new-window-detection-timeout = 50;
-        new-window-detection-debounce = 100;
-
         # managed by nix-darwin
         start-at-login = false;
         enable-normalization-flatten-containers = true;
@@ -196,6 +192,6 @@
     in
     {
       source = (format.generate "aerospace.toml" aerospace-settings);
-      onChange = "${pkgs.aerospace-fork}/bin/aerospace reload-config";
+      onChange = "${pkgs.aerospace}/bin/aerospace reload-config";
     };
 }

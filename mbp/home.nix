@@ -561,7 +561,7 @@ in
           src = "${pkgs.zsh-you-should-use}/share/zsh/plugins/you-should-use";
         }
       ];
-      initExtra = ''
+      initContent = ''
         # export FPATH="/opt/homebrew/share/zsh/site-functions''${FPATH+:$FPATH}";
         export MANPATH="/opt/homebrew/share/man''${MANPATH+:$MANPATH}:";
         export INFOPATH="/opt/homebrew/share/info:''${INFOPATH:-}";

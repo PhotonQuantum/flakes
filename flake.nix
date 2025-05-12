@@ -35,10 +35,6 @@
       url = "github:nix-community/pyproject.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nh = {
-      url = "github:viperML/nh";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs =
@@ -50,7 +46,6 @@
       nixvim,
       tex-fmt,
       pyproject-nix,
-      nh,
       ...
     }:
     let
@@ -71,11 +66,6 @@
       tex-fmt-overlay = {
         nixpkgs.overlays = [
           tex-fmt.overlays.default
-        ];
-      };
-      nh-overlay = {
-        nixpkgs.overlays = [
-          nh.overlays.default
         ];
       };
       hm-config =
@@ -118,7 +108,6 @@
       mbp-modules = [
         generated-overlay
         tex-fmt-overlay
-        nh-overlay
         ./mbp/configuration.nix
         home-manager.darwinModules.home-manager
         (hm-config "aarch64-darwin" {

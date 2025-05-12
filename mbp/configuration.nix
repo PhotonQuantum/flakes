@@ -134,6 +134,12 @@
                 "E265"
               ];
             } (builtins.readFile ../scripts/denix.py);
+          validate-cam-imports = 
+            with pkgs;
+            writers.writePython3Bin "validate-cam-imports" {
+              libraries = [ python3Packages.click python3Packages.blake3 python3Packages.tqdm ];
+              flakeIgnore = [ "E501" ];
+            } (builtins.readFile ../scripts/validate_camera_imports.py);
         in
         with pkgs;
         [
@@ -149,6 +155,7 @@
           nix-tree
           nixfmt-rfc-style
           nixpkgs-fmt
+          validate-cam-imports
         ];
     in
     with pkgs;

@@ -104,7 +104,7 @@ _: {
     "visual-studio-code"
     "vlc"
     "vorta"
-    "zen-browser"
+    "zen"
     "zoom"
     "zotero"
     "zulip"

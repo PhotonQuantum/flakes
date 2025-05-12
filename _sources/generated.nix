@@ -141,42 +141,6 @@
     };
     date = "2025-03-04";
   };
-  yazi_plugins = {
-    pname = "yazi_plugins";
-    version = "864a0210d9ba1e8eb925160c2e2a25342031d8d3";
-    src = fetchFromGitHub {
-      owner = "yazi-rs";
-      repo = "plugins";
-      rev = "864a0210d9ba1e8eb925160c2e2a25342031d8d3";
-      fetchSubmodules = false;
-      sha256 = "sha256-m3709h7/AHJAtoJ3ebDA40c77D+5dCycpecprjVqj/k=";
-    };
-    date = "2025-04-27";
-  };
-  yazi_relative_motions = {
-    pname = "yazi_relative_motions";
-    version = "ce2e890227269cc15cdc71d23b35a58fae6d2c27";
-    src = fetchFromGitHub {
-      owner = "dedukun";
-      repo = "relative-motions.yazi";
-      rev = "ce2e890227269cc15cdc71d23b35a58fae6d2c27";
-      fetchSubmodules = false;
-      sha256 = "sha256-Ijz1wYt+L+24Fb/rzHcDR8JBv84z2UxdCIPqTdzbD14=";
-    };
-    date = "2025-04-16";
-  };
-  yazi_starship = {
-    pname = "yazi_starship";
-    version = "6fde3b2d9dc9a12c14588eb85cf4964e619842e6";
-    src = fetchFromGitHub {
-      owner = "Rolv-Apneseth";
-      repo = "starship.yazi";
-      rev = "6fde3b2d9dc9a12c14588eb85cf4964e619842e6";
-      fetchSubmodules = false;
-      sha256 = "sha256-+CSdghcIl50z0MXmFwbJ0koIkWIksm3XxYvTAwoRlDY=";
-    };
-    date = "2025-04-20";
-  };
   zimfw_completion = {
     pname = "zimfw_completion";
     version = "adfaf70893f3a51c12ce7ee935d4f4d1f0a9f2b2";

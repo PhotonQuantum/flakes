@@ -209,10 +209,8 @@ in
         catppuccin-mocha = "${yazi_flavors.src}/catppuccin-mocha.yazi";
       };
       plugins = with pkgs.generated; {
-        relative-motions = "${yazi_relative_motions.src}";
-        git = "${yazi_plugins.src}/git.yazi";
-        starship = "${yazi_starship.src}";
-        smart-enter = ./yazi/smart-enter.yazi;
+        inherit (pkgs.yaziPlugins) relative-motions git starship;
+        smart-enter = ./yazi/smart-enter.yazi;  # NOTE: forked version
       };
       initLua = ./yazi/init.lua;
       theme = {

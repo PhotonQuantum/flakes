@@ -59,21 +59,9 @@ fetch.github = "oh-my-fish/plugin-brew"
 src.git = "https://github.com/FelixKratz/SbarLua"
 fetch.github = "FelixKratz/SbarLua"
 
-[yazi_plugins]
-src.git = "https://github.com/yazi-rs/plugins"
-fetch.github = "yazi-rs/plugins"
-
 [yazi_flavors]
 src.git = "https://github.com/PhotonQuantum/flavors"
 fetch.github = "PhotonQuantum/flavors"
-
-[yazi_relative_motions]
-src.git = "https://github.com/dedukun/relative-motions.yazi"
-fetch.github = "dedukun/relative-motions.yazi"
-
-[yazi_starship]
-src.git = "https://github.com/Rolv-Apneseth/starship.yazi"
-fetch.github = "Rolv-Apneseth/starship.yazi"
 
 [sketchybar_app_font]
 src.github = "kvndrsslr/sketchybar-app-font"

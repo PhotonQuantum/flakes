@@ -209,21 +209,6 @@
         },
         "version": "437bd2031da38ccda75827cb7548e7baa4aa9978"
     },
-    "sketchybar_app_font": {
-        "cargoLocks": null,
-        "date": null,
-        "extract": null,
-        "name": "sketchybar_app_font",
-        "passthru": null,
-        "pinned": false,
-        "src": {
-            "name": null,
-            "sha256": "sha256-F41ayORRKxUgeWmhtYoMzXVNee0Zj3IYGZ0ix2z4iWA=",
-            "type": "url",
-            "url": "https://github.com/kvndrsslr/sketchybar-app-font/releases/download/v2.0.32/icon_map.lua"
-        },
-        "version": "v2.0.32"
-    },
     "yazi_flavors": {
         "cargoLocks": null,
         "date": "2025-03-04",

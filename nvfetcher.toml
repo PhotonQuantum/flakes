@@ -62,9 +62,3 @@ fetch.github = "FelixKratz/SbarLua"
 [yazi_flavors]
 src.git = "https://github.com/PhotonQuantum/flavors"
 fetch.github = "PhotonQuantum/flavors"
-
-[sketchybar_app_font]
-src.github = "kvndrsslr/sketchybar-app-font"
-src.use_latest_release = true
-src.use_release_name = true
-fetch.url = "https://github.com/kvndrsslr/sketchybar-app-font/releases/download/$ver/icon_map.lua"

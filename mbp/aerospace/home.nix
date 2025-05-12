@@ -43,7 +43,7 @@
             run = [ "move-node-to-workspace --focus-follows-window 3" ];
           }
           {
-            "if".app-name-regex-substring = "arc";
+            "if".app-name-regex-substring = "arc|zen";
             run = [ "move-node-to-workspace --focus-follows-window 2" ];
           }
         ];

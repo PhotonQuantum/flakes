@@ -121,14 +121,6 @@
     };
     date = "2024-08-12";
   };
-  sketchybar_app_font = {
-    pname = "sketchybar_app_font";
-    version = "v2.0.32";
-    src = fetchurl {
-      url = "https://github.com/kvndrsslr/sketchybar-app-font/releases/download/v2.0.32/icon_map.lua";
-      sha256 = "sha256-F41ayORRKxUgeWmhtYoMzXVNee0Zj3IYGZ0ix2z4iWA=";
-    };
-  };
   yazi_flavors = {
     pname = "yazi_flavors";
     version = "614f2b5792ce0811b6527cb44cc5689876f71503";

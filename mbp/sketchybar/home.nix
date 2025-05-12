@@ -5,10 +5,8 @@
     recursive = true;
     onChange = "${lib.getExe pkgs.sketchybar} --reload";
   };
-  xdg.configFile."sketchybar/helpers/app_icons.lua" = with pkgs.generated; {
-    source = sketchybar_app_font.src;
-    onChange = "${lib.getExe pkgs.sketchybar} --reload";
-  };
+  xdg.configFile."sketchybar/helpers/app_icons.lua".source =
+    "${pkgs.sketchybar-app-font}/lib/sketchybar-app-font/icon_map.lua";
   xdg.configFile."sketchybar/sketchybarrc" = {
     text = ''
       #!/usr/bin/env ${lib.getExe pkgs.lua54Packages.lua}

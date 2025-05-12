@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
 {
   imports = [
@@ -20,7 +20,7 @@
     shells = [ pkgs.fish ]; # Default shell
     variables = {
       # System variables
-      SHELL = "${pkgs.fish}/bin/fish";
+      SHELL = lib.getExe pkgs.fish;
       EDITOR = "nvim";
       VISUAL = "nvim";
       HOMEBREW_PREFIX = "/opt/homebrew";

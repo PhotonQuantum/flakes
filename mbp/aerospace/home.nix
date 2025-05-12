@@ -2,7 +2,7 @@
 {
   xdg.configFile."aerospace/aerospace.toml" =
     let
-      sketchybar = "${pkgs.sketchybar}/bin/sketchybar";
+      sketchybar = lib.getExe pkgs.sketchybar;
       aerospace-settings = {
         # managed by nix-darwin
         start-at-login = false;
@@ -192,6 +192,6 @@
     in
     {
       source = (format.generate "aerospace.toml" aerospace-settings);
-      onChange = "${pkgs.aerospace}/bin/aerospace reload-config";
+      onChange = "${lib.getExe pkgs.aerospace} reload-config";
     };
 }

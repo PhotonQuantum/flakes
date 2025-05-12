@@ -7,7 +7,7 @@ with lib;
     home.defaultShell = mkOption {
       type = with types; nullOr path;
       default = null;
-      example = literalExpression "${pkgs.fish}/bin/fish";
+      example = literalExpression (lib.getExe pkgs.fish);
     };
   };
   config = {

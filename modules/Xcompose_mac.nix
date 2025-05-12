@@ -63,7 +63,7 @@ with lib;
             ]
           );
         in
-        pkgs.runCommand "keyBindings.dict" { } "${python}/bin/python ${gen-compose} ${XcomposeFile} > $out";
+        pkgs.runCommand "keyBindings.dict" { } "${lib.getExe python} ${gen-compose} ${XcomposeFile} > $out";
     in
     {
       home.file."Library/KeyBindings/DefaultKeyBinding.dict" = mkIf (Xcompose != null) {

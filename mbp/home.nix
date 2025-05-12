@@ -65,14 +65,14 @@ in
       format = pkgs.formats.toml { };
     in
     (format.generate "config" {
-      build.rustc-wrapper = "${sccache}/bin/sccache";
+      build.rustc-wrapper = lib.getExe sccache;
       target.x86_64-apple-darwin.rustflags = [
         "-C"
-        "link-arg=-fuse-ld=${zld}/bin/zld"
+        "link-arg=-fuse-ld=${lib.getExe' zld "zld"}"
       ];
       target.aarch64-apple-darwin.rustflags = [
         "-C"
-        "link-arg=-fuse-ld=${zld}/bin/zld"
+        "link-arg=-fuse-ld=${lib.getExe' zld "zld"}"
       ];
     });
 
@@ -84,7 +84,7 @@ in
     (format.generate "config" {
       name = "gpgmejson";
       description = "JavaScript binding for GnuPG";
-      path = "${pkgs.gpgme.dev}/bin/gpgme-json";
+      path = lib.getExe' pkgs.gpgme.dev "gpgme-json";
       type = "stdio";
       allowed_origins = [
         "chrome-extension://kajibbejlbohfaggdiogboambcijhkke/"
@@ -461,7 +461,7 @@ in
         fish_add_path --prepend --global ~/.elan/bin
         set fish_escape_delay_ms 300
         builtin functions -e fish_mode_prompt
-        eval (${pkgs.starship}/bin/starship init fish)
+        eval (${lib.getExe pkgs.starship} init fish)
         test -r ~/.opam/opam-init/init.fish && source ~/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
       '';
       # + builtins.readFile ./wezterm.fish;

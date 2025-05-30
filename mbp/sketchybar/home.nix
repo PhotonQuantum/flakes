@@ -2,7 +2,7 @@
 {
   xdg.configFile = {
     "sketchybar" = {
-      source = ./.;
+      source = ./config;
       recursive = true;
       onChange = "${lib.getExe pkgs.sketchybar} --reload";
     };

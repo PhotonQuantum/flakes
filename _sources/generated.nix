@@ -109,18 +109,6 @@
     };
     date = "2021-04-11";
   };
-  sbarlua = {
-    pname = "sbarlua";
-    version = "437bd2031da38ccda75827cb7548e7baa4aa9978";
-    src = fetchFromGitHub {
-      owner = "FelixKratz";
-      repo = "SbarLua";
-      rev = "437bd2031da38ccda75827cb7548e7baa4aa9978";
-      fetchSubmodules = false;
-      sha256 = "sha256-F0UfNxHM389GhiPQ6/GFbeKQq5EvpiqQdvyf7ygzkPg=";
-    };
-    date = "2024-08-12";
-  };
   yazi_flavors = {
     pname = "yazi_flavors";
     version = "614f2b5792ce0811b6527cb44cc5689876f71503";

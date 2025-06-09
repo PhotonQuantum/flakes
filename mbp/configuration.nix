@@ -7,6 +7,7 @@
     ./sketchybar/config.nix
   ];
 
+  system.primaryUser = "lightquantum";
 
   users.users.lightquantum = {
     home = "/Users/lightquantum";

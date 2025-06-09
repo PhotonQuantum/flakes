@@ -118,7 +118,7 @@ in
       enable = true;
       enableFishIntegration = true;
       keymap = {
-        manager.prepend_keymap =
+        mgr.prepend_keymap =
           [
             {
               on = [ "<S-Enter>" ];
@@ -172,7 +172,7 @@ in
         ];
       };
       settings = {
-        manager = {
+        mgr = {
           ratio = [
             1
             2

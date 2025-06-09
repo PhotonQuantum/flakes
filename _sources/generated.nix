@@ -51,15 +51,15 @@
   };
   fish_done = {
     pname = "fish_done";
-    version = "eb32ade85c0f2c68cbfcff3036756bbf27a4f366";
+    version = "0bfe402753681f705a482694fcaf20c2bfc6deb7";
     src = fetchFromGitHub {
       owner = "franciscolourenco";
       repo = "done";
-      rev = "eb32ade85c0f2c68cbfcff3036756bbf27a4f366";
+      rev = "0bfe402753681f705a482694fcaf20c2bfc6deb7";
       fetchSubmodules = false;
-      sha256 = "sha256-DMIRKRAVOn7YEnuAtz4hIxrU93ULxNoQhW6juxCoh4o=";
+      sha256 = "sha256-WA6DBrPBuXRIloO05UBunTJ9N01d6tO1K1uqojjO0mo=";
     };
-    date = "2024-04-11";
+    date = "2025-05-15";
   };
   fish_jump = {
     pname = "fish_jump";
@@ -183,14 +183,14 @@
   };
   zsh_completions = {
     pname = "zsh_completions";
-    version = "98dd809126c0748d7058eb7684dbb44d3f4e9c16";
+    version = "c29efd0bc3927ab25dc93ad4085d7143881b73f0";
     src = fetchFromGitHub {
       owner = "zsh-users";
       repo = "zsh-completions";
-      rev = "98dd809126c0748d7058eb7684dbb44d3f4e9c16";
+      rev = "c29efd0bc3927ab25dc93ad4085d7143881b73f0";
       fetchSubmodules = false;
-      sha256 = "sha256-6F4SvMxC/zXkzysNI8YdB/eNh7kImaOjyhEkvZuXVf4=";
+      sha256 = "sha256-qCoBWdBZMVmhnd2m5ffXxu0anGigJexeN0KgS+9bmvg=";
     };
-    date = "2025-05-08";
+    date = "2025-06-01";
   };
 }

@@ -46,6 +46,7 @@
       nixvim,
       tex-fmt,
       pyproject-nix,
+      colmena,
       ...
     }:
     let
@@ -68,19 +69,32 @@
           tex-fmt.overlays.default
         ];
       };
+      colmena-overlay = {
+        nixpkgs.overlays = [
+          colmena.overlays.default
+        ];
+      };
       hm-config =
-        system: userPathMap:
+        withMac: system: userPathMap:
         let
           nur-modules = import nur {
             nurpkgs = nixpkgs.legacyPackages.${system};
           };
-          hm-modules = [
-            nixvim.homeManagerModules.nixvim
-            ./modules/power_mac.nix
-            ./modules/Xcompose_mac.nix
-            nur-modules.repos.lightquantum.modules.chsh
-            nur-modules.repos.lightquantum.modules.wallpaper
-          ];
+          hm-modules =
+            [
+              nixvim.homeManagerModules.nixvim
+            ]
+            ++ (
+              if withMac then
+                [
+                  ./modules/power_mac.nix
+                  ./modules/Xcompose_mac.nix
+                  nur-modules.repos.lightquantum.modules.chsh
+                  nur-modules.repos.lightquantum.modules.wallpaper
+                ]
+              else
+                [ ]
+            );
           users = builtins.mapAttrs (name: path: import path) userPathMap;
         in
         {
@@ -101,16 +115,25 @@
       meow-modules = [
         home-manager.nixosModules.home-manager
         ./meow/configuration.nix
-        (hm-config "x86_64-linux" {
+        (hm-config false "x86_64-linux" {
           lightquantum = ./meow/home.nix;
+        })
+      ];
+      orbstack-modules = [
+        generated-overlay
+        home-manager.nixosModules.home-manager
+        ./orbstack/configuration.nix
+        (hm-config false "aarch64-linux" {
+          lightquantum = ./orbstack/home.nix;
         })
       ];
       mbp-modules = [
         generated-overlay
         tex-fmt-overlay
+        colmena-overlay
         ./mbp/configuration.nix
         home-manager.darwinModules.home-manager
-        (hm-config "aarch64-darwin" {
+        (hm-config true "aarch64-darwin" {
           lightquantum = ./mbp/home.nix;
           root = ./mbp/home-root.nix;
         })
@@ -121,6 +144,10 @@
         lightquantum-meow = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           modules = meow-modules;
+        };
+        orbstack-nixos = nixpkgs.lib.nixosSystem {
+          system = "aarch64-linux";
+          modules = orbstack-modules;
         };
       };
       darwinConfigurations =
@@ -140,10 +167,18 @@
           }) (builtins.genList (x: x + 1) 8)
         );
 
-      colmena = {
+      colmenaHive = colmena.lib.makeHive {
         meta = {
           nixpkgs = import nixpkgs {
-            system = "x86_64-linux";
+            system = "aarch64-darwin";
+          };
+          nodeNixpkgs = {
+            lightquantum-meow = import nixpkgs {
+              system = "x86_64-linux";
+            };
+            orbstack-nixos = import nixpkgs {
+              system = "aarch64-linux";
+            };
           };
         };
         lightquantum-meow = {
@@ -154,6 +189,14 @@
             buildOnTarget = true;
           };
           imports = meow-modules;
+        };
+        orbstack-nixos = {
+          deployment = {
+            targetHost = "orb";
+            targetUser = "nixos";
+            buildOnTarget = true;
+          };
+          imports = orbstack-modules;
         };
       };
     };

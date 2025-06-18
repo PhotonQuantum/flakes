@@ -1,35 +1,16 @@
 {
   pkgs,
   lib,
-  osConfig,
   ...
 }:
 
-let
-  recursiveMerge =
-    with lib;
-    attrList:
-    let
-      f =
-        attrPath:
-        zipAttrsWith (
-          n: values:
-          if tail values == [ ] then
-            head values
-          else if all isList values then
-            unique (concatLists values)
-          else if all isAttrs values then
-            f (attrPath ++ [ n ]) values
-          else
-            last values
-        );
-    in
-    f [ ] attrList;
-  compose = with pkgs.lib; l: flip pipe (reverseList l);
-in
 {
   imports = [
     ../common/vim.nix
+    ../common/starship.nix
+    ../common/yazi.nix
+    ../common/fish.nix
+    ../common/git.nix
     ../secrets/ssh.nix
     ./aerospace/home.nix
     ./sketchybar/home.nix
@@ -113,130 +94,6 @@ in
         incsearch = true;
         smartcase = true;
       };
-    };
-    yazi = {
-      enable = true;
-      enableFishIntegration = true;
-      keymap = {
-        mgr.prepend_keymap =
-          [
-            {
-              on = [ "<S-Enter>" ];
-              run = "escape";
-              desc = "Exit visual mode, clear selected, or cancel search";
-            }
-            {
-              on = [ "<Enter>" ];
-              run = "noop";
-              desc = "";
-            }
-            {
-              on = [ "l" ];
-              run = "plugin smart-enter";
-              desc = "Enter the child directory, or open the file";
-            }
-          ]
-          ++ builtins.genList (n: {
-            on = [ (toString n) ];
-            run = "plugin relative-motions ${toString n}";
-            desc = "Move in relative steps";
-          }) 9;
-        input.prepend_keymap = [
-          {
-            on = [ "<S-Enter>" ];
-            run = "escape";
-            desc = "Go back the normal mode, or cancel input";
-          }
-          {
-            on = [ "H" ];
-            run = "move -999";
-            desc = "Move to the BOL";
-          }
-          {
-            on = [ "L" ];
-            run = "move 999";
-            desc = "Move to the EOL";
-          }
-        ];
-        pick.prepend_keymap = [
-          {
-            on = [ "<S-Enter>" ];
-            run = "close";
-            desc = "Cancel the picker";
-          }
-          {
-            on = [ "h" ];
-            run = "close";
-            desc = "Cancel the picker";
-          }
-        ];
-      };
-      settings = {
-        mgr = {
-          ratio = [
-            1
-            2
-            3
-          ];
-          show_symlink = false;
-          preview = {
-            wrap = "yes";
-          };
-        };
-        plugin = {
-          prepend_fetchers = [
-            {
-              id = "git";
-              name = "*";
-              run = "git";
-            }
-            {
-              id = "git";
-              name = "*";
-              run = "git";
-            }
-          ];
-        };
-        # opener.archive = [
-        #   {
-        #     run = "aunpack \"$1\"";
-        #     desc = "Extract here";
-        #   }
-        # ];
-      };
-      flavors = with pkgs.generated; {
-        catppuccin-latte = "${yazi_flavors.src}/catppuccin-latte.yazi";
-        catppuccin-mocha = "${yazi_flavors.src}/catppuccin-mocha.yazi";
-      };
-      plugins = with pkgs.generated; {
-        inherit (pkgs.yaziPlugins) relative-motions git starship;
-        smart-enter = ./yazi/smart-enter.yazi;  # NOTE: forked version
-      };
-      initLua = ./yazi/init.lua;
-      theme = {
-        flavor = {
-          light = "catppuccin-latte";
-          dark = "catppuccin-mocha";
-        };
-      };
-    };
-    pistol = {
-      enable = false;
-      associations =
-        with pkgs;
-        let
-          batViewer = "${lib.getExe bat} --style=plain --paging=never --color=always %pistol-filename%";
-        in
-        [
-          {
-            mime = "text/*";
-            command = batViewer;
-          }
-          {
-            mime = "application/json";
-            command = batViewer;
-          }
-        ];
     };
     wezterm = {
       enable = true;
@@ -395,15 +252,7 @@ in
     };
     home-manager.enable = true;
     fish = {
-      enable = true;
-      shellAliases = {
-        vim = "nvim";
-        coqtags = "fd -e v . . ~/.opam/default/lib/coq/theories -X ctags --options=/Users/lightquantum/.config/coq.ctags";
-        # ssh = "kitty +kitten ssh";
-      };
-      shellAbbrs = {
-        lf = "yy";
-      } // import ./fish/git_abbr.nix;
+      # Extra configuration on top of the common fish module
       functions = {
         init_conda = ''
           if test -f /Users/lightquantum/miniconda3/bin/conda
@@ -418,39 +267,9 @@ in
           set ref (git show-ref | awk '/ refs.original.refs/{print$2}')
           git update-ref -d $ref
         '';
-        lfcd = ''
-          set tmp (mktemp)
-          # `command` is needed in case `lfcd` is aliased to `lf`
-          command lf -last-dir-path=$tmp $argv
-          if test -f "$tmp"
-              set dir (cat $tmp)
-              rm -f $tmp
-              if test -d "$dir"
-                  if test "$dir" != (pwd)
-                      cd $dir
-                  end
-              end
-          end
-        '';
-        fish_greeting = "";
-        fish_right_prompt = "";
-        fish_prompt_loading_indicator = {
-          argumentNames = "last_prompt";
-          body = ''
-            echo -n "$last_prompt" | head -n2 | tail -n1 | read -zl last_prompt_line
-            echo -n "$last_prompt_line" | cut -d, -f1-2 | read -l last_prompt_directory
-
-            starship module directory | read -zl current_prompt_directory
-
-            echo
-            if [ "$last_prompt_directory" = "$current_prompt_directory" ]
-                echo "$last_prompt" | tail -n2
-            else
-                echo "$current_prompt_directory"
-                starship module character
-            end
-          '';
-        };
+      };
+      shellAliases = {
+        coqtags = "fd -e v . . ~/.opam/default/lib/coq/theories -X ctags --options=/Users/lightquantum/.config/coq.ctags";
       };
       shellInit = ''
         set -x MANPATH "/opt/homebrew/share/man" $MANPATH
@@ -459,60 +278,8 @@ in
         fish_add_path --prepend --global ~/.nargo/bin
         fish_add_path --prepend --global ~/.ghcup/bin
         fish_add_path --prepend --global ~/.elan/bin
-        set fish_escape_delay_ms 300
-        builtin functions -e fish_mode_prompt
-        eval (${lib.getExe pkgs.starship} init fish)
-        test -r ~/.opam/opam-init/init.fish && source ~/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
       '';
-      # + builtins.readFile ./wezterm.fish;
-      loginShellInit =
-        let
-          # This naive quoting is good enough in this case. There shouldn't be any
-          # double quotes in the input string, and it needs to be double quoted in case
-          # it contains a space (which is unlikely!)
-          dquote = str: "\"" + str + "\"";
-
-          makeBinPathList = map (path: path + "/bin");
-        in
-        ''
-          fish_add_path --move --prepend --path ${
-            lib.concatMapStringsSep " " dquote (makeBinPathList osConfig.environment.profiles)
-          }
-          set fish_user_paths $fish_user_paths
-        '';
       plugins = [
-        {
-          name = "Done";
-          inherit (pkgs.generated.fish_done) src;
-        }
-        {
-          name = "sponge";
-          inherit (pkgs.generated.fish_sponge) src;
-        }
-        {
-          name = "autopairs";
-          inherit (pkgs.generated.fish_autopairs) src;
-        }
-        {
-          name = "puffer_fish";
-          inherit (pkgs.generated.fish_puffer_fish) src;
-        }
-        {
-          name = "async_prompt";
-          inherit (pkgs.generated.fish_async_prompt) src;
-        }
-        {
-          name = "abbreviation_tips";
-          inherit (pkgs.generated.fish_abbreviation_tips) src;
-        }
-        {
-          name = "jump";
-          inherit (pkgs.generated.fish_jump) src;
-        }
-        {
-          name = "sudope";
-          inherit (pkgs.generated.fish_sudope) src;
-        }
         {
           name = "brew";
           inherit (pkgs.generated.fish_brew) src;
@@ -626,54 +393,6 @@ in
       '';
       envExtra = ". $HOME/.cargo/env";
     };
-    starship = {
-      enable = true;
-      enableFishIntegration = false; # Fish integration is handled by `fish` module
-      settings =
-        let
-          presets =
-            with builtins;
-            map
-              (compose [
-                fromTOML
-                readFile
-                (s: ./starship + "/${s}")
-              ])
-              (
-                compose [
-                  attrNames
-                  (lib.filterAttrs (_: kind: kind == "regular"))
-                  readDir
-                ] (./starship)
-              );
-        in
-        {
-          git_status = {
-            ahead = "↑\${count}";
-            behind = "↓\${count}";
-            conflicted = "✖";
-            diverged = "⇅↑\${ahead_count}↓\${behind_count}";
-            modified = "※";
-            staged = "✓";
-            stashed = "";
-            untracked = "";
-            ignore_submodules = true;
-          };
-          ocaml.detect_files = [
-            "dune"
-            "dune-project"
-            "jbuild"
-            "jbuild-ignore"
-            ".merlin"
-            "_CoqProject"
-          ];
-          character = {
-            success_symbol = "[⊢](bold green) ";
-            error_symbol = "[⊢](bold red) ";
-          };
-        }
-        // recursiveMerge presets;
-    };
     lazygit = {
       enable = true;
       settings = {
@@ -682,29 +401,10 @@ in
       };
     };
     git = {
-      enable = true;
-      difftastic = {
-        enable = true;
-        display = "inline";
-      };
-      lfs.enable = true;
-      userName = "LightQuantum";
-      userEmail = "self@lightquantum.me";
+      # Extra configuration on top of the common git module
       signing = {
         key = "A99DCF320110092028ECAC42E53ED56B7F20B7BB";
         signByDefault = true;
-      };
-      ignores = [
-        "/.idea"
-        ".DS_Store"
-      ];
-      extraConfig = {
-        pull.ff = "only";
-        init.defaultBranch = "master";
-        push.autoSetupRemote = true;
-        absorb.maxStack = 50;
-        merge.tool = "nvimdiff";
-        core.autocrlf = "input";
       };
     };
   };

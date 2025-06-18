@@ -5,6 +5,7 @@
     ./brew.nix
     ./aerospace/config.nix
     ./sketchybar/config.nix
+    ../common/cache.nix
   ];
 
   system.primaryUser = "lightquantum";

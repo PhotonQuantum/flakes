@@ -8,6 +8,16 @@
     ../common/cache.nix
   ];
 
+  nixpkgs.overlays = [ (final: prev: {
+    inherit (prev.lixPackageSets.stable)
+      nixpkgs-review
+      nix-eval-jobs
+      nix-fast-build
+      colmena;
+  }) ];
+
+  nix.package = pkgs.lixPackageSets.stable.lix;
+
   system.primaryUser = "lightquantum";
 
   users.users.lightquantum = {
@@ -206,11 +216,10 @@
 
   security.pam.services.sudo_local.touchIdAuth = true;
 
-  nix.package = pkgs.nix;
+  #nix.package = pkgs.nix;
   nix.gc.automatic = true;
   nix.settings = {
     trusted-users = [ "lightquantum" ]; # Allow me to interact with the daemon without sudo
-    download-buffer-size = 134217728;
     experimental-features = [
       "nix-command"
       "flakes"
@@ -237,7 +246,7 @@
     allowUnfree = true;
     allowUnfreePredicate = _: true;
   };
-  ids.gids.nixbld = 30000;  # NOTE this only works for current installation
+  # ids.gids.nixbld = 30000;  # NOTE this only works for current installation
 
   programs.zsh.enable = true;
   programs.fish.enable = true;

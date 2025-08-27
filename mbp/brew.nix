@@ -59,6 +59,7 @@ _: {
     "dropbox"
     "element"
     "font-iosevka-nerd-font"
+    "font-libertinus"
     "ghostty"
     "github"
     "grammarly-desktop"

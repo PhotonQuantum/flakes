@@ -73,10 +73,10 @@
       gitPackages = with pkgs; [
         delta
         git-absorb
-        (git-branchless.overrideAttrs (old: {
-          doCheck = false;
-          doInstallCheck = false;
-        }))
+        # (git-branchless.overrideAttrs (old: {
+        #   doCheck = false;
+        #   doInstallCheck = false;
+        # }))
         git-crypt
         git-filter-repo
         git-machete
@@ -108,7 +108,7 @@
         mongosh
         mtr
         navi
-        neofetch
+        # neofetch
         ngrok
         ninja
         nodejs

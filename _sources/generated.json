@@ -316,7 +316,7 @@
     },
     "zsh_completions": {
         "cargoLocks": null,
-        "date": "2025-08-21",
+        "date": "2025-08-24",
         "extract": null,
         "name": "zsh_completions",
         "passthru": null,
@@ -328,11 +328,11 @@
             "name": null,
             "owner": "zsh-users",
             "repo": "zsh-completions",
-            "rev": "e94efecefad1b72fb4d863d1b8dab6d07e6e06fe",
-            "sha256": "sha256-hJqmB1imJVV6Uqw/6zswJ6fQm8LlhvydNUa5eUdadBI=",
+            "rev": "8d5a945c93a6069f3f305219f373b61d2f05472c",
+            "sha256": "sha256-cYoawtN/U4F1yjesz8Yef8MFpT9uWtNDOt9peqXzU0I=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "e94efecefad1b72fb4d863d1b8dab6d07e6e06fe"
+        "version": "8d5a945c93a6069f3f305219f373b61d2f05472c"
     }
 }

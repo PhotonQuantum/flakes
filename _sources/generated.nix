@@ -183,14 +183,14 @@
   };
   zsh_completions = {
     pname = "zsh_completions";
-    version = "e94efecefad1b72fb4d863d1b8dab6d07e6e06fe";
+    version = "8d5a945c93a6069f3f305219f373b61d2f05472c";
     src = fetchFromGitHub {
       owner = "zsh-users";
       repo = "zsh-completions";
-      rev = "e94efecefad1b72fb4d863d1b8dab6d07e6e06fe";
+      rev = "8d5a945c93a6069f3f305219f373b61d2f05472c";
       fetchSubmodules = false;
-      sha256 = "sha256-hJqmB1imJVV6Uqw/6zswJ6fQm8LlhvydNUa5eUdadBI=";
+      sha256 = "sha256-cYoawtN/U4F1yjesz8Yef8MFpT9uWtNDOt9peqXzU0I=";
     };
-    date = "2025-08-21";
+    date = "2025-08-24";
   };
 }

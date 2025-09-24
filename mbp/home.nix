@@ -403,8 +403,8 @@
     git = {
       # Extra configuration on top of the common git module
       signing = {
-        key = "A99DCF320110092028ECAC42E53ED56B7F20B7BB";
-        signByDefault = true;
+        # key = "A99DCF320110092028ECAC42E53ED56B7F20B7BB";
+        # signByDefault = false;
       };
     };
   };

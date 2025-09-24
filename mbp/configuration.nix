@@ -246,7 +246,7 @@
     allowUnfree = true;
     allowUnfreePredicate = _: true;
   };
-  # ids.gids.nixbld = 30000;  # NOTE this only works for current installation
+  ids.gids.nixbld = 30000;  # NOTE this only works for current installation
 
   programs.zsh.enable = true;
   programs.fish.enable = true;

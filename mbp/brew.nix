@@ -8,9 +8,6 @@ _: {
   };
   homebrew.taps = [
     "borgbackup/tap"
-    "homebrew/cask-drivers"
-    "homebrew/cask-fonts"
-    "homebrew/cask-versions"
     "homebrew/cask"
     "homebrew/services"
     "Kegworks-App/kegworks"

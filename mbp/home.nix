@@ -35,6 +35,7 @@
       # ../wallpaper/landscape.heic
     ];
     defaultShell = pkgs.fish;
+    shell.enableShellIntegration = true;
     disableMacPowerButton = true;
   };
 
@@ -251,6 +252,21 @@
       nix-direnv.enable = true;
     };
     home-manager.enable = true;
+    ghostty = {
+      enable = true;
+      package = null; # managed by homebrew
+      settings = {
+        font-family = "Sarasa Term SC";
+        font-size = 16;
+        theme = "dark:Catppuccin Mocha,light:Catppuccin Latte";
+        background-opacity = 0.8;
+        background-blur-radius = 80;
+        keybind = "global:super+,=toggle_quick_terminal";
+        # keybind = global:super+,=toggle_visibility
+        quick-terminal-animation-duration = 0.1;
+        shell-integration-features = true;
+      };
+    };
     fish = {
       # Extra configuration on top of the common fish module
       functions = {

@@ -92,6 +92,7 @@ _: {
     "setapp"
     "slidepilot"
     "squirrel"
+    "stats"
     "steam"
     "syncplay"
     "syntax-highlight"

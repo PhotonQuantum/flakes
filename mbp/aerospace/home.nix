@@ -39,12 +39,17 @@
             run = [ "move-node-to-workspace 5" ];
           }
           {
-            "if".app-name-regex-substring = "code";
+            "if".app-name-regex-substring = "code|cursor";
             run = [ "move-node-to-workspace --focus-follows-window 3" ];
           }
           {
             "if".app-name-regex-substring = "arc|zen";
             run = [ "move-node-to-workspace --focus-follows-window 2" ];
+          }
+          {
+            "if".window-title-regex-substring = ".+ — 1Password";
+            run = [ "layout floating" ];
+
           }
         ];
 

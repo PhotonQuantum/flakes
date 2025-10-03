@@ -35,7 +35,7 @@
     programs.home-manager.enable = true;
 
     # Do not include any package except explicitly listed.
-    programs.packageRestrictions = {
+    packageRestrictions = {
       enable = true;
       allowedPackages = [
         "empty-directory"

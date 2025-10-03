@@ -3,7 +3,7 @@
 # packages can be installed via Home Manager.
 { lib, config, options, pkgs, ... }:
 let
-  cfg = config.programs.packageRestrictions;
+  cfg = config.packageRestrictions;
 
   # Get the original package list before filtering
   # We check if it's defined to avoid evaluation errors
@@ -28,7 +28,7 @@ let
   unauthorizedNames = lib.concatStringsSep ", " unauthorizedPackages;
 in
 {
-  options.programs.packageRestrictions = {
+  options.packageRestrictions = {
     enable = lib.mkEnableOption "package restrictions" // {
       default = false;
       description = "Enable package restriction checks";

@@ -10,7 +10,7 @@ let
   # Filter out packages that are marked for removal
   # This is where the actual package filtering happens
   filteredPackages = lib.filter (
-    pkg: !(lib.elem (lib.getName pkg) prev.config.programs.packageRestrictions.removePackages)
+    pkg: !(lib.elem (lib.getName pkg) prev.config.packageRestrictions.removePackages)
   ) originalPackages;
 in
 {
@@ -21,6 +21,6 @@ in
 
     # Set the stage2 flag to true, which changes the validation logic in no-package.nix
     # In stage 2, packages in removePackages list are treated as unauthorized
-    programs.packageRestrictions.__stage2 = true;
+    packageRestrictions.__stage2 = true;
   };
 }

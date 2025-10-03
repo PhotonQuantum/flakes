@@ -99,15 +99,27 @@
   };
   fish_sudope = {
     pname = "fish_sudope";
-    version = "83919a692bc1194aa322f3627c859fecace5f496";
+    version = "4ad91e49329811939c3a09221a95e620c3964b17";
     src = fetchFromGitHub {
       owner = "oh-my-fish";
       repo = "plugin-sudope";
-      rev = "83919a692bc1194aa322f3627c859fecace5f496";
+      rev = "4ad91e49329811939c3a09221a95e620c3964b17";
       fetchSubmodules = false;
-      sha256 = "sha256-pD4rNuqg6TG22L9m8425CO2iqcYm8JaAEXIVa0H/v/U=";
+      sha256 = "sha256-OsgThGY/tGF/XBQFyXTY9qYf50B01wEH93lqWEAxZPY=";
     };
-    date = "2021-04-11";
+    date = "2025-09-16";
+  };
+  fuzzy-pkg-finder = {
+    pname = "fuzzy-pkg-finder";
+    version = "1b3e34130de6a0b3bcdf4646d944d9da76dcd588";
+    src = fetchFromGitHub {
+      owner = "ericlay";
+      repo = "fuzzy-pkg-finder";
+      rev = "1b3e34130de6a0b3bcdf4646d944d9da76dcd588";
+      fetchSubmodules = false;
+      sha256 = "sha256-auyW6VqnHJToMpc695C4sLzed/R9i/Wmn0C2n3V3jOk=";
+    };
+    date = "2024-12-11";
   };
   sbarlua = {
     pname = "sbarlua";
@@ -183,14 +195,14 @@
   };
   zsh_completions = {
     pname = "zsh_completions";
-    version = "8d5a945c93a6069f3f305219f373b61d2f05472c";
+    version = "173a14c436d5f66cbe69f5c14c7a09784004bc21";
     src = fetchFromGitHub {
       owner = "zsh-users";
       repo = "zsh-completions";
-      rev = "8d5a945c93a6069f3f305219f373b61d2f05472c";
+      rev = "173a14c436d5f66cbe69f5c14c7a09784004bc21";
       fetchSubmodules = false;
-      sha256 = "sha256-cYoawtN/U4F1yjesz8Yef8MFpT9uWtNDOt9peqXzU0I=";
+      sha256 = "sha256-xy3TzKS5M+M6yhEmfLT1FDVW6k6jIQdQvVMK8JrXa0w=";
     };
-    date = "2025-08-24";
+    date = "2025-09-22";
   };
 }

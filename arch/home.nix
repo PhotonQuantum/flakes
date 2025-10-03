@@ -36,7 +36,11 @@
       EDITOR = "nvim";
     };
 
-    home.packages = with pkgs; [ nixfmt nil ];
+    home.packages = with pkgs; [
+      nixfmt
+      nil
+      nvfetcher
+    ];
 
     programs = {
       # Do not generate any man page.
@@ -55,6 +59,13 @@
       fish = {
         shellAliases = {
           ls = "lsd";
+          fpf = "env SHELL=/usr/bin/bash fpf";
+        };
+      };
+
+      ghostty = {
+        settings = {
+          font-size = 12;
         };
       };
     };
@@ -80,6 +91,7 @@
         "nh"
         "nixfmt"
         "nil"
+        "nvfetcher"
 
         # vim is managed by nixvim
         "nixvim"

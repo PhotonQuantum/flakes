@@ -62,3 +62,7 @@ fetch.github = "FelixKratz/SbarLua"
 [yazi_flavors]
 src.git = "https://github.com/PhotonQuantum/flavors"
 fetch.github = "PhotonQuantum/flavors"
+
+[fuzzy-pkg-finder]
+src.git = "https://github.com/ericlay/fuzzy-pkg-finder"
+fetch.github = "ericlay/fuzzy-pkg-finder"

@@ -1,6 +1,7 @@
-{ lib, pkgs, ... }:
+{ lib, pkgs, config, ... }:
 
 let
+  configOnly = config.home.configOnly or false;
   recursiveMerge =
     with lib;
     attrList:
@@ -25,6 +26,7 @@ in
 {
   programs.starship = {
     enable = true;
+    package = if configOnly then pkgs.emptyDirectory else pkgs.starship;
     enableFishIntegration = false; # Fish integration is handled by `fish` module
     settings =
       let

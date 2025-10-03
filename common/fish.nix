@@ -1,7 +1,11 @@
-{ pkgs, lib, osConfig, ... }:
-{
+{ pkgs, lib, osConfig, config, ... }:
+let
+  configOnly = config.home.configOnly or false;
+in {
   programs.fish = {
     enable = true;
+    # NOTE this.package is required to generate configs.
+    # package = if configOnly then pkgs.emptyDirectory else pkgs.fish;
     shellAliases = {
       vim = "nvim";
     };
@@ -47,7 +51,9 @@
       set fish_escape_delay_ms 300
       test -r ~/.opam/opam-init/init.fish && source ~/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
     '';
-    shellInitLast = ''
+    shellInitLast = if configOnly then ''
+      eval (starship init fish)
+    '' else ''
       eval (${lib.getExe pkgs.starship} init fish)
     '';
     # + builtins.readFile ./fish/wezterm.fish;

@@ -80,21 +80,20 @@
           nur-modules = import nur {
             nurpkgs = nixpkgs.legacyPackages.${system};
           };
-          hm-modules =
-            [
-              nixvim.homeManagerModules.nixvim
-            ]
-            ++ (
-              if withMac then
-                [
-                  ./modules/power_mac.nix
-                  ./modules/Xcompose_mac.nix
-                  nur-modules.repos.lightquantum.modules.chsh
-                  nur-modules.repos.lightquantum.modules.wallpaper
-                ]
-              else
-                [ ]
-            );
+          hm-modules = [
+            nixvim.homeManagerModules.nixvim
+          ]
+          ++ (
+            if withMac then
+              [
+                ./modules/power_mac.nix
+                ./modules/Xcompose_mac.nix
+                nur-modules.repos.lightquantum.modules.chsh
+                nur-modules.repos.lightquantum.modules.wallpaper
+              ]
+            else
+              [ ]
+          );
           users = builtins.mapAttrs (name: path: import path) userPathMap;
         in
         {
@@ -166,6 +165,30 @@
             value = conf;
           }) (builtins.genList (x: x + 1) 8)
         );
+
+      homeConfigurations.arch =
+        let
+          hmConf = home-manager.lib.homeManagerConfiguration {
+            pkgs = nixpkgs.legacyPackages.x86_64-linux;
+            modules = [
+              generated-overlay
+              ./arch/no-package.nix
+              ./arch/home.nix
+              # nixvim.homeManagerModules.nixvim
+            ];
+            extraSpecialArgs = {
+              inherit nixvim pyproject-nix;
+            };
+          };
+        in
+        hmConf.extendModules {
+          modules = [
+            ./arch/no-package-stage2.nix
+          ];
+          specialArgs = {
+            prev = hmConf;
+          };
+        };
 
       colmenaHive = colmena.lib.makeHive {
         meta = {

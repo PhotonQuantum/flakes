@@ -1,7 +1,10 @@
-{ pkgs, ... }:
-{
+{ pkgs, config, ... }:
+let
+  configOnly = config.home.configOnly or false;
+in {
   programs.yazi = {
     enable = true;
+    package = if configOnly then pkgs.emptyDirectory else pkgs.yazi;
     keymap = {
       mgr.prepend_keymap =
         [
@@ -88,6 +91,7 @@
       catppuccin-mocha = "${yazi_flavors.src}/catppuccin-mocha.yazi";
     };
     plugins = {
+      # NOTE these non-command packages are pretty useful even on non-nix-managed systems.
       inherit (pkgs.yaziPlugins) relative-motions git starship;
       smart-enter = ./yazi/smart-enter.yazi; # NOTE: forked version
     };

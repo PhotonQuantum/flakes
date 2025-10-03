@@ -1,10 +1,8 @@
-{ config, pkgs, ... }:
-let
-  configOnly = config.home.configOnly or false;
-in {
+_:
+{
   programs.bat = {
     enable = true;
-    package = if configOnly then pkgs.emptyDirectory else pkgs.bat;
+    # NOTE bat is extensively mre's no way null there's no way to disable it on notory
     config = {
       theme = "base16";
     };

@@ -1,4 +1,4 @@
-{ pkgs, lib, osConfig, config, ... }:
+{ pkgs, lib, config, ... }:
 let
   configOnly = config.home.configOnly or false;
 in {

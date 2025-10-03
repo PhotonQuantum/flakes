@@ -6,7 +6,7 @@ in {
   programs.ghostty = {
     enable = true;
     # On macOS, managed by homebrew; on Linux, use nixpkgs or system package
-    package = if isDarwin then null else (if configOnly then pkgs.emptyDirectory else pkgs.ghostty or pkgs.emptyDirectory);
+    package = if isDarwin || configOnly then null else pkgs.ghostty;
     settings = {
       font-family = "Sarasa Term SC";
       font-size = 16;

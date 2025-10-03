@@ -11,6 +11,10 @@
     ../common/yazi.nix
     ../common/fish.nix
     ../common/git.nix
+    ../common/bat.nix
+    ../common/gh.nix
+    ../common/ghostty.nix
+    ../common/lazygit.nix
     ../secrets/ssh.nix
     ./aerospace/home.nix
     ./sketchybar/home.nix
@@ -77,12 +81,6 @@
     ssh = {
       enable = true;
       includes = [ "~/.orbstack/ssh/config" ];
-    };
-    bat = {
-      enable = true;
-      config = {
-        theme = "base16";
-      };
     };
     lsd.enable = true;
     htop.enable = true;
@@ -188,21 +186,6 @@
       nix-direnv.enable = true;
     };
     home-manager.enable = true;
-    ghostty = {
-      enable = true;
-      package = null; # managed by homebrew
-      settings = {
-        font-family = "Sarasa Term SC";
-        font-size = 16;
-        theme = "dark:Catppuccin Mocha,light:Catppuccin Latte";
-        background-opacity = 0.8;
-        background-blur-radius = 80;
-        keybind = "global:super+,=toggle_quick_terminal";
-        # keybind = global:super+,=toggle_visibility
-        quick-terminal-animation-duration = 0.1;
-        shell-integration-features = true;
-      };
-    };
     fish = {
       # Extra configuration on top of the common fish module
       functions = {
@@ -237,13 +220,6 @@
           inherit (pkgs.generated.fish_brew) src;
         }
       ];
-    };
-    lazygit = {
-      enable = true;
-      settings = {
-        gui.showIcons = true;
-        refresher.refreshInterval = 1;
-      };
     };
     skim.enable = true;
     # opam.enable = true;

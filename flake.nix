@@ -166,7 +166,7 @@
           }) (builtins.genList (x: x + 1) 8)
         );
 
-      homeConfigurations.arch =
+      homeConfigurations."lightquantum@lightquantum-arch" =
         let
           hmConf = home-manager.lib.homeManagerConfiguration {
             pkgs = nixpkgs.legacyPackages.x86_64-linux;

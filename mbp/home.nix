@@ -78,7 +78,6 @@
       enable = true;
       includes = [ "~/.orbstack/ssh/config" ];
     };
-    aria2.enable = true;
     bat = {
       enable = true;
       config = {
@@ -87,15 +86,6 @@
     };
     lsd.enable = true;
     htop.enable = true;
-    lf = with pkgs; {
-      enable = false;
-      previewer.source = lib.getExe' pistol "pistol";
-      settings = {
-        hidden = true;
-        incsearch = true;
-        smartcase = true;
-      };
-    };
     wezterm = {
       enable = true;
       extraConfig = ''
@@ -171,43 +161,6 @@
         return config
       '';
     };
-    kitty = {
-      # enable = true;
-      package = pkgs.kitty.overrideAttrs (old: {
-        doCheck = false;
-        doInstallCheck = false;
-      });
-      keybindings =
-        let
-          tabKeyBindings =
-            with builtins;
-            listToAttrs (
-              builtins.map (idx: {
-                name = "cmd+${toString idx}";
-                value = "goto_tab ${toString idx}";
-              }) (genList (x: x + 1) 9)
-            );
-        in
-        pkgs.lib.mergeAttrs tabKeyBindings {
-          "cmd+shift+l" = "send_text application ;z";
-        };
-      font = {
-        package = pkgs.sarasa-gothic;
-        name = "Sarasa Term SC";
-        size = 16;
-      };
-      settings = {
-        bold_font = "Sarasa Term SC Bold";
-        italic_font = "Sarasa Term SC Italic";
-        bold_italic_font = "Sarasa Term SC Bold Italic";
-        background_opacity = "0.98";
-        hide_window_decorations = "titlebar-only";
-        tab_bar_edge = "top";
-        tab_bar_style = "powerline";
-        tab_powerline_style = "slanted";
-        tab_title_template = "{fmt.fg.red}{bell_symbol}{activity_symbol}{fmt.fg.tab}{title} {index}";
-      };
-    };
     gh = {
       enable = true;
       settings = {
@@ -216,8 +169,6 @@
         };
       };
     };
-    skim.enable = true;
-    # opam.enable = true;
     nix-index = {
       enable = true;
       enableFishIntegration = false;
@@ -230,21 +181,6 @@
       settings = {
         default-key = "A99DCF320110092028ECAC42E53ED56B7F20B7BB";
         auto-key-retrieve = true;
-      };
-    };
-    topgrade = {
-      enable = true;
-      package = pkgs.topgrade;
-      settings = {
-        assume_yes = true;
-        disable = [
-          "brew_cask"
-          "brew_formula"
-          "mas"
-          "nix"
-          "shell"
-          "node"
-        ];
       };
     };
     direnv = {
@@ -302,113 +238,6 @@
         }
       ];
     };
-    zsh = {
-      enable = true;
-      shellAliases = {
-        vim = "nvim";
-        coqtags = "fd -e v . . ~/.opam/default/lib/coq/theories -X ctags --options=/Users/lightquantum/.config/coq.ctags";
-        # ssh = "kitty +kitten ssh";
-      };
-
-      syntaxHighlighting = {
-        enable = true;
-      };
-      autosuggestion.enable = true;
-      plugins = [
-        {
-          name = "input";
-          file = "init.zsh";
-          inherit (pkgs.generated.zimfw_input) src;
-        }
-        {
-          name = "completion";
-          file = "init.zsh";
-          inherit (pkgs.generated.zimfw_completion) src;
-        }
-        {
-          name = "git";
-          file = "init.zsh";
-          inherit (pkgs.generated.zimfw_git) src;
-        }
-        {
-          name = "utility";
-          file = "init.zsh";
-          inherit (pkgs.generated.zimfw_utility) src;
-        }
-        {
-          name = "zsh-completions";
-          inherit (pkgs.generated.zsh_completions) src;
-        }
-        {
-          name = "you-should-use";
-          src = "${pkgs.zsh-you-should-use}/share/zsh/plugins/you-should-use";
-        }
-      ];
-      initContent = ''
-        # export FPATH="/opt/homebrew/share/zsh/site-functions''${FPATH+:$FPATH}";
-        export MANPATH="/opt/homebrew/share/man''${MANPATH+:$MANPATH}:";
-        export INFOPATH="/opt/homebrew/share/info:''${INFOPATH:-}";
-        function git-sign {
-            FILTER_BRANCH_SQUELCH_WARNING=1 git filter-branch --commit-filter 'git commit-tree -S "$@";' $1..HEAD
-        }
-        function git-delete-bak {
-            ref=$(git show-ref | awk '/ refs.original.refs/{print$2}')
-            git update-ref -d $ref
-        }
-        lfcd () {
-            tmp="$(mktemp)"
-            lf -last-dir-path="$tmp" "$@"
-            if [ -f "$tmp" ]; then
-                dir="$(cat "$tmp")"
-                rm -f "$tmp"
-                if [ -d "$dir" ]; then
-                    if [ "$dir" != "$(pwd)" ]; then
-                        cd "$dir"
-                    fi
-                fi
-            fi
-        }
-        autoload -U select-word-style
-        select-word-style bash
-        autoload -U up-line-or-beginning-search
-        autoload -U down-line-or-beginning-search
-        zle -N up-line-or-beginning-search
-        zle -N down-line-or-beginning-search
-        bindkey "$terminfo[kcuu1]" up-line-or-beginning-search # Up
-        bindkey "$terminfo[kcud1]" down-line-or-beginning-search # Down
-
-        function set-title-precmd() {
-          printf '\033]0;%s\007' "''${''${PWD/#$HOME/~}##*/}"
-        }
-
-        function set-title-preexec() {
-          printf '\033]0;%s\007' "''${1%% *}"
-        }
-
-        autoload -Uz add-zsh-hook
-        add-zsh-hook precmd set-title-precmd
-        add-zsh-hook preexec set-title-preexec
-
-        # >>> conda initialize >>>
-        # !! Contents within this block are managed by 'conda init' !!
-        function init_conda() {
-          __conda_setup="$('/Users/lightquantum/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-          if [ $? -eq 0 ]; then
-              eval "$__conda_setup"
-          else
-              if [ -f "/Users/lightquantum/miniconda3/etc/profile.d/conda.sh" ]; then
-                  . "/Users/lightquantum/miniconda3/etc/profile.d/conda.sh"
-              else
-                  export PATH="/Users/lightquantum/miniconda3/bin:$PATH"
-              fi
-          fi
-          unset __conda_setup
-        }
-        # <<< conda initialize <<<
-        zmodload zsh/zprof
-      '';
-      envExtra = ". $HOME/.cargo/env";
-    };
     lazygit = {
       enable = true;
       settings = {
@@ -416,6 +245,8 @@
         refresher.refreshInterval = 1;
       };
     };
+    skim.enable = true;
+    # opam.enable = true;
     git = {
       # Extra configuration on top of the common git module
       signing = {

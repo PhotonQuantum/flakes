@@ -10,6 +10,7 @@
     ../common/gh.nix
     ../common/ghostty.nix
     ../common/lazygit.nix
+    ../common/vim.nix
   ];
 
   # Define configOnly as a module option that our modules can check
@@ -75,6 +76,9 @@
         "nh"
         "nixfmt"
         "nil"
+
+        # vim is managed by nixvim
+        "nixvim"
       ];
       removePackages = [
         "bat"

@@ -169,12 +169,15 @@
       homeConfigurations."lightquantum@lightquantum-arch" =
         let
           hmConf = home-manager.lib.homeManagerConfiguration {
-            pkgs = nixpkgs.legacyPackages.x86_64-linux;
+            pkgs = import nixpkgs {
+              system = "x86_64-linux";
+              config.allowUnfree = true;
+            };
             modules = [
               generated-overlay
+              nixvim.homeManagerModules.nixvim
               ./arch/no-package.nix
               ./arch/home.nix
-              # nixvim.homeManagerModules.nixvim
             ];
             extraSpecialArgs = {
               inherit nixvim pyproject-nix;

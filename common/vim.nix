@@ -14,9 +14,6 @@
       guifont = "Jetbrains Mono:h14";
       hlsearch = true;
     };
-    globals = {
-      startuptime_exe_path = "/etc/profiles/per-user/${config.home.username}/bin/nvim";
-    };
     extraConfigLua = ''
       require('smear_cursor').setup({
         legacy_computing_symbols_support = true,
@@ -183,7 +180,6 @@
       lualine-lsp-progress
       luasnip
       quick-scope
-      vim-startuptime
       smear-cursor-nvim
     ];
     globals = {

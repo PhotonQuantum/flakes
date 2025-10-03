@@ -32,6 +32,10 @@
       configOnly = true;
     };
 
+    home.sessionVariables = {
+      EDITOR = "nvim";
+    };
+
     home.packages = with pkgs; [ nixfmt nil ];
 
     programs = {

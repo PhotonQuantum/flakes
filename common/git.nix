@@ -15,6 +15,7 @@ in {
     ignores = [
       "/.idea"
       ".DS_Store"
+      "**/.claude/settings.local.json"
     ];
     extraConfig = {
       pull.ff = "only";

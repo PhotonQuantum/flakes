@@ -187,6 +187,9 @@
     };
     home-manager.enable = true;
     fish = {
+      shellAbbrs = {
+        claude = "/Users/lightquantum/.claude/local/claude";
+      };
       # Extra configuration on top of the common fish module
       functions = {
         init_conda = ''

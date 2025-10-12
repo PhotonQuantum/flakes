@@ -14,9 +14,8 @@ in {
       background-opacity = 0.8;
       background-blur-radius = 80;
       shell-integration-features = true;
+      keybind = [ ''keybind = shift+enter=text:\x1b\r'' ] ++ (if isDarwin then [ "global:super+,=toggle_quick_terminal" ] else []);
     } // lib.optionalAttrs isDarwin {
-      # macOS-specific keybinds
-      keybind = "global:super+,=toggle_quick_terminal";
       quick-terminal-animation-duration = 0.1;
     };
   };

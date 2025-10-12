@@ -17,7 +17,10 @@
       ../common/cache.nix
     ];
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings = {
+    experimental-features = [ "nix-command" "flakes" ];
+    truested-users = [ "@wheel" ];
+  };
 
   nixpkgs.config = {
     allowUnfree = true;

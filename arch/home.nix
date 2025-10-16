@@ -11,6 +11,8 @@
     ../common/ghostty.nix
     ../common/lazygit.nix
     ../common/vim.nix
+    ./walker.nix
+    ./hyprland.nix
   ];
 
   # Define configOnly as a module option that our modules can check
@@ -32,15 +34,32 @@
       configOnly = true;
     };
 
+    home.sessionPath = [
+      "$HOME/.local/bin"
+    ];
     home.sessionVariables = {
       EDITOR = "nvim";
     };
 
-    home.packages = with pkgs; [
-      nixfmt
-      nil
-      nvfetcher
-    ];
+    home.packages =
+      let
+        denix =
+          with pkgs;
+          writers.writePython3Bin "denix" {
+            libraries = [ python3Packages.click ];
+            flakeIgnore = [
+              "E501"
+              "E265"
+            ];
+          } (builtins.readFile ../scripts/denix.py);
+      in
+      with pkgs;
+      [
+        nixfmt
+        nil
+        nvfetcher
+        denix
+      ];
 
     programs = {
       # Do not generate any man page.
@@ -95,6 +114,8 @@
 
         # vim is managed by nixvim
         "nixvim"
+
+        "denix"
       ];
       removePackages = [
         "bat"

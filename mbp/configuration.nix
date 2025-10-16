@@ -66,7 +66,7 @@
         cargo-readme
         cargo-sort
         cargo-udeps
-        cargo-update
+        # cargo-update  # TODO compile fail
         cargo-wipe
       ];
 
@@ -173,9 +173,9 @@
     with pkgs;
     [
       # ghc   # maybe we should manage haskell stuff by ghcup?
-      haskell-language-server
       bun
       bunyan-rs
+      # cinny-desktop # TODO compile fail
       diesel-cli
       dotnet-sdk
       dua
@@ -198,7 +198,6 @@
       vimv
       xcaddy
       yubikey-manager
-      minisat
     ]
     ++ cargoPackages
     ++ gitPackages

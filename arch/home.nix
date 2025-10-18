@@ -13,6 +13,7 @@
     ../common/vim.nix
     ./walker.nix
     ./hyprland.nix
+    ./darkman.nix
   ];
 
   # Define configOnly as a module option that our modules can check

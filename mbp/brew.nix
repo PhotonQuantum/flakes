@@ -25,6 +25,7 @@ _: {
     "ghcup"
     "jdupes"
     "libpng"
+    "mcp-proxy"
     "messense/macos-cross-toolchains/x86_64-unknown-linux-musl"
     "miniserve"
     "opam"

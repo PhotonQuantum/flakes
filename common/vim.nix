@@ -13,6 +13,7 @@
       undodir = config.lib.nixvim.mkRaw ''vim.fn.stdpath("data") .. "/undo"'';
       guifont = "Jetbrains Mono:h14";
       hlsearch = true;
+      smartcase = true;
     };
     extraConfigLua = ''
       require('smear_cursor').setup({

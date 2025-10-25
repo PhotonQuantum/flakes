@@ -15,6 +15,7 @@
     ./hyprland.nix
     ./darkman.nix
     ./toshy.nix
+    ./claude-code.nix
   ];
 
   # Define configOnly as a module option that our modules can check

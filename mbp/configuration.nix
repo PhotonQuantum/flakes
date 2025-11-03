@@ -61,7 +61,7 @@
         cargo-insta
         cargo-modules
         cargo-msrv
-        cargo-nextest
+        # cargo-nextest # TODO compile fail
         cargo-outdated
         cargo-readme
         cargo-sort

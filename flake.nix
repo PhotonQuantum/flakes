@@ -35,6 +35,10 @@
       url = "github:nix-community/pyproject.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    aerospace-mark = {
+      url = "github:cristianoliveira/aerospace-marks";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -47,6 +51,7 @@
       tex-fmt,
       pyproject-nix,
       colmena,
+      aerospace-mark,
       ...
     }:
     let
@@ -72,6 +77,13 @@
       colmena-overlay = {
         nixpkgs.overlays = [
           colmena.overlays.default
+        ];
+      };
+      aerospace-mark-overlay = {
+        nixpkgs.overlays = [
+          (final: prev: {
+            aerospace-marks = aerospace-mark.packages.${final.system}.default;
+          })
         ];
       };
       hm-config =
@@ -130,6 +142,7 @@
         generated-overlay
         tex-fmt-overlay
         colmena-overlay
+        aerospace-mark-overlay
         ./mbp/configuration.nix
         home-manager.darwinModules.home-manager
         (hm-config true "aarch64-darwin" {

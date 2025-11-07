@@ -1,4 +1,42 @@
 { lib, pkgs, ... }:
+let
+  toggle_special_workspace = ''
+    #!/usr/bin/env bash
+
+    AEROSPACE="${lib.getExe pkgs.aerospace}"
+
+    STATE_DIR="$HOME/.local/state/aerospace-toggle-special-workspace"
+    PREV_WORKSPACE_FILE="$STATE_DIR/prev_workspace"
+
+    mkdir -p "$STATE_DIR"
+
+    OLD_WORKSPACE=$($AEROSPACE list-workspaces --focused)
+
+    # try to summon the special workspace
+    $AEROSPACE summon-workspace --fail-if-noop "S"
+    SUMMON_RESULT=$?
+
+    if [ $SUMMON_RESULT -eq 0 ]; then
+        # Successfully summoned the special workspace
+
+        # Save the old workspace to file
+        echo "$OLD_WORKSPACE" > "$PREV_WORKSPACE_FILE"
+    else
+        # Failed to summon, so we presumably are already in the special workspace
+        # Switch back to the previous workspace
+
+        # Read the previous workspace from file if it exists
+        if [ -f "$PREV_WORKSPACE_FILE" ]; then
+            TARGET_WORKSPACE=$(cat "$PREV_WORKSPACE_FILE")
+        else
+            # If no previous workspace is recorded, switch to the first workspace of current monitor
+            TARGET_WORKSPACE=$($AEROSPACE list-workspaces --monitor focused | head -n1)
+        fi
+
+        $AEROSPACE workspace "$TARGET_WORKSPACE"
+    fi
+  '';
+in
 {
   xdg.configFile."aerospace/aerospace.toml" =
     let
@@ -65,86 +103,131 @@
         # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
         # 'main' binding mode must be always presented
         # Fallback value (if you omit the key): mode.main.binding = {}
-        mode.main.binding =
-          {
-            # All possible keys:
-            # - Letters.        a, b, c, ..., z
-            # - Numbers.        0, 1, 2, ..., 9
-            # - Keypad numbers. keypad0, keypad1, keypad2, ..., keypad9
-            # - F-keys.         f1, f2, ..., f20
-            # - Special keys.   minus, equal, period, comma, slash, backslash, quote, semicolon, backtick,
-            #                   leftSquareBracket, rightSquareBracket, space, enter, esc, backspace, tab
-            # - Keypad special. keypadClear, keypadDecimalMark, keypadDivide, keypadEnter, keypadEqual,
-            #                   keypadMinus, keypadMultiply, keypadPlus
-            # - Arrows.         left, down, up, right
+        mode.main.binding = {
+          # All possible keys:
+          # - Letters.        a, b, c, ..., z
+          # - Numbers.        0, 1, 2, ..., 9
+          # - Keypad numbers. keypad0, keypad1, keypad2, ..., keypad9
+          # - F-keys.         f1, f2, ..., f20
+          # - Special keys.   minus, equal, period, comma, slash, backslash, quote, semicolon, backtick,
+          #                   leftSquareBracket, rightSquareBracket, space, enter, esc, backspace, tab
+          # - Keypad special. keypadClear, keypadDecimalMark, keypadDivide, keypadEnter, keypadEqual,
+          #                   keypadMinus, keypadMultiply, keypadPlus
+          # - Arrows.         left, down, up, right
 
-            # All possible modifiers: cmd, alt, ctrl, shift
+          # All possible modifiers: cmd, alt, ctrl, shift
 
-            # All possible commands: https://nikitabobko.github.io/AeroSpace/commands
+          # All possible commands: https://nikitabobko.github.io/AeroSpace/commands
 
-            cmd-enter =
-              let
-                script = pkgs.writeText "ghostty.applescript" ''
-                  tell application "Ghostty"
-                    if it is running then
-                      activate
-                      tell application "System Events" to keystroke "n" using {command down}
-                    else
-                      activate
-                    end if
-                  end tell
-                '';
-              in
-              "exec-and-forget osascript ${script}";
+          cmd-enter =
+            let
+              script = pkgs.writeText "ghostty.applescript" ''
+                tell application "Ghostty"
+                  if it is running then
+                    activate
+                    tell application "System Events" to keystroke "n" using {command down}
+                  else
+                    activate
+                  end if
+                end tell
+              '';
+            in
+            "exec-and-forget osascript ${script}";
 
-            alt-w = "close";
+          alt-w = "close";
 
-            # See: https://nikitabobko.github.io/AeroSpace/commands#layout
-            alt-slash = "layout tiles horizontal vertical";
-            alt-comma = "layout accordion horizontal vertical";
+          # See: https://nikitabobko.github.io/AeroSpace/commands#layout
+          alt-slash = "layout tiles horizontal vertical";
+          alt-comma = "layout accordion horizontal vertical";
 
-            # See: https://nikitabobko.github.io/AeroSpace/commands#focus
-            alt-h = "focus left";
-            alt-j = "focus down";
-            alt-k = "focus up";
-            alt-l = "focus right";
+          # See: https://nikitabobko.github.io/AeroSpace/commands#focus
+          alt-h = "focus left";
+          alt-j = "focus down";
+          alt-k = "focus up";
+          alt-l = "focus right";
 
-            # See: https://nikitabobko.github.io/AeroSpace/commands#move
-            alt-shift-h = "move left";
-            alt-shift-j = "move down";
-            alt-shift-k = "move up";
-            alt-shift-l = "move right";
+          # See: https://nikitabobko.github.io/AeroSpace/commands#move
+          alt-shift-h = "move left";
+          alt-shift-j = "move down";
+          alt-shift-k = "move up";
+          alt-shift-l = "move right";
 
-            alt-m = "focus-monitor --wrap-around next";
-            alt-shift-m = "move-node-to-monitor --wrap-around next";
+          # See: https://nikitabobko.github.io/AeroSpace/commands#resize
+          alt-shift-minus = "resize smart -50";
+          alt-shift-equal = "resize smart +50";
 
-            # See: https://nikitabobko.github.io/AeroSpace/commands#resize
-            alt-shift-minus = "resize smart -50";
-            alt-shift-equal = "resize smart +50";
+          # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
+          alt-tab = "workspace-back-and-forth";
+          # See: https://nikitabobko.github.io/AeroSpace/commands#move-workspace-to-monitor
+          alt-shift-tab = "move-workspace-to-monitor --wrap-around next";
 
-            # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
-            alt-tab = "workspace-back-and-forth";
-            # See: https://nikitabobko.github.io/AeroSpace/commands#move-workspace-to-monitor
-            alt-shift-tab = "move-workspace-to-monitor --wrap-around next";
-
-            # See: https://nikitabobko.github.io/AeroSpace/commands#mode
-            alt-shift-semicolon = "mode service";
+          # See: https://nikitabobko.github.io/AeroSpace/commands#mode
+          alt-shift-semicolon = "mode service";
+        }
+        // (lib.lists.foldl' (
+          acc: letter:
+          acc
+          // {
+            # See: https://nikitabobko.github.io/AeroSpace/commands#workspace
+            "alt-${lib.strings.toLower letter}" = "workspace ${letter}";
+            # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
+            "alt-shift-${lib.strings.toLower letter}" = "move-node-to-workspace ${letter}";
           }
-          // (lib.lists.foldl' (
+        ) { } (lib.strings.stringToCharacters "123456789ABCDEF"))
+        // (
+          let
+            script = pkgs.writeText "toggle_special_workspace.sh" toggle_special_workspace;
+          in
+          {
+            "alt-s" = "exec-and-forget bash ${script}";
+            "alt-shift-s" = "move-node-to-workspace S";
+          }
+        )
+        // {
+          "alt-m" = "mode mark";
+          "alt-quote" = "mode jump";
+        };
+
+        mode.mark.binding = (
+          lib.lists.foldl' (
             acc: letter:
             acc
             // {
-              # See: https://nikitabobko.github.io/AeroSpace/commands#workspace
-              "alt-${lib.strings.toLower letter}" = "workspace ${letter}";
-              # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
-              "alt-shift-${lib.strings.toLower letter}" = "move-node-to-workspace ${letter}";
+              "${letter}" = [
+                "exec-and-forget ${lib.getExe pkgs.aerospace-marks} mark ${letter}"
+                "mode main"
+              ];
             }
-          ) { } (lib.strings.stringToCharacters "123456789ABCDEFGINOPQRSTUVXYZ"));
+          ) { } (lib.strings.stringToCharacters "1234567890abcdefghijklmnopqrstuvwxyz")
+        ) // {
+          esc = [ "mode main" ];
+          shift-enter = [ "mode main" ];
+        };
+
+        mode.jump.binding = (
+          lib.lists.foldl' (
+            acc: letter:
+            acc
+            // {
+              "${letter}" = [
+                "exec-and-forget ${lib.getExe pkgs.aerospace-marks} focus ${letter}"
+                "mode main"
+              ];
+            }
+          ) { } (lib.strings.stringToCharacters "1234567890abcdefghijklmnopqrstuvwxyz")
+        ) // {
+          esc = [ "mode main" ];
+          shift-enter = [ "mode main" ];
+        };
 
         # 'service' binding mode declaration.
         # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
         mode.service.binding = {
           esc = [
+            "reload-config"
+            "mode main"
+          ];
+          shift-enter = [
             "reload-config"
             "mode main"
           ];

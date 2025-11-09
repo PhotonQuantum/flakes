@@ -5,12 +5,13 @@ Toshy Custom Configuration
 This file stores your custom configurations extracted from toshy_config.py.
 Edit the content between the triple quotes for each section.
 
-Generated: 2025-11-09 00:54:52
+Generated: 2025-11-09 01:33:19
 """
 
 # Dictionary mapping section names to their custom content
 slices = {
     'env_overrides': '''
+
 
 
 
@@ -41,6 +42,7 @@ wlroots_compositors             = [
 
 
 
+
 # List of devices to add to the device exclusion list below this slice
 
 exclude_kpad_devs_UserCustom_lst = [
@@ -56,6 +58,7 @@ exclude_kpad_devs_UserCustom_lst = [
 
 
 
+
 keyboards_UserCustom_dct = {
     # Add your keyboard device here if its type is misidentified.
     # Valid types to map device to: Apple, Windows, IBM, Chromebook (case sensitive)
@@ -66,6 +69,7 @@ keyboards_UserCustom_dct = {
 ''',
 
     'keymapper_api': '''
+
 
 
 
@@ -113,6 +117,7 @@ devices_api(
 
 
 
+
 keymap("User hardware keys", {
     # PUT UNIVERSAL REMAPS FOR HARDWARE KEYS HERE
     # KEYMAP WILL BE ACTIVE IN ALL DESKTOP ENVIRONMENTS/DISTROS
@@ -148,9 +153,19 @@ keymap("User overrides VSCodes", {
     matchProps(clas=vscodeStr)(ctx)
 )
 
+# Keybindings for IntelliJ
+keymap("User overrides Jetbrains", {
+    # General
+    C("LC-w"):                   C("C-w"),                      # Close active editor tab
+    C("RC-w"):                   C("C-F4"),                      # Close active editor tab
+}, when = lambda ctx:
+    cnfg.screen_has_focus and
+    matchProps(clas="^jetbrains-(?!.*toolbox).*$")(ctx) )
+
 ''',
 
     'user_custom_functions': '''
+
 
 
 
@@ -166,9 +181,11 @@ keymap("User overrides VSCodes", {
 
 
 
+
 ''',
 
     'user_custom_modmaps': '''
+
 
 
 

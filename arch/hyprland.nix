@@ -45,13 +45,14 @@ in
       "$menu" = "walker";
       "$terminal" = "ghostty";
       "$fileManager" = "dolphin";
+      "$screenshot" = "qsview";
 
       # Autostart
 
       # https://wiki.hypr.land/Configuring/Variables/#general
       general = {
-        gaps_in = 0;
-        gaps_out = 0;
+        gaps_in = 2;
+        gaps_out = 6;
 
         border_size = 3;
 
@@ -66,6 +67,10 @@ in
         allow_tearing = false;
 
         layout = "dwindle";
+      };
+
+      misc = {
+        focus_on_activate = true;
       };
 
       # https://wiki.hypr.land/Configuring/Variables/#decoration
@@ -87,8 +92,8 @@ in
         # https://wiki.hypr.land/Configuring/Variables/#blur
         blur = {
           enabled = true;
-          size = 3;
-          passes = 1;
+          size = 6;
+          passes = 2;
 
           vibrancy = 0.1696;
         };
@@ -173,7 +178,7 @@ in
       device = [
         {
           name = "apple-inc.-magic-trackpad-usb-c";
-          accel_profile = "custom 0.781 0.000 0.099 0.260 0.483 0.768 1.114 1.523 1.993 2.524 3.118 3.774 4.491 5.270 6.111 7.013 7.978 9.004 10.092 11.242 12.453 13.727 15.062 16.459 17.918 19.439 21.021 22.665 24.371 26.139 27.969 29.860 31.813 33.828 35.905 38.044 40.244 42.506 44.830 47.216 49.664 52.173 54.744 57.377 60.072 62.829 65.647 68.527 71.469 74.473 77.538 80.666 83.855 87.106 90.419 93.793 97.230 100.728 104.288 107.910 111.593 115.338 119.146 123.015 126.945";
+          accel_profile = "custom 0.469 0.000 0.052 0.127 0.223 0.342 0.483 0.647 0.832 1.040 1.270 1.523 1.797 2.094 2.413 2.754 3.118 3.504 3.912 4.342 4.795 5.270 5.767 6.286 6.828 7.392 7.978 8.586 9.217 9.869 10.544 11.242 11.961 12.703 13.467 14.254 15.062 15.893 16.746 17.621 18.519 19.439 20.381 21.345 22.331 23.340 24.371 25.424 26.500 27.598 28.718 29.860 31.025 32.211 33.420 34.652 35.905 37.181 38.479 39.799 41.141 42.506 43.893 45.302 46.734";
           scroll_points = "0.781 0.000 0.103 0.238 0.406 0.606 0.839 1.104 1.401 1.731 2.094 2.489 2.918 3.379 3.873 4.399 4.959 5.552 6.178 6.837 7.529 8.254 9.013 9.805 10.630 11.489 12.381 13.307 14.266 15.259 16.285 17.346 18.440 19.568 20.730 21.926 23.155 24.419 25.717 27.049 28.416 29.816 31.251 32.720 34.224 35.762 37.334 38.942 40.583 42.260 43.971 45.717 47.498 49.313 51.164 53.049 54.970 56.925 58.916 60.942 63.003 65.100 67.232 69.399 71.601";
         }
       ];
@@ -185,8 +190,9 @@ in
 
       # Example binds, see https://wiki.hypr.land/Configuring/Binds/ for more
       bind = [
-        "$superMod, space, exec, $menu"
+        "$superMod, p, exec, $menu"
         "$superMod, return, exec, $terminal"
+        "$superMod SHIFT, 4, exec, $screenshot"
 
         "$mainMod, Q, exec, $terminal"
         "$mainMod, C, killactive,"
@@ -258,6 +264,26 @@ in
         "suppressevent maximize, class:.*" # ignore maximize events
         "nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0" # fix dragging issues with wayland
       ];
+
+      windowrulev2 = [
+        # Make xdg-desktop-portal-gtk windows float and centered
+        "float,class:xdg-desktop-portal-gtk"
+        "stayfocused,class:xdg-desktop-portal-gtk"
+        "center,class:xdg-desktop-portal-gtk"
+        # Make Gradia float by default
+        "float,class:be.alexandervanhee.gradia"
+        "center,class:be.alexandervanhee.gradia"
+
+        # No animation for quickshell
+        "noanim,class:quickshell"
+      ];
+
+      layerrule = [
+        # Blur for quickshell bar
+        "blur, quickshell"
+        "ignorealpha 0.3, quickshell"
+        "noanim, quickshell"
+      ];
     };
 
     systemd.variables = [ "--all" ];
@@ -284,6 +310,7 @@ in
 
     GDK_BACKEND = "wayland,x11,*";
     QT_QPA_PLATFORM = "wayland;xcb";
+    QT_QPA_PLATFORMTHEME = "qt6ct";
     SDL_VIDEODRIVER = "wayland";
     CLUTTER_BACKEND = "wayland";
 

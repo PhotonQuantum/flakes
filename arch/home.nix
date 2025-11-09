@@ -39,9 +39,11 @@
 
     home.sessionPath = [
       "$HOME/.local/bin"
+      "$HOME/.pnpm"
     ];
     home.sessionVariables = {
       EDITOR = "nvim";
+      PNPM_HOME = "$HOME/.pnpm";
     };
 
     home.packages =
@@ -62,7 +64,10 @@
         nil
         nvfetcher
         denix
+        sketchybar-app-font
       ];
+
+    fonts.fontconfig.enable = true;
 
     programs = {
       # Do not generate any man page.
@@ -119,6 +124,9 @@
         "nixvim"
 
         "denix"
+        "sketchybar-app-font"
+        "dummy-fc-dir1"
+        "dummy-fc-dir2"
       ];
       removePackages = [
         "bat"

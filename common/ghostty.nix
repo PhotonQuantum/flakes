@@ -7,6 +7,7 @@ in {
     enable = true;
     # On macOS, managed by homebrew; on Linux, use nixpkgs or system package
     package = if isDarwin || configOnly then null else pkgs.ghostty;
+    systemd.enable = if isDarwin || configOnly then false else true;
     settings = {
       font-family = "Sarasa Term SC";
       font-size = 16;

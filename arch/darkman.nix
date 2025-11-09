@@ -31,6 +31,15 @@ let
       #!/usr/bin/env bash
       gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"
     '';
+    "qt6ct.sh" = ''
+      #!/usr/bin/env bash
+
+      mkdir -p ~/.config/qt6ct
+      touch ~/.config/qt6ct/qt6ct.conf
+      ${pkgs.crudini} --set ~/.config/qt6ct/qt6ct.conf Appearance color_scheme_path /usr/share/qt6ct/colors/darker.conf
+      ${pkgs.crudini} --set ~/.config/qt6ct/qt6ct.conf Appearance custom_palette true
+      ${pkgs.crudini} --set ~/.config/qt6ct/qt6ct.conf Appearance icon_theme breeze-dark
+    '';
   };
   lightModeScripts = {
     "desktop-notification.sh" = ''
@@ -40,6 +49,14 @@ let
     "gtk4.sh" = ''
       #!/usr/bin/env bash
       gsettings set org.gnome.desktop.interface color-scheme "prefer-light"
+    '';
+    "qt6ct.sh" = ''
+      #!/usr/bin/env bash
+
+      mkdir -p ~/.config/qt6ct
+      touch ~/.config/qt6ct/qt6ct.conf
+      ${pkgs.crudini} --set ~/.config/qt6ct/qt6ct.conf Appearance custom_palette false
+      ${pkgs.crudini} --set ~/.config/qt6ct/qt6ct.conf Appearance icon_theme breeze
     '';
    };
 in

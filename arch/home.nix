@@ -11,6 +11,7 @@
     ../common/ghostty.nix
     ../common/lazygit.nix
     ../common/vim.nix
+    ../common/codex.nix
     ./walker.nix
     ./hyprland.nix
     ./darkman.nix

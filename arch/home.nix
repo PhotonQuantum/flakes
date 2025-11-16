@@ -66,6 +66,7 @@
         nvfetcher
         denix
         sketchybar-app-font
+        devenv
       ];
 
     fonts.fontconfig.enable = true;
@@ -120,6 +121,7 @@
         "nixfmt"
         "nil"
         "nvfetcher"
+        "devenv"
 
         # vim is managed by nixvim
         "nixvim"

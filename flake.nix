@@ -3,6 +3,10 @@
 
   inputs = {
     nixpkgs.url = "git+https://github.com/NixOS/nixpkgs?shallow=1&ref=nixpkgs-unstable";
+    nixos-generators = {
+      url = "github:nix-community/nixos-generators";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nur = {
       url = "github:nix-community/NUR";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -52,6 +56,7 @@
       pyproject-nix,
       colmena,
       aerospace-mark,
+      nixos-generators,
       ...
     }:
     let
@@ -205,6 +210,16 @@
             prev = hmConf;
           };
         };
+      
+      packages.x86_64-linux = {
+        hl-base = nixos-generators.nixosGenerate {
+          system = "x86_64-linux";
+          modules = [
+            ./homelab/base.nix
+          ];
+          format = "proxmox";
+        };
+      };
 
       colmenaHive = colmena.lib.makeHive {
         meta = {

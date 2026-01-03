@@ -79,7 +79,7 @@
         # }))
         git-crypt
         git-filter-repo
-        git-machete
+        # git-machete # TODO compile failed
       ];
 
       migratedPackages = with pkgs; [
@@ -105,7 +105,7 @@
         imagemagick
         just
         mdbook
-        mongosh
+        # mongosh # TODO compile failed
         mtr
         navi
         # neofetch

@@ -38,6 +38,7 @@ in
       # Monitors
       monitor = [
         "desc:Dell Inc. DELL U2718Q, preferred, auto, 2"
+        "desc:LG Electronics LG ULTRAFINE 105NTMXHK739, preferred, auto, 2"
         ", preferred, auto, 1"
       ];
 
@@ -261,28 +262,49 @@ in
       ];
 
       windowrule = [
-        "suppressevent maximize, class:.*" # ignore maximize events
-        "nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0" # fix dragging issues with wayland
-      ];
-
-      windowrulev2 = [
-        # Make xdg-desktop-portal-gtk windows float and centered
-        "float,class:xdg-desktop-portal-gtk"
-        "stayfocused,class:xdg-desktop-portal-gtk"
-        "center,class:xdg-desktop-portal-gtk"
-        # Make Gradia float by default
-        "float,class:be.alexandervanhee.gradia"
-        "center,class:be.alexandervanhee.gradia"
-
-        # No animation for quickshell
-        "noanim,class:quickshell"
+        {
+          name = "ignore_maximize_event";
+          suppress_event = "maximize";
+          "match:class" = ".*";
+        }
+        {
+          name = "fix_dragging_wayland_floating";
+          no_focus = "on";
+          "match:class" = "^$";
+          "match:title" = "^$";
+          "match:xwayland" = 1;
+          "match:float" = 1;
+          "match:fullscreen" = 0;
+          "match:pin" = 0;
+        }
+        {
+          name = "portal_window_float_center";
+          float = "on";
+          stay_focused = "on";
+          center = "on";
+          "match:class" = "xdg-desktop-portal-gtk";
+        }
+        {
+          name = "screenshot_tool_float_center";
+          float = "on";
+          center = "on";
+          "match:class" = "be.alexandervanhee.gradia";
+        }
+        {
+          name = "quickshell";
+          no_anim = "on";
+          "match:class" = "quickshell";
+        }
       ];
 
       layerrule = [
-        # Blur for quickshell bar
-        "blur, quickshell"
-        "ignorealpha 0.3, quickshell"
-        "noanim, quickshell"
+        {
+          name = "quickshell";
+          blur = "on";
+          ignore_alpha = 0.3;
+          no_anim = "on";
+          "match:namespace" = "quickshell";
+        }
       ];
     };
 

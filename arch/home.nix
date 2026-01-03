@@ -16,6 +16,7 @@
     ./darkman.nix
     ./toshy.nix
     ./claude-code.nix
+    ../secrets/ssh.nix
   ];
 
   # Define configOnly as a module option that our modules can check

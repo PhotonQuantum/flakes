@@ -15,6 +15,7 @@
       ./orbstack.nix
 
       ../../common/cache.nix
+      ../../profiles/common/system/editor.nix
     ];
 
   nix.settings = {
@@ -43,8 +44,6 @@
     variables = {
       # System variables
       SHELL = lib.getExe pkgs.fish;
-      EDITOR = "nvim";
-      VISUAL = "nvim";
     };
   };
 

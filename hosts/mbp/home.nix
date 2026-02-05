@@ -7,6 +7,7 @@
 {
   imports = [
     ../../profiles/common/home.nix
+    ../../profiles/common/home/interactive-tools.nix
     ../../secrets/ssh.nix
     ./aerospace/home.nix
     ./sketchybar/home.nix
@@ -74,8 +75,6 @@
       enable = true;
       includes = [ "~/.orbstack/ssh/config" ];
     };
-    lsd.enable = true;
-    htop.enable = true;
     wezterm = {
       enable = true;
       extraConfig = ''
@@ -151,14 +150,6 @@
         return config
       '';
     };
-    gh = {
-      enable = true;
-      settings = {
-        aliases = {
-          "transfer" = "api repos/$1/transfer -f new_owner=$2";
-        };
-      };
-    };
     nix-index = {
       enable = true;
       enableFishIntegration = false;
@@ -173,11 +164,6 @@
         auto-key-retrieve = true;
       };
     };
-    direnv = {
-      enable = true;
-      nix-direnv.enable = true;
-    };
-    home-manager.enable = true;
     fish = {
       shellAbbrs = {
         claude = "/Users/lightquantum/.claude/local/claude";

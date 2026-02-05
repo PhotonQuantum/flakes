@@ -6,6 +6,7 @@
     ./aerospace/config.nix
     ./sketchybar/config.nix
     ../../common/cache.nix
+    ../../profiles/common/system/editor.nix
   ];
 
   nixpkgs.overlays = [ (final: prev: {
@@ -33,8 +34,6 @@
     variables = {
       # System variables
       SHELL = lib.getExe pkgs.fish;
-      EDITOR = "nvim";
-      VISUAL = "nvim";
       HOMEBREW_PREFIX = "/opt/homebrew";
       HOMEBREW_CELLAR = "/opt/homebrew/Cellar";
       HOMEBREW_REPOSITORY = "/opt/homebrew";

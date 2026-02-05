@@ -11,6 +11,7 @@
     ./borg.nix
     # ./matrix.nix
     ../../common/cache.nix
+    ../../profiles/common/system/editor.nix
   ];
 
   nix.package = pkgs.nix;
@@ -96,11 +97,6 @@
 
   environment = {
     shells = [ pkgs.zsh ]; # Default shell
-    variables = {
-      # System variables
-      EDITOR = "nvim";
-      VISUAL = "nvim";
-    };
   };
 
   security.sudo = {

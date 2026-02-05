@@ -6,16 +6,8 @@
 
 {
   imports = [
-    ../common/vim.nix
-    ../common/starship.nix
-    ../common/yazi.nix
-    ../common/fish.nix
-    ../common/git.nix
-    ../common/bat.nix
-    ../common/gh.nix
-    ../common/ghostty.nix
-    ../common/lazygit.nix
-    ../secrets/ssh.nix
+    ../../profiles/common/home.nix
+    ../../secrets/ssh.nix
     ./aerospace/home.nix
     ./sketchybar/home.nix
   ];
@@ -33,10 +25,10 @@
       "$HOME/Library/pnpm"
     ];
     wallpapers = [
-      ../wallpaper/celeste.png
-      ../wallpaper/celeste.png
-      # ../wallpaper/exodus.heic
-      # ../wallpaper/landscape.heic
+      ../../wallpaper/celeste.png
+      ../../wallpaper/celeste.png
+      # ../../wallpaper/exodus.heic
+      # ../../wallpaper/landscape.heic
     ];
     defaultShell = pkgs.fish;
     shell.enableShellIntegration = true;

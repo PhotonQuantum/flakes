@@ -19,7 +19,7 @@ in
     # This is safe here because we're in a new evaluation context (via extendModules)
     home.packages = lib.mkForce filteredPackages;
 
-    # Set the stage2 flag to true, which changes the validation logic in no-package.nix
+    # Set the stage2 flag to true, which changes the validation logic in stage1.nix
     # In stage 2, packages in removePackages list are treated as unauthorized
     packageRestrictions.__stage2 = true;
   };

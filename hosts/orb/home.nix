@@ -2,11 +2,11 @@
 
 {
   imports = [
-    ../common/vim.nix
-    ../common/starship.nix
-    ../common/yazi.nix
-    ../common/fish.nix
-    ../common/git.nix
+    ../../common/vim.nix
+    ../../common/starship.nix
+    ../../common/yazi.nix
+    ../../common/fish.nix
+    ../../common/git.nix
   ];
 
   home = {

@@ -10,7 +10,7 @@
     ./hardware-configuration.nix
     ./borg.nix
     # ./matrix.nix
-    ../common/cache.nix
+    ../../common/cache.nix
   ];
 
   nix.package = pkgs.nix;

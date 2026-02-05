@@ -1,4 +1,3 @@
-# modules/no-packages-assert.nix
 # This module implements a two-stage package restriction system to control which
 # packages can be installed via Home Manager.
 { lib, config, options, pkgs, ... }:
@@ -49,7 +48,7 @@ in
     };
 
     # Internal option used by the two-stage evaluation system
-    # Do not set this manually - it's controlled by no-package-stage2.nix
+    # Do not set this manually - it's controlled by stage2.nix
     __stage2 = lib.mkOption {
       type = lib.types.bool;
       default = false;
@@ -59,7 +58,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    # NOTE: The actual package filtering happens in no-package-stage2.nix
+    # NOTE: The actual package filtering happens in stage2.nix
     # We don't filter here to avoid infinite recursion when reading config.home.packages
     # home.packages = lib.mkForce filteredPackages;  # <- This would cause infinite recursion
 

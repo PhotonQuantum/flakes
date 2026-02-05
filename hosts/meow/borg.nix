@@ -3,13 +3,13 @@ _:
 {
   deployment.keys = {
     "id_ed25519_borg" = {
-      keyFile = ../secrets/id_ed25519_meow_borg;
+      keyFile = ../../secrets/id_ed25519_meow_borg;
       destDir = "/var/keys";
       user = "root";
       group = "root";
     };
     "id_ed25519_borg.pub" = {
-      keyFile = ../secrets/id_ed25519_meow_borg.pub;
+      keyFile = ../../secrets/id_ed25519_meow_borg.pub;
       destDir = "/var/keys";
       user = "root";
       group = "root";

@@ -2,15 +2,7 @@
 
 {
   imports = [
-    ../common/starship.nix
-    ../common/yazi.nix
-    ../common/fish.nix
-    ../common/git.nix
-    ../common/bat.nix
-    ../common/gh.nix
-    ../common/ghostty.nix
-    ../common/lazygit.nix
-    ../common/vim.nix
+    ../../profiles/common/home.nix
     ./walker.nix
     ./hyprland.nix
     ./darkman.nix
@@ -57,7 +49,7 @@
               "E501"
               "E265"
             ];
-          } (builtins.readFile ../scripts/denix.py);
+          } (builtins.readFile ../../scripts/denix.py);
       in
       with pkgs;
       [

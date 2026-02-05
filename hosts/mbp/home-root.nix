@@ -2,8 +2,8 @@ _:
 
 {
   imports = [
-    ../common/vim.nix
-    ../secrets/ssh.nix
+    ../../common/vim.nix
+    ../../secrets/ssh.nix
   ];
 
   home = {

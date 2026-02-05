@@ -17,7 +17,7 @@ with lib;
   };
   config =
     let
-      gen-compose = ../scripts/gen_compose.py;
+      gen-compose = ../../../scripts/gen_compose.py;
       checkPrefixConflict =
         attrs:
         let

@@ -2,7 +2,7 @@ _:
 
 {
   imports = [
-    ../common/vim.nix
+    ../../common/vim.nix
   ];
 
   home = {

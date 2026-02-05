@@ -5,7 +5,7 @@
     ./brew.nix
     ./aerospace/config.nix
     ./sketchybar/config.nix
-    ../common/cache.nix
+    ../../common/cache.nix
   ];
 
   nixpkgs.overlays = [ (final: prev: {
@@ -145,13 +145,13 @@
                 "E501"
                 "E265"
               ];
-            } (builtins.readFile ../scripts/denix.py);
+            } (builtins.readFile ../../scripts/denix.py);
           validate-cam-imports = 
             with pkgs;
             writers.writePython3Bin "validate-cam-imports" {
               libraries = [ python3Packages.click python3Packages.blake3 python3Packages.tqdm ];
               flakeIgnore = [ "E501" ];
-            } (builtins.readFile ../scripts/validate_camera_imports.py);
+            } (builtins.readFile ../../scripts/validate_camera_imports.py);
         in
         with pkgs;
         [

@@ -2,13 +2,13 @@
 {
   deployment.keys = {
     "homeserver.yaml" = {
-      keyFile = ../secrets/homeserver.yaml;
+      keyFile = ../../secrets/homeserver.yaml;
       destDir = "/var/keys";
       user = "matrix-synapse";
       group = "matrix-synapse";
     };
     "homeserver.signing.key" = {
-      keyFile = ../secrets/lightquantum.me.signing.key;
+      keyFile = ../../secrets/lightquantum.me.signing.key;
       destDir = "/var/lib/matrix-synapse";
       user = "matrix-synapse";
       group = "matrix-synapse";

@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, lqPkgs, ... }:
 
 {
   imports = [
@@ -41,27 +41,14 @@
       PNPM_HOME = "$HOME/.pnpm";
     };
 
-    home.packages =
-      let
-        denix =
-          with pkgs;
-          writers.writePython3Bin "denix" {
-            libraries = [ python3Packages.click ];
-            flakeIgnore = [
-              "E501"
-              "E265"
-            ];
-          } (builtins.readFile ../../scripts/denix.py);
-      in
-      with pkgs;
-      [
-        nixfmt
-        nil
-        nvfetcher
-        denix
-        sketchybar-app-font
-        devenv
-      ];
+    home.packages = with pkgs; [
+      nixfmt
+      nil
+      nvfetcher
+      lqPkgs.denix
+      sketchybar-app-font
+      devenv
+    ];
 
     fonts.fontconfig.enable = true;
 

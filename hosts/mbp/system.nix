@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, lqPkgs, ... }:
 
 {
   imports = [
@@ -123,38 +123,19 @@
         twiggy
         wasmtime
       ];
-      nixPackages =
-        let
-          denix =
-            with pkgs;
-            writers.writePython3Bin "denix" {
-              libraries = [ python3Packages.click ];
-              flakeIgnore = [
-                "E501"
-                "E265"
-              ];
-            } (builtins.readFile ../../scripts/denix.py);
-          validate-cam-imports = 
-            with pkgs;
-            writers.writePython3Bin "validate-cam-imports" {
-              libraries = [ python3Packages.click python3Packages.blake3 python3Packages.tqdm ];
-              flakeIgnore = [ "E501" ];
-            } (builtins.readFile ../../scripts/validate_camera_imports.py);
-        in
-        with pkgs;
-        [
-          cachix
-          colmena
-          denix
-          devenv
-          nh
-          nixd
-          nil
-          nix-tree
-          nixfmt-rfc-style
-          nixpkgs-fmt
-          validate-cam-imports
-        ];
+      nixPackages = with pkgs; [
+        cachix
+        colmena
+        lqPkgs.denix
+        devenv
+        nh
+        nixd
+        nil
+        nix-tree
+        nixfmt-rfc-style
+        nixpkgs-fmt
+        lqPkgs."validate-cam-imports"
+      ];
     in
     with pkgs;
     [

@@ -1,18 +1,38 @@
-{ inputs, lib, lq, ... }:
+{
+  inputs,
+  lib,
+  lq,
+  withSystem,
+  ...
+}:
 let
   inherit (inputs) nixpkgs darwin;
 
-  mkDarwin = name: def:
-    darwin.lib.darwinSystem {
-      system = def.system;
-      modules = def.darwinModules;
-    };
+  mkDarwin =
+    _name: def:
+    withSystem def.system (
+      { config, ... }:
+      darwin.lib.darwinSystem {
+        system = def.system;
+        specialArgs = {
+          lqPkgs = config.packages;
+        };
+        modules = def.darwinModules;
+      }
+    );
 
-  mkNixos = name: def:
-    nixpkgs.lib.nixosSystem {
-      system = def.system;
-      modules = def.nixosModules;
-    };
+  mkNixos =
+    _name: def:
+    withSystem def.system (
+      { config, ... }:
+      nixpkgs.lib.nixosSystem {
+        system = def.system;
+        specialArgs = {
+          lqPkgs = config.packages;
+        };
+        modules = def.nixosModules;
+      }
+    );
 
   darwinHosts = lib.filterAttrs (_name: def: def ? darwinModules) lq.hostDefs;
   nixosHosts = lib.filterAttrs (_name: def: def ? nixosModules) lq.hostDefs;

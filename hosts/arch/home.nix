@@ -2,13 +2,15 @@
 
 {
   imports = [
-    ../../profiles/common/home.nix
+    ../../profiles/home/capabilities/minimal.nix
+    ../../profiles/home/capabilities/interactive.nix
+    ../../profiles/home/capabilities/graphics.nix
+    ../../profiles/home/capabilities/development.nix
     ./walker.nix
     ./hyprland.nix
     ./darkman.nix
     ./toshy.nix
-    ./claude-code.nix
-    ../secrets/ssh.nix
+    ../../secrets/ssh.nix
   ];
 
   # Define configOnly as a module option that our modules can check

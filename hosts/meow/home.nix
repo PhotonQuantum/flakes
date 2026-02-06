@@ -2,7 +2,9 @@ _:
 
 {
   imports = [
-    ../../common/vim.nix
+    ../../profiles/home/capabilities/minimal.nix
+    ../../profiles/home/capabilities/interactive.nix
+    ../../profiles/home/capabilities/development.nix
   ];
 
   home = {

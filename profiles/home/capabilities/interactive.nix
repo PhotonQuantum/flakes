@@ -1,4 +1,10 @@
 {
+  imports = [
+    ../modules/cli/yazi.nix
+    ../modules/vcs/gh.nix
+    ../modules/vcs/lazygit.nix
+  ];
+
   programs = {
     lsd.enable = true;
     htop.enable = true;

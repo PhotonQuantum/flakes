@@ -6,8 +6,10 @@
 
 {
   imports = [
-    ../../profiles/common/home.nix
-    ../../profiles/common/home/interactive-tools.nix
+    ../../profiles/home/capabilities/minimal.nix
+    ../../profiles/home/capabilities/interactive.nix
+    ../../profiles/home/capabilities/graphics.nix
+    ../../profiles/home/capabilities/development.nix
     ../../secrets/ssh.nix
     ./aerospace/home.nix
     ./sketchybar/home.nix
@@ -75,81 +77,6 @@
       enable = true;
       includes = [ "~/.orbstack/ssh/config" ];
     };
-    wezterm = {
-      enable = true;
-      extraConfig = ''
-        local wezterm = require 'wezterm'
-        local act = wezterm.action
-        local config = {}
-
-        config.font = wezterm.font "Sarasa Term SC"
-        config.font_size = 16.0
-
-        config.window_background_opacity = 0.8
-        config.macos_window_background_blur = 80
-
-        function get_appearance()
-          if wezterm.gui then
-            return wezterm.gui.get_appearance()
-          end
-          return 'Dark'
-        end
-        function scheme_for_appearance(appearance)
-          if appearance:find 'Dark' then
-            return 'OneDark (base16)'
-          else
-            return 'One Light (base16)'
-          end
-        end
-        config.color_scheme = scheme_for_appearance(get_appearance())
-
-        config.window_decorations = "RESIZE"
-        config.hide_tab_bar_if_only_one_tab = true
-        config.window_frame = {
-          font = wezterm.font { family = 'Sarasa Term SC', weight = 'Bold' },
-          font_size = 14.0,
-        }
-
-        config.keys = {
-          {
-            key = "p",
-            mods = "CMD|SHIFT",
-            action = wezterm.action.ActivateCommandPalette
-          },
-          {
-            key = 'UpArrow',
-            mods = 'SHIFT',
-            action = act.ScrollToPrompt(-1)
-          },
-          {
-            key = 'DownArrow',
-            mods = 'SHIFT',
-            action = act.ScrollToPrompt(1)
-          },
-        }
-        for i = 1, 9 do
-          table.insert(config.keys, {
-            key = tostring(i),
-            mods = 'CMD',
-            action = act.ActivateTab(i - 1),
-          })
-        end
-
-        config.mouse_bindings = {
-          {
-            event = { Down = { streak = 4, button = 'Left' } },
-            action = wezterm.action.SelectTextAtMouseCursor 'SemanticZone',
-            mods = 'NONE',
-          },
-        }
-
-        config.enable_kitty_keyboard = true
-
-        config.front_end = "WebGpu"
-
-        return config
-      '';
-    };
     nix-index = {
       enable = true;
       enableFishIntegration = false;
@@ -165,9 +92,6 @@
       };
     };
     fish = {
-      shellAbbrs = {
-        claude = "/Users/lightquantum/.claude/local/claude";
-      };
       # Extra configuration on top of the common fish module
       functions = {
         init_conda = ''
@@ -203,7 +127,6 @@
       ];
     };
     skim.enable = true;
-    # opam.enable = true;
     git = {
       # Extra configuration on top of the common git module
       signing = {

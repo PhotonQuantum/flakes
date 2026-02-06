@@ -14,8 +14,7 @@
       # Include the OrbStack-specific configuration.
       ./orbstack.nix
 
-      ../../common/cache.nix
-      ../../profiles/common/system/editor.nix
+      ../../profiles/system/capabilities/minimal.nix
     ];
 
   nix.settings = {

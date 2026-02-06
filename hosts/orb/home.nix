@@ -2,13 +2,9 @@
 
 {
   imports = [
-    ../../common/vim.nix
-    ../../common/starship.nix
-    ../../common/yazi.nix
-    ../../common/fish.nix
-    ../../common/git.nix
-    ../../common/lazygit.nix
-    ../../profiles/common/home/interactive-tools.nix
+    ../../profiles/home/capabilities/minimal.nix
+    ../../profiles/home/capabilities/interactive.nix
+    ../../profiles/home/capabilities/development.nix
   ];
 
   home = {

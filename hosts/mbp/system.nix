@@ -5,8 +5,7 @@
     ./brew.nix
     ./aerospace/config.nix
     ./sketchybar/config.nix
-    ../../common/cache.nix
-    ../../profiles/common/system/editor.nix
+    ../../profiles/system/capabilities/minimal.nix
   ];
 
   nixpkgs.overlays = [ (final: prev: {
@@ -95,32 +94,22 @@
         calc
         ffmpeg
         flyctl
-        frp
         gawk
         go
         graphviz
-        hugo
         hyperfine
         imagemagick
         just
         mdbook
-        # mongosh # TODO compile failed
-        mtr
-        navi
-        # neofetch
         ngrok
         ninja
         nodejs
-        ocamlPackages.zarith
-        opencv
         openjdk
         openssl_3
         p7zip
         pandoc
-        topgrade
         wget
         yarn
-        yasm
         (python3.withPackages (
           p: with p; [
             ipython
@@ -154,7 +143,6 @@
         in
         with pkgs;
         [
-          # rnix-lsp
           cachix
           colmena
           denix
@@ -162,7 +150,6 @@
           nh
           nixd
           nil
-          nix-output-monitor
           nix-tree
           nixfmt-rfc-style
           nixpkgs-fmt
@@ -171,10 +158,6 @@
     in
     with pkgs;
     [
-      # ghc   # maybe we should manage haskell stuff by ghcup?
-      bun
-      bunyan-rs
-      # cinny-desktop # TODO compile fail
       diesel-cli
       dotnet-sdk
       dua
@@ -183,18 +166,13 @@
       gnupg
       gpg-tui
       lazydocker
-      nasm
       pinentry_mac
       ripgrep
-      sbt
-      scala
       smartmontools
       tex-fmt
-      typos
       typst
       typstyle
       universal-ctags
-      vimv
       xcaddy
       yubikey-manager
     ]

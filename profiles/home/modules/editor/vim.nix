@@ -3,7 +3,6 @@
 {
   programs.nixvim = {
     enable = true;
-    extraPackages = with pkgs; [ rust-analyzer ];
     nixpkgs.useGlobalPackages = true;
     opts = {
       number = true;
@@ -51,7 +50,6 @@
           };
         };
         plugs = {
-          nix.enable = true;
           auto-save.enable = true;
           auto-session.enable = true;
           dressing.enable = true;
@@ -158,8 +156,6 @@
               eslint.enable = true;
               pyright.enable = true;
               nixd.enable = true;
-              # rnix-lsp.enable = true;
-              # rust-analyzer.enable = true;
             };
           };
           mini = {

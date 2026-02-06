@@ -1,10 +1,18 @@
-{ inputs, lib, lqOverlays, ... }:
+{
+  inputs,
+  lib,
+  lqOverlays,
+  withSystem,
+  ...
+}:
 let
   inherit (inputs) nixpkgs home-manager nixvim pyproject-nix nur;
 
   mkHmConfigModule =
     withMac: system: userPathMap:
     let
+      lqPkgs = withSystem system ({ config, ... }: config.packages);
+
       nur-modules = import nur {
         nurpkgs = nixpkgs.legacyPackages.${system};
       };
@@ -31,6 +39,7 @@ let
             system
             nixvim
             pyproject-nix
+            lqPkgs
             ;
         };
       };

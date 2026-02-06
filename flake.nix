@@ -59,6 +59,7 @@
 
       imports = [
         ./flake/parts/overlays.nix
+        ./flake/parts/packages.nix
         ./flake/parts/lib.nix
         ./flake/parts/hosts.nix
         ./flake/parts/home.nix

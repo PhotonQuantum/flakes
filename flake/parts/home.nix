@@ -1,10 +1,16 @@
-{ inputs, lq, ... }:
+{
+  inputs,
+  lq,
+  withSystem,
+  ...
+}:
 let
   inherit (inputs) home-manager nixpkgs nixvim pyproject-nix;
 
   arch = lq.hostDefs.arch;
 
-  archConf =
+  archConf = withSystem arch.system (
+    { config, ... }:
     let
       hmConf = home-manager.lib.homeManagerConfiguration {
         pkgs = import nixpkgs {
@@ -14,6 +20,7 @@ let
         modules = arch.homeModules;
         extraSpecialArgs = {
           inherit nixvim pyproject-nix;
+          lqPkgs = config.packages;
         };
       };
     in
@@ -22,7 +29,8 @@ let
       specialArgs = {
         prev = hmConf;
       };
-    };
+    }
+  );
 in
 {
   flake.homeConfigurations = {

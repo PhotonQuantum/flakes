@@ -8,14 +8,17 @@ let
   deployHosts = lq.hostLib.selectDeployHosts lq.hosts;
 in
 {
-  flake.colmenaHive = colmena.lib.makeHive {
-    meta = {
-      nixpkgs = import nixpkgs {
-        system = "aarch64-darwin";
+  flake.colmenaHive = colmena.lib.makeHive (
+    {
+      meta = {
+        nixpkgs = import nixpkgs {
+          system = "aarch64-darwin";
+        };
+        nodeNixpkgs = lq.hostLib.mkDeployNodeNixpkgs {
+          hosts = deployHosts;
+        };
       };
-      nodeNixpkgs = lq.hostLib.mkDeployNodeNixpkgs {
-        hosts = deployHosts;
-      };
-    };
-  } // lq.hostLib.mkDeployNodes { hosts = deployHosts; };
+    }
+    // lq.hostLib.mkDeployNodes { hosts = deployHosts; }
+  );
 }

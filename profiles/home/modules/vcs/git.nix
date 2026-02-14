@@ -1,23 +1,27 @@
 { config, pkgs, ... }:
 let
   configOnly = config.home.configOnly or false;
-in {
+in
+{
+  programs.difftastic = {
+    enable = !configOnly;
+    options.display = "inline";
+    git.enable = !configOnly;
+  };
   programs.git = {
     enable = true;
     package = if configOnly then pkgs.emptyDirectory else pkgs.git;
-    difftastic = {
-      enable = !configOnly;
-      display = "inline";
-    };
     lfs.enable = !configOnly;
-    userName = "LightQuantum";
-    userEmail = "self@lightquantum.me";
     ignores = [
       "/.idea"
       ".DS_Store"
       "**/.claude/settings.local.json"
     ];
-    extraConfig = {
+    settings = {
+      user = {
+        name = "LightQuantum";
+        email = "self@lightquantum.me";
+      };
       pull.ff = "only";
       init.defaultBranch = "master";
       push.autoSetupRemote = true;

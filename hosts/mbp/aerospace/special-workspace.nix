@@ -39,7 +39,7 @@ let
   script = pkgs.writeText "toggle_special_workspace.sh" toggle_special_workspace;
 in
 {
-  programs.aerospace.userSettings = {
+  programs.aerospace.settings = {
     mode.main.binding = {
       "alt-s" = "exec-and-forget bash ${script}";
       "alt-shift-s" = "move-node-to-workspace S";

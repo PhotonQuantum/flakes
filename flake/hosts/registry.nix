@@ -76,7 +76,7 @@ in
     ];
     homeModules = [
       lqOverlays.generated
-      nixvim.homeManagerModules.nixvim
+      nixvim.homeModules.nixvim
       ../../modules/home/package-restrictions/stage1.nix
       ../../hosts/arch/home.nix
     ];

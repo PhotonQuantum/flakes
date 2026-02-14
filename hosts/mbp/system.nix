@@ -132,7 +132,7 @@
         nixd
         nil
         nix-tree
-        nixfmt-rfc-style
+        nixfmt
         nixpkgs-fmt
         lqPkgs."validate-cam-imports"
       ];

@@ -1,3 +1,7 @@
+{ config, ... }:
+let
+  configOnly = config.home.configOnly or false;
+in
 {
   imports = [
     ../modules/cli/yazi.nix
@@ -6,8 +10,8 @@
   ];
 
   programs = {
-    lsd.enable = true;
-    htop.enable = true;
+    lsd.enable = !configOnly;
+    htop.enable = !configOnly;
 
     gh = {
       enable = true;

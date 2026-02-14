@@ -90,6 +90,7 @@
         "home-manager"
         "home-configuration-reference-manpage"
         "hm-session-vars.sh"
+        "hm-session-vars.fish"
 
         # xdg-mime needed for generating desktop entries
         "shared-mime-info"

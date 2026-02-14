@@ -1,40 +1,14 @@
 {
-  inputs,
   lq,
-  withSystem,
   ...
 }:
 let
-  inherit (inputs) home-manager nixpkgs nixvim pyproject-nix;
-
-  arch = lq.hostDefs.arch;
-
-  archConf = withSystem arch.system (
-    { config, ... }:
-    let
-      hmConf = home-manager.lib.homeManagerConfiguration {
-        pkgs = import nixpkgs {
-          system = arch.system;
-          config.allowUnfree = true;
-        };
-        modules = arch.homeModules;
-        extraSpecialArgs = {
-          inherit nixvim pyproject-nix;
-          lqPkgs = config.packages;
-        };
-      };
-    in
-    hmConf.extendModules {
-      modules = [ arch.homeStage2Module ];
-      specialArgs = {
-        prev = hmConf;
-      };
-    }
-  );
+  homeHosts = lq.hostLib.selectHomeHosts lq.hosts;
+  homeConfigurations = lq.hostLib.mkNamedConfigurations {
+    hosts = homeHosts;
+    build = lq.hostLib.mkHomeConfig;
+  };
 in
 {
-  flake.homeConfigurations = {
-    "${arch.username}@arch" = archConf;
-    "${arch.legacyName}" = archConf;
-  };
+  flake.homeConfigurations = homeConfigurations;
 }

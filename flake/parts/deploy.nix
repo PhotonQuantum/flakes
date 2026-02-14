@@ -1,9 +1,11 @@
-{ inputs, lq, ... }:
+{
+  inputs,
+  lq,
+  ...
+}:
 let
   inherit (inputs) nixpkgs colmena;
-
-  meow = lq.hostDefs.meow;
-  orb = lq.hostDefs.orb;
+  deployHosts = lq.hostLib.selectDeployHosts lq.hosts;
 in
 {
   flake.colmenaHive = colmena.lib.makeHive {
@@ -11,24 +13,9 @@ in
       nixpkgs = import nixpkgs {
         system = "aarch64-darwin";
       };
-      nodeNixpkgs = {
-        "${meow.legacyName}" = import nixpkgs {
-          system = meow.system;
-        };
-        "${orb.legacyName}" = import nixpkgs {
-          system = orb.system;
-        };
+      nodeNixpkgs = lq.hostLib.mkDeployNodeNixpkgs {
+        hosts = deployHosts;
       };
     };
-
-    "${meow.legacyName}" = {
-      deployment = meow.deploy;
-      imports = meow.nixosModules;
-    };
-
-    "${orb.legacyName}" = {
-      deployment = orb.deploy;
-      imports = orb.nixosModules;
-    };
-  };
+  } // lq.hostLib.mkDeployNodes { hosts = deployHosts; };
 }

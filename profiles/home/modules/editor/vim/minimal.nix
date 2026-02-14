@@ -1,0 +1,267 @@
+{ pkgs, config, ... }:
+
+{
+  programs.nixvim = {
+    enable = true;
+    nixpkgs.useGlobalPackages = true;
+    opts = {
+      number = true;
+      relativenumber = true;
+      clipboard = "unnamedplus";
+      undofile = true;
+      undodir = config.lib.nixvim.mkRaw ''vim.fn.stdpath("data") .. "/undo"'';
+      guifont = "Jetbrains Mono:h14";
+      hlsearch = true;
+      smartcase = true;
+    };
+    extraConfigLua = ''
+      require('smear_cursor').setup({
+        legacy_computing_symbols_support = true,
+      })
+    '';
+    luaLoader.enable = true;
+    colorschemes.catppuccin = {
+      enable = true;
+      lazyLoad.enable = true;
+      settings = {
+        flavour = "auto";
+        integrations = {
+          which_key = true;
+        };
+      };
+    };
+    plugins =
+      let
+        lazy = [
+          "auto-save"
+          "which-key"
+          "treesitter"
+          "telescope"
+        ];
+        lazyLoadInject = {
+          lazyLoad = {
+            enable = true;
+            settings = {
+              event = "DeferredUIEnter";
+            };
+          };
+        };
+        plugs = {
+          auto-save.enable = true;
+          auto-session.enable = true;
+          dressing.enable = true;
+          gitsigns.enable = true;
+          wakatime.enable = true;
+          which-key.enable = true;
+          lz-n.enable = true;
+          treesitter = {
+            enable = true;
+            settings = {
+              indent.enable = true;
+              highlight.enable = true;
+              incremental_selection = {
+                enable = true;
+                keymaps = {
+                  init_selection = "¬";
+                  node_decremental = "˙";
+                  node_incremental = "¬";
+                };
+              };
+            };
+          };
+          telescope = {
+            enable = true;
+            extensions = {
+              frecency.enable = true;
+              file-browser.enable = true;
+            };
+          };
+          lualine = {
+            enable = true;
+            settings = {
+              theme = "catppuccin";
+              sections = {
+                lualine_c = [
+                  {
+                    __unkeyed = "filename";
+                    path = 3;
+                  }
+                  "lsp_progress"
+                ];
+              };
+            };
+          };
+          bufferline = {
+            enable = true;
+            # settings = {
+            #   highlights = config.lib.nixvim.mkRaw ''require("catppuccin.groups.integrations.bufferline").get()'';
+            # };
+          };
+          mini = {
+            enable = true;
+            modules.icons = { };
+            mockDevIcons = true;
+          };
+          vim-suda = {
+            enable = true;
+            settings = {
+              noninteractive = 1;
+            };
+          };
+        };
+      in
+      builtins.foldl' (acc: name: acc // { "${name}" = plugs.${name} // lazyLoadInject; }) plugs lazy;
+    extraPlugins = with pkgs.vimPlugins; [
+      lualine-lsp-progress
+      quick-scope
+      smear-cursor-nvim
+    ];
+    globals = {
+      mapleader = " ";
+      macos_alt_is_meta = true;
+    };
+    keymaps = [
+      {
+        key = "H";
+        action = "^";
+      }
+      {
+        key = "L";
+        action = "$";
+      }
+      {
+        mode = [
+          "i"
+          "v"
+        ];
+        key = "<S-CR>";
+        action = "<Esc>";
+      }
+      {
+        mode = "n";
+        key = "ZA";
+        action = "<cmd>w suda://%<Return>:q<CR>";
+      }
+      {
+        mode = "n";
+        key = "<C-w>";
+        action = "<cmd>bd<CR>";
+        options = {
+          silent = true;
+          desc = "Close buffer";
+        };
+      }
+      {
+        mode = "n";
+        key = "<C-b>";
+        action = "<cmd>BufferLinePick<CR>";
+        options = {
+          desc = "Pick buffer";
+        };
+      }
+      {
+        mode = [
+          "l"
+          "i"
+        ];
+        key = "<C-S-[>";
+        action = "<cmd>BufferLineCyclePrev<CR>";
+        options = {
+          desc = "Previous buffer";
+        };
+      }
+      {
+        mode = [
+          "l"
+          "i"
+        ];
+        key = "<C-S-]>";
+        action = "<cmd>BufferLineCycleNext<CR>";
+        options = {
+          desc = "Next buffer";
+        };
+      }
+      {
+        mode = "n";
+        key = "<Leader>s";
+        action = "<cmd>Telescope live_grep<CR>";
+        options = {
+          silent = true;
+          desc = "Search";
+        };
+      }
+      {
+        mode = "n";
+        key = "<Leader>f";
+        action = "<cmd>Telescope find_files<CR>";
+        options = {
+          silent = true;
+          desc = "Find files";
+        };
+      }
+      {
+        mode = "n";
+        key = "<Leader>b";
+        action = "<cmd>Telescope file_browser<CR>";
+        options = {
+          silent = true;
+          desc = "File browser";
+        };
+      }
+      {
+        mode = "n";
+        key = "<leader>hs";
+        action = "<cmd>Gitsigns stage_hunk<CR>";
+        options = {
+          silent = true;
+          desc = "Stage hunk";
+        };
+      }
+      {
+        mode = "n";
+        key = "<leader>hd";
+        action = "<cmd>Gitsigns reset_hunk<CR>";
+        options = {
+          silent = true;
+          desc = "Reset hunk";
+        };
+      }
+      {
+        mode = "n";
+        key = "*";
+        action = "<cmd>let @/=expand(\"<cword>\")<CR>";
+        options = {
+          silent = true;
+          desc = "Search word under cursor";
+        };
+      }
+      {
+        mode = [
+          "n"
+          "i"
+        ];
+        key = "<2-LeftMouse>";
+        action = "<cmd>let @/=expand(\"<cword>\")<CR>";
+        options = {
+          silent = true;
+          desc = "Search word under cursor";
+        };
+      }
+      {
+        mode = "c";
+        key = "e!!";
+        action = "e suda://%";
+      }
+      {
+        mode = "c";
+        key = "r!!";
+        action = "e suda://%";
+      }
+      {
+        mode = "c";
+        key = "w!!";
+        action = "w suda://%";
+      }
+    ];
+  };
+}

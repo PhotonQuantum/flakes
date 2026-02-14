@@ -1,3 +1,5 @@
 {
-  # Reserved for cross-platform Home Manager development defaults.
+  imports = [
+    ../modules/editor/vim/full.nix
+  ];
 }

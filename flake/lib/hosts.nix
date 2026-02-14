@@ -105,6 +105,7 @@ rec {
         base = nixpkgs.lib.nixosSystem {
           system = def.system;
           specialArgs = {
+            inherit inputs;
             lqPkgs = config.packages;
           };
           modules = def.nixosModules;

@@ -42,6 +42,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     aerospace-mark = {
       url = "github:cristianoliveira/aerospace-marks";
       inputs.nixpkgs.follows = "nixpkgs";

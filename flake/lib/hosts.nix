@@ -47,7 +47,7 @@ rec {
 
       sharedModules =
         [
-          nixvim.homeManagerModules.nixvim
+          nixvim.homeModules.nixvim
         ]
         ++ lib.optionals withMac [
           ../../modules/home/darwin/power.nix

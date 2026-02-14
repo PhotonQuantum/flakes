@@ -30,7 +30,7 @@ in
     aerospaceMark = {
       nixpkgs.overlays = [
         (final: _prev: {
-          aerospace-marks = aerospace-mark.packages.${final.system}.default;
+          aerospace-marks = aerospace-mark.packages.${final.stdenv.hostPlatform.system}.default;
         })
       ];
     };

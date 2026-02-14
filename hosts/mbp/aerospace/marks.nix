@@ -1,8 +1,8 @@
 { lib, pkgs, ... }:
 {
-  programs.aerospace.userSettings =
+  programs.aerospace.settings =
     let
-      aerospace-marks = lib.getExe pkgs.aerospace-marks;
+      aerospace-marks = lib.getExe' pkgs.aerospace-marks "aerospace-marks";
     in
     {
       mode.main.binding = {

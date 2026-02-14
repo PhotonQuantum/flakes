@@ -1,6 +1,6 @@
 { lib, pkgs, ... }:
 {
-  programs.aerospace.userSettings =
+  programs.aerospace.settings =
     let
       sketchybar = lib.getExe pkgs.sketchybar;
     in

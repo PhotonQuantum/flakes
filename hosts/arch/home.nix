@@ -52,6 +52,7 @@
     '';
 
     home.packages = with pkgs; [
+      colmena
       nixfmt
       nil
       nvfetcher
@@ -123,6 +124,7 @@
         "nil"
         "nvfetcher"
         "devenv"
+        "colmena"
 
         # vim is managed by nixvim
         "nixvim"

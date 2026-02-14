@@ -6,6 +6,7 @@ in
   imports = [
     ../../profiles/system/capabilities/minimal.nix
     ./disko.nix
+    ./microvm-static-http.nix
   ] ++ lib.optionals (builtins.pathExists hardwareConfig) [ hardwareConfig ];
 
   networking.hostName = "lightquantum-homelab";

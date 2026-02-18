@@ -33,6 +33,17 @@ let
       extraConfig = import ./vms/static-http.nix;
     }
     {
+      name = "routed-peer-http";
+      group = "routed";
+      mac = "02:00:00:00:20:04";
+      ip = "10.200.0.3/24";
+      vsockCid = 21004;
+      tapName = "vm-rpeer";
+      mem = 512;
+      vcpu = 1;
+      extraConfig = import ./vms/routed-peer-http.nix;
+    }
+    {
       name = "experiment-http";
       group = "isolated";
       mac = "02:00:00:00:20:03";
@@ -42,6 +53,17 @@ let
       mem = 512;
       vcpu = 1;
       extraConfig = import ./vms/experiment-http.nix;
+    }
+    {
+      name = "isolated-peer-http";
+      group = "isolated";
+      mac = "02:00:00:00:20:05";
+      ip = "10.201.0.3/24";
+      vsockCid = 21005;
+      tapName = "vm-ipeer";
+      mem = 512;
+      vcpu = 1;
+      extraConfig = import ./vms/isolated-peer-http.nix;
     }
   ];
 

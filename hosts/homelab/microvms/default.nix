@@ -1,80 +1,19 @@
 { lib, ... }:
 let
   homelabSecrets = import ../../../secrets/homelab.nix;
-
-  bridgeGroups = {
-    routed = {
-      bridgeName = "microvm";
-      bridgeAddress = "10.200.0.1/24";
-      gateway = "10.200.0.1";
-      isolated = false;
-      natEnabled = true;
-    };
-    isolated = {
-      bridgeName = "microvm-iso";
-      bridgeAddress = "10.201.0.1/24";
-      gateway = "10.201.0.1";
-      isolated = true;
-      natEnabled = true;
-    };
-  };
-
   vmLib = import ./lib.nix { inherit lib; };
+  registry = import ./registry.nix;
+  inherit (registry) bridgeGroups machines;
 
-  vmSpecs = [
-    {
-      name = "static-http";
-      group = "routed";
-      mac = "02:00:00:00:20:02";
-      ip = "10.200.0.2/24";
-      vsockCid = 21002;
-      mem = 512;
-      vcpu = 1;
-      extraConfig = import ./vms/static-http.nix;
-    }
-    {
-      name = "routed-peer-http";
-      group = "routed";
-      mac = "02:00:00:00:20:04";
-      ip = "10.200.0.3/24";
-      vsockCid = 21004;
-      tapName = "vm-rpeer";
-      mem = 512;
-      vcpu = 1;
-      extraConfig = import ./vms/routed-peer-http.nix;
-    }
-    {
-      name = "experiment-http";
-      group = "isolated";
-      mac = "02:00:00:00:20:03";
-      ip = "10.201.0.2/24";
-      vsockCid = 21003;
-      tapName = "vm-exp-http";
-      mem = 512;
-      vcpu = 1;
-      extraConfig = import ./vms/experiment-http.nix;
-    }
-    {
-      name = "isolated-peer-http";
-      group = "isolated";
-      mac = "02:00:00:00:20:05";
-      ip = "10.201.0.3/24";
-      vsockCid = 21005;
-      tapName = "vm-ipeer";
-      mem = 512;
-      vcpu = 1;
-      extraConfig = import ./vms/isolated-peer-http.nix;
-    }
-  ];
+  resolvedGroups = vmLib.resolveGroups bridgeGroups;
+  resolvedMachines = vmLib.resolveMachines {
+    inherit machines;
+    bridgeGroups = resolvedGroups;
+  };
+  vmTopology = vmLib.mkTopology resolvedMachines;
 
-  resolvedVmSpecs = map (
-    vmSpec:
-    vmLib.resolveVmSpec {
-      inherit vmSpec bridgeGroups;
-    }
-  ) vmSpecs;
-
-  allGroupConfigs = builtins.attrValues bridgeGroups;
+  allGroupConfigs = builtins.attrValues resolvedGroups;
+  allMachineConfigs = builtins.attrValues resolvedMachines;
 
   natInternalInterfaces = lib.unique (
     map (group: group.bridgeName) (builtins.filter (group: group.natEnabled) allGroupConfigs)
@@ -111,20 +50,25 @@ in
         }) allGroupConfigs);
 
         # Keep tap rules before generic host ethernet matching in system.nix.
-        tapNetworks = builtins.listToAttrs (map (spec: {
-          name = "09-${spec.tapName}";
+        tapNetworks = builtins.listToAttrs (map (machine: {
+          name = "09-${machine.tapName}";
           value = {
-            matchConfig.Name = spec.tapName;
-            networkConfig.Bridge = spec.bridgeName;
-            bridgeConfig.Isolated = spec.isolated;
+            matchConfig.Name = machine.tapName;
+            networkConfig.Bridge = machine.bridgeName;
+            bridgeConfig.Isolated = machine.isolated;
           };
-        }) resolvedVmSpecs);
+        }) allMachineConfigs);
       in
       bridgeNetworks // tapNetworks;
   };
 
   microvm = {
-    autostart = map (spec: spec.name) resolvedVmSpecs;
-    vms = builtins.listToAttrs (map vmLib.mkVmEntry resolvedVmSpecs);
+    autostart = builtins.attrNames resolvedMachines;
+    vms = builtins.listToAttrs (map (
+      machine: vmLib.mkVmEntry {
+        spec = machine;
+        inherit vmTopology;
+      }
+    ) allMachineConfigs);
   };
 }

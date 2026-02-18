@@ -1,5 +1,7 @@
 { lib, ... }:
 let
+  homelabSecrets = import ../../../secrets/homelab.nix;
+
   bridgeGroups = {
     routed = {
       bridgeName = "microvm";
@@ -57,9 +59,12 @@ let
   );
 in
 {
+  # Allow forwarding/NAT for all declared MicroVM bridge groups.
+  networking.firewall.trustedInterfaces = natInternalInterfaces;
+
   networking.nat = {
     enable = natInternalInterfaces != [ ];
-    externalInterface = "enp3s0";
+    externalInterface = homelabSecrets.uplinkName;
     internalInterfaces = natInternalInterfaces;
   };
 

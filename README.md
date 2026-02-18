@@ -35,11 +35,13 @@ $ nh darwin switch .
 
 ## Provision homelab with nixos-anywhere + disko
 
-1. Set the real target disk ID in `secrets/homelab-disk-id.nix`:
+1. Set the real homelab disk ID and uplink NIC settings in `secrets/homelab.nix`:
 
 ```nix
 {
   mainDiskId = "REPLACE_WITH_REAL_DISK_BY_ID";
+  uplinkMacAddress = "REPLACE_WITH_REAL_UPLINK_MAC";
+  uplinkName = "lan0";
 }
 ```
 

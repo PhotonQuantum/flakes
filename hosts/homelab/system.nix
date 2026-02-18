@@ -1,6 +1,7 @@
 { lib, pkgs, ... }:
 let
   hardwareConfig = ./hardware-configuration.nix;
+  homelabSecrets = import ../../secrets/homelab.nix;
 in
 {
   imports = [
@@ -12,6 +13,10 @@ in
   networking.hostName = "lightquantum-homelab";
   networking.useDHCP = false;
   networking.useNetworkd = true;
+  networking.nameservers = [
+    "1.1.1.1"
+    "8.8.8.8"
+  ];
 
   networking.firewall.allowedUDPPorts = [
     5353 # mDNS
@@ -19,16 +24,19 @@ in
 
   systemd.network = {
     enable = true;
+    links."10-uplink" = {
+      matchConfig.MACAddress = homelabSecrets.uplinkMacAddress;
+      linkConfig.Name = homelabSecrets.uplinkName;
+    };
+
     networks."10-lan" = {
-      matchConfig = {
-        Type = "ether";
-        Kind = "!*";
-      };
+      matchConfig.Name = homelabSecrets.uplinkName;
       networkConfig = {
         DHCP = "ipv4";
         IPv6AcceptRA = true;
         MulticastDNS = true;
       };
+      dhcpV4Config.UseDNS = false;
       linkConfig.RequiredForOnline = "routable";
     };
   };

@@ -1,4 +1,9 @@
-{ pkgs, lib, lqPkgs, ... }:
+{
+  pkgs,
+  lib,
+  lqPkgs,
+  ...
+}:
 
 {
   imports = [
@@ -37,9 +42,14 @@
       "$HOME/.pnpm"
     ];
     home.sessionVariables = {
-      EDITOR = "nvim";
       PNPM_HOME = "$HOME/.pnpm";
     };
+    home.sessionVariablesExtra = ''
+      unset SSH_AGENT_PID
+      if [ -z "$SSH_CONNECTION" -o -z "$SSH_AUTH_SOCK" ] && [ "''${gnupg_SSH_AUTH_SOCK_by:-0}" -ne $$ ]; then
+        export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
+      fi
+    '';
 
     home.packages = with pkgs; [
       nixfmt

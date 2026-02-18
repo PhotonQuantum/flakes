@@ -53,7 +53,17 @@ let
         matchConfig.MACAddress = mac;
         address = [ ip ];
         routes = [ { Gateway = gateway; } ];
-        networkConfig.DNS = nameservers;
+        networkConfig = {
+          DNS = nameservers;
+          MulticastDNS = true;
+        };
+      };
+      services.resolved = {
+        enable = true;
+        settings.Resolve = {
+          MulticastDNS = true;
+          LLMNR = false;
+        };
       };
 
       networking.firewall.allowedTCPPorts = [ 80 ];

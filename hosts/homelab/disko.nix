@@ -1,6 +1,6 @@
 { ... }:
 let
-  diskIds = import ../../secrets/homelab-disk-id.nix;
+  diskIds = import ../../secrets/homelab.nix;
 in
 {
   disko.devices = {

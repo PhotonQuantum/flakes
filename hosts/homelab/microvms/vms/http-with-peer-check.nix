@@ -1,19 +1,30 @@
 {
   title,
   body,
-  serverName,
-  peerIp,
-  peerName,
+  serverName ? null,
+  peerVmName,
 }:
 {
   pkgs,
+  vmSelf,
+  vmTopology,
   ...
 }:
+let
+  peer =
+    if builtins.hasAttr peerVmName vmTopology.byName then
+      vmTopology.byName.${peerVmName}
+    else
+      throw "Unknown peer VM `${peerVmName}` referenced by `${vmSelf.name}`";
+
+  resolvedServerName =
+    if serverName != null then serverName else "${vmSelf.name}.local";
+in
 {
   services.nginx = {
     enable = true;
     recommendedProxySettings = true;
-    virtualHosts.${serverName} = {
+    virtualHosts.${resolvedServerName} = {
       default = true;
       locations."/" = {
         root = "/etc/nginx/static";
@@ -57,10 +68,10 @@
       set -eu
 
       status_file="/var/lib/microvm-status/peer-check.txt"
-      if ${pkgs.curl}/bin/curl -fsS --max-time 3 "http://${peerIp}/" >/dev/null; then
-        printf 'ok: reached %s (%s)\n' '${peerName}' '${peerIp}' > "$status_file"
+      if ${pkgs.curl}/bin/curl -fsS --max-time 3 "http://${peer.ip}/" >/dev/null; then
+        printf 'ok: reached %s (%s)\n' '${peer.name}' '${peer.ip}' > "$status_file"
       else
-        printf 'fail: could not reach %s (%s)\n' '${peerName}' '${peerIp}' > "$status_file"
+        printf 'fail: could not reach %s (%s)\n' '${peer.name}' '${peer.ip}' > "$status_file"
       fi
     '';
   };

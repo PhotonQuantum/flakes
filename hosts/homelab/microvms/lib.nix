@@ -35,43 +35,44 @@ let
         "1.1.1.1"
         "8.8.8.8"
       ],
-      extraConfig ? { },
+      extraConfig ? null,
       ...
     }:
-    { ... }:
-    lib.recursiveUpdate
-      {
-        networking.hostName = name;
-        networking.useDHCP = false;
-        networking.useNetworkd = true;
-        networking.nameservers = nameservers;
+    {
+      imports = lib.optionals (extraConfig != null) (
+        if builtins.isList extraConfig then extraConfig else [ extraConfig ]
+      );
 
-        systemd.network.enable = true;
-        systemd.network.networks."10-uplink" = {
-          matchConfig.MACAddress = mac;
-          address = [ ip ];
-          routes = [ { Gateway = gateway; } ];
-          networkConfig.DNS = nameservers;
-        };
+      networking.hostName = name;
+      networking.useDHCP = false;
+      networking.useNetworkd = true;
+      networking.nameservers = nameservers;
 
-        networking.firewall.allowedTCPPorts = [ 80 ];
+      systemd.network.enable = true;
+      systemd.network.networks."10-uplink" = {
+        matchConfig.MACAddress = mac;
+        address = [ ip ];
+        routes = [ { Gateway = gateway; } ];
+        networkConfig.DNS = nameservers;
+      };
 
-        microvm = {
-          hypervisor = "cloud-hypervisor";
-          interfaces = [
-            {
-              type = "tap";
-              id = tapName;
-              inherit mac;
-            }
-          ];
-          vsock.cid = vsockCid;
-          inherit vcpu mem;
-        };
+      networking.firewall.allowedTCPPorts = [ 80 ];
 
-        system.stateVersion = "25.11";
-      }
-      extraConfig;
+      microvm = {
+        hypervisor = "cloud-hypervisor";
+        interfaces = [
+          {
+            type = "tap";
+            id = tapName;
+            inherit mac;
+          }
+        ];
+        vsock.cid = vsockCid;
+        inherit vcpu mem;
+      };
+
+      system.stateVersion = "25.11";
+    };
 
   mkVmEntry = spec: {
     name = spec.name;

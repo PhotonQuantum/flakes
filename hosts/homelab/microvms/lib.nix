@@ -303,7 +303,7 @@ let
       networking.firewall.allowedTCPPorts = [ 80 ];
 
       microvm = {
-        hypervisor = "cloud-hypervisor";
+        hypervisor = "qemu";
         interfaces = [
           {
             type = "tap";

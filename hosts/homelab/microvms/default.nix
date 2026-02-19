@@ -20,6 +20,10 @@ let
   );
 in
 {
+  systemd.tmpfiles.rules = [
+    "d /srv/microvms 0770 microvm kvm - -"
+  ];
+
   # Allow forwarding/NAT for all declared MicroVM bridge groups.
   networking.firewall.trustedInterfaces = natInternalInterfaces;
 

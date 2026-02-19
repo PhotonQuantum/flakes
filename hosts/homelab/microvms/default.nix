@@ -14,15 +14,17 @@ let
 
   allGroupConfigs = builtins.attrValues resolvedGroups;
   allMachineConfigs = builtins.attrValues resolvedMachines;
+  dataVolumeMachines = builtins.filter (machine: machine.dataVolumeResolved != null) allMachineConfigs;
+  dataVolumeSubvolumeTmpfiles = map (
+    machine: "v /srv/microvms/${machine.name} 0770 microvm kvm - -"
+  ) dataVolumeMachines;
 
   natInternalInterfaces = lib.unique (
     map (group: group.bridgeName) (builtins.filter (group: group.natEnabled) allGroupConfigs)
   );
 in
 {
-  systemd.tmpfiles.rules = [
-    "d /srv/microvms 0770 microvm kvm - -"
-  ];
+  systemd.tmpfiles.rules = dataVolumeSubvolumeTmpfiles;
 
   # Allow forwarding/NAT for all declared MicroVM bridge groups.
   networking.firewall.trustedInterfaces = natInternalInterfaces;

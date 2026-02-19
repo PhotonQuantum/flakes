@@ -91,19 +91,19 @@ let
           dataVolume.sizeMiB
             or (throw "machines.${name}.dataVolume.sizeMiB is required");
         mountPoint = dataVolume.mountPoint or "/mnt";
-        hostImagePath = dataVolume.hostImagePath or "/srv/microvms/${name}.img";
+        hostImagePath = "/srv/microvms/${name}/image.img";
         fsType = dataVolume.fsType or "ext4";
         label = dataVolume.label or null;
       in
+      assert ensure
+        (!(dataVolume ? hostImagePath))
+        "machines.${name}.dataVolume.hostImagePath is no longer supported; image path is fixed to `${hostImagePath}`";
       assert ensure
         (builtins.isInt sizeMiB && sizeMiB >= 1)
         "machines.${name}.dataVolume.sizeMiB must be a positive integer (MiB); got `${toString sizeMiB}`";
       assert ensure
         (builtins.match "^/.*" mountPoint != null)
         "machines.${name}.dataVolume.mountPoint must be an absolute path; got `${mountPoint}`";
-      assert ensure
-        (builtins.match "^/srv/.+" hostImagePath != null)
-        "machines.${name}.dataVolume.hostImagePath must be an absolute path under /srv/; got `${hostImagePath}`";
       {
         inherit
           sizeMiB

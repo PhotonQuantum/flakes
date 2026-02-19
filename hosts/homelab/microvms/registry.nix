@@ -32,8 +32,7 @@
       #   sizeMiB = 1024;
       #   # Optional; defaults to "/mnt".
       #   mountPoint = "/mnt";
-      #   # Optional; defaults to "/srv/microvms/${name}.img".
-      #   hostImagePath = "/srv/microvms/static-http.img";
+      #   # Image path is fixed to "/srv/microvms/${name}/image.img".
       #   # Optional; defaults to "ext4".
       #   fsType = "ext4";
       #   # Optional; defaults to null.

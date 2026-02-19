@@ -81,6 +81,40 @@ let
       "tap name `${tapName}` for VM `${name}` is longer than Linux max length 15";
     tapName;
 
+  resolveBackupDefaults =
+    backupDefaults:
+    let
+      snapshotRoot = backupDefaults.snapshotRoot or "/srv/.snapshots/microvm-borg";
+      startAt = backupDefaults.startAt or "daily";
+      passFile = backupDefaults.passFile or "/var/keys/homelab_borg.pass";
+      sshKeyPath = backupDefaults.sshKeyPath or "/var/keys/id_ed25519_homelab_borg";
+      prune = backupDefaults.prune or {
+        within = "24H";
+        daily = 7;
+        weekly = 4;
+        monthly = 6;
+        yearly = 2;
+      };
+    in
+    assert ensure
+      (builtins.match "^/srv(/.*)?$" snapshotRoot != null)
+      "backupDefaults.snapshotRoot must be an absolute path under /srv; got `${snapshotRoot}`";
+    assert ensure
+      (builtins.match "^/.*" passFile != null)
+      "backupDefaults.passFile must be an absolute path; got `${passFile}`";
+    assert ensure
+      (builtins.match "^/.*" sshKeyPath != null)
+      "backupDefaults.sshKeyPath must be an absolute path; got `${sshKeyPath}`";
+    {
+      inherit
+        snapshotRoot
+        startAt
+        passFile
+        sshKeyPath
+        prune
+        ;
+    };
+
   resolveDataVolume =
     name: dataVolume:
     if dataVolume == null then
@@ -111,6 +145,58 @@ let
           hostImagePath
           fsType
           label
+          ;
+      };
+
+  resolveBackup =
+    {
+      name,
+      backup,
+      backupDefaults,
+      dataVolumeResolved,
+      dataVolumeSubvolumePath,
+      dataVolumeImageBasename,
+      backupSnapshotParent,
+    }:
+    if backup == null then
+      null
+    else
+      let
+        repo =
+          backup.repo
+            or (throw "machines.${name}.backup.repo is required when backup is configured");
+        startAt = backup.startAt or backupDefaults.startAt;
+        archivePrefix = backup.archivePrefix or name;
+        pruneKeep = backupDefaults.prune // (backup.prune or { });
+      in
+      assert ensure
+        (dataVolumeResolved != null)
+        "machines.${name}.backup requires machines.${name}.dataVolume";
+      assert ensure
+        (builtins.isString repo && repo != "")
+        "machines.${name}.backup.repo must be a non-empty string";
+      assert ensure
+        (builtins.isString startAt && startAt != "")
+        "machines.${name}.backup.startAt must be a non-empty string";
+      assert ensure
+        (builtins.isString archivePrefix && archivePrefix != "")
+        "machines.${name}.backup.archivePrefix must be a non-empty string";
+      {
+        inherit
+          repo
+          startAt
+          archivePrefix
+          pruneKeep
+          dataVolumeSubvolumePath
+          dataVolumeImageBasename
+          backupSnapshotParent
+          ;
+        imagePath = dataVolumeResolved.hostImagePath;
+        imagePathInArchive = dataVolumeImageBasename;
+        inherit (backupDefaults)
+          snapshotRoot
+          passFile
+          sshKeyPath
           ;
       };
 
@@ -149,6 +235,7 @@ let
       name,
       machine,
       bridgeGroups,
+      backupDefaults,
     }:
     let
       groupName = machine.group;
@@ -168,6 +255,20 @@ let
         else
           [ moduleInput ];
       dataVolumeResolved = resolveDataVolume name (machine.dataVolume or null);
+      dataVolumeSubvolumePath = if dataVolumeResolved == null then null else "/srv/microvms/${name}";
+      dataVolumeImageBasename = if dataVolumeResolved == null then null else "image.img";
+      backupSnapshotParent = if dataVolumeResolved == null then null else "${backupDefaults.snapshotRoot}/${name}";
+      backupResolved = resolveBackup {
+        inherit
+          name
+          backupDefaults
+          dataVolumeResolved
+          dataVolumeSubvolumePath
+          dataVolumeImageBasename
+          backupSnapshotParent
+          ;
+        backup = machine.backup or null;
+      };
       vmIdHi = builtins.div vmId 256;
       vmIdLo = vmId - (vmIdHi * 256);
     in
@@ -189,6 +290,10 @@ let
         tapName
         extraConfig
         dataVolumeResolved
+        dataVolumeSubvolumePath
+        dataVolumeImageBasename
+        backupSnapshotParent
+        backupResolved
         ;
       group = groupName;
       groupConfig = group;
@@ -204,8 +309,10 @@ let
     {
       machines,
       bridgeGroups,
+      backupDefaults ? { },
     }:
     let
+      resolvedBackupDefaults = resolveBackupDefaults backupDefaults;
       machineNames = builtins.attrNames machines;
       resolved = builtins.listToAttrs (
         map (name: {
@@ -213,6 +320,7 @@ let
           value = resolveMachine {
             inherit name bridgeGroups;
             machine = machines.${name};
+            backupDefaults = resolvedBackupDefaults;
           };
         }) machineNames
       );
@@ -233,6 +341,9 @@ let
       dataVolumeHostImagePaths = map
         (machine: machine.dataVolumeResolved.hostImagePath)
         (builtins.filter (machine: machine.dataVolumeResolved != null) machineValues);
+      backupRepos = map
+        (machine: machine.backupResolved.repo)
+        (builtins.filter (machine: machine.backupResolved != null) machineValues);
     in
     assert builtins.all (check: check) groupVmIdChecks;
     assert ensureNoDuplicates "machine ip addresses" (map (machine: machine.ip) machineValues);
@@ -240,6 +351,7 @@ let
     assert ensureNoDuplicates "machine MAC addresses" (map (machine: machine.mac) machineValues);
     assert ensureNoDuplicates "machine tap names" (map (machine: machine.tapName) machineValues);
     assert ensureNoDuplicates "machines.*.dataVolume.hostImagePath" dataVolumeHostImagePaths;
+    assert ensureNoDuplicates "machines.*.backup.repo" backupRepos;
     resolved;
 
   mkVmRef = machine: {
@@ -399,6 +511,7 @@ in
     sanitizeName
     hexByte
     mkTapNameAuto
+    resolveBackupDefaults
     resolveGroups
     resolveMachine
     resolveMachines

@@ -27,6 +27,18 @@
       module = ./vms/static-http.nix;
       mem = 512;
       vcpu = 1;
+      # Optional per-VM data volume:
+      # dataVolume = {
+      #   sizeMiB = 1024;
+      #   # Optional; defaults to "/mnt".
+      #   mountPoint = "/mnt";
+      #   # Optional; defaults to "/srv/microvms/${name}.img".
+      #   hostImagePath = "/srv/microvms/static-http.img";
+      #   # Optional; defaults to "ext4".
+      #   fsType = "ext4";
+      #   # Optional; defaults to null.
+      #   label = "static-http-data";
+      # };
     };
     routed-peer-http = {
       group = "routed";

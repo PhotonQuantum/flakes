@@ -10,6 +10,23 @@ in
     ./microvms
   ] ++ lib.optionals (builtins.pathExists hardwareConfig) [ hardwareConfig ];
 
+  deployment = {
+      keys = {
+        "homelab_borg.pass" = {
+          keyFile = ../../secrets/homelab_borg.pass;
+          destDir = "/var/keys";
+          user = "root";
+          group = "root";
+        };
+        "id_ed25519_homelab_borg" = {
+          keyFile = ../../secrets/id_ed25519_homelab_borg;
+          destDir = "/var/keys";
+          user = "root";
+          group = "root";
+        };
+      };
+  };
+
   networking.hostName = "lightquantum-homelab";
   networking.useDHCP = false;
   networking.useNetworkd = true;

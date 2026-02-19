@@ -3,11 +3,11 @@ let
   homelabSecrets = import ../../../secrets/homelab.nix;
   vmLib = import ./lib.nix { inherit lib; };
   registry = import ./registry.nix;
-  inherit (registry) bridgeGroups machines;
+  inherit (registry) backupDefaults bridgeGroups machines;
 
   resolvedGroups = vmLib.resolveGroups bridgeGroups;
   resolvedMachines = vmLib.resolveMachines {
-    inherit machines;
+    inherit backupDefaults machines;
     bridgeGroups = resolvedGroups;
   };
   vmTopology = vmLib.mkTopology resolvedMachines;
@@ -24,6 +24,8 @@ let
   );
 in
 {
+  imports = [ ./backup.nix ];
+
   systemd.tmpfiles.rules = dataVolumeSubvolumeTmpfiles;
 
   # Allow forwarding/NAT for all declared MicroVM bridge groups.

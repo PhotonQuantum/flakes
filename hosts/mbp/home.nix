@@ -126,7 +126,6 @@
         }
       ];
     };
-    skim.enable = true;
     git = {
       # Extra configuration on top of the common git module
       signing = {

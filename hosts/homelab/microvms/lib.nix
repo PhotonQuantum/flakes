@@ -168,6 +168,10 @@ let
         startAt = backup.startAt or backupDefaults.startAt;
         archivePrefix = backup.archivePrefix or name;
         pruneKeep = backupDefaults.prune // (backup.prune or { });
+        dataVolumeParentPath = "/srv/microvms";
+        backupSnapshotCurrentPath = "${backupSnapshotParent}/current";
+        restoreStageSubvolumePath = "${dataVolumeParentPath}/.${name}.restore-new";
+        restoreOldSubvolumePath = "${dataVolumeParentPath}/.${name}.restore-old";
       in
       assert ensure
         (dataVolumeResolved != null)
@@ -188,8 +192,12 @@ let
           archivePrefix
           pruneKeep
           dataVolumeSubvolumePath
+          dataVolumeParentPath
           dataVolumeImageBasename
           backupSnapshotParent
+          backupSnapshotCurrentPath
+          restoreStageSubvolumePath
+          restoreOldSubvolumePath
           ;
         imagePath = dataVolumeResolved.hostImagePath;
         imagePathInArchive = dataVolumeImageBasename;

@@ -5,6 +5,7 @@ in {
   programs.yazi = {
     enable = true;
     package = if configOnly then pkgs.emptyDirectory else pkgs.yazi;
+    shellWrapperName = "yy";
     keymap = {
       mgr.prepend_keymap =
         [

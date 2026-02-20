@@ -17,17 +17,11 @@ let
   backupVmNames = builtins.attrNames backupMachines;
   hasBackupMachines = backupVmNames != [ ];
 
-  snapshotTmpfiles =
-    if hasBackupMachines then
-      [ "d ${snapshotRoot} 0750 root root - -" ]
-    else
-      [ ];
+  snapshotTmpfiles = if hasBackupMachines then [ "d ${snapshotRoot} 0750 root root - -" ] else [ ];
 
   subvolumePath = name: "${volumePath}/${name}";
   snapshotParent = name: "${snapshotRoot}/${name}";
   snapshotCurrent = name: "${snapshotParent name}/current";
-  restoreStage = name: "${volumePath}/.${name}.restore-new";
-  restoreOld = name: "${volumePath}/.${name}.restore-old";
 
   borgJobs = lib.mapAttrs' (
     name: machine:
@@ -96,7 +90,7 @@ let
     }
   ) backupMachines;
 
-  backupManifest = lib.mapAttrs (
+  backupManifestVms = lib.mapAttrs (
     name: machine:
     let
       backup = machine.backupResolved;
@@ -105,263 +99,32 @@ let
       repo = backup.repo;
       passFile = backup.passFile;
       sshKeyPath = backup.sshKeyPath;
-      vmServiceUnit = "microvm@${name}.service";
-      subvolumePath = subvolumePath name;
-      restoreStageSubvolumePath = restoreStage name;
-      restoreOldSubvolumePath = restoreOld name;
     }
   ) backupMachines;
 
-  mkCaseFn =
-    fnName: valueFn:
-    ''
-      ${fnName}() {
-        case "$1" in
-      ${lib.concatMapStringsSep "\n" (
-        name:
-        "    ${name}) echo ${lib.escapeShellArg (valueFn name)} ;;"
-      ) backupVmNames}
-          *)
-            echo "unknown VM: $1" >&2
-            return 1
-            ;;
-        esac
-      }
-    '';
+  backupCli = pkgs.writers.writePython3Bin "microvm-image-backup" {
+    flakeIgnore = [ "E501" "E265" ];
+    makeWrapperArgs =
+      let
+        runtimeInputs = with pkgs; [
+          python3
+          borgbackup
+          btrfs-progs
+          coreutils
+          systemd
+        ];
+      in
+      [
+        "--prefix"
+        "PATH"
+        ":"
+        "${lib.makeBinPath runtimeInputs}"
+      ];
+  } (builtins.readFile ./microvm_image_backup.py);
 
-  backupCli = pkgs.writeShellApplication {
-    name = "microvm-image-backup";
-    runtimeInputs = with pkgs; [
-      borgbackup
-      coreutils
-      systemd
-    ];
-    text = ''
-      set -euo pipefail
-
-      known_vms=(${lib.concatMapStringsSep " " lib.escapeShellArg backupVmNames})
-      volume_path=${lib.escapeShellArg volumePath}
-
-      if [ "''${#known_vms[@]}" -eq 0 ]; then
-        echo "No backup-enabled VMs configured."
-        exit 0
-      fi
-
-      usage() {
-        cat <<'USAGE'
-      Usage:
-        microvm-image-backup backup <vm>
-        microvm-image-backup list [vm]
-        microvm-image-backup restore <vm> <archive>
-      USAGE
-      }
-
-      vm_exists() {
-        local target="$1"
-        local vm
-        for vm in "''${known_vms[@]}"; do
-          if [ "$vm" = "$target" ]; then
-            return 0
-          fi
-        done
-        return 1
-      }
-
-      vm_subvolume_path() {
-        echo "$volume_path/$1"
-      }
-
-      vm_restore_stage_path() {
-        echo "$volume_path/.$1.restore-new"
-      }
-
-      vm_restore_old_path() {
-        echo "$volume_path/.$1.restore-old"
-      }
-
-      is_btrfs_subvolume() {
-        ${pkgs.btrfs-progs}/bin/btrfs subvolume show "$1" >/dev/null 2>&1
-      }
-
-      delete_subvolume_strict_if_exists() {
-        local path="$1"
-        local label="$2"
-        if [ -e "$path" ]; then
-          if is_btrfs_subvolume "$path"; then
-            ${pkgs.btrfs-progs}/bin/btrfs subvolume delete "$path"
-          else
-            echo "Refusing to delete non-btrfs $label at $path" >&2
-            return 1
-          fi
-        fi
-      }
-
-      cleanup_subvolume_best_effort() {
-        local path="$1"
-        local label="$2"
-        if [ -e "$path" ]; then
-          if is_btrfs_subvolume "$path"; then
-            if ! ${pkgs.btrfs-progs}/bin/btrfs subvolume delete "$path"; then
-              echo "warning: failed to delete $label at $path" >&2
-            fi
-          else
-            echo "warning: $label at $path exists but is not a btrfs subvolume" >&2
-          fi
-        fi
-      }
-
-      ${mkCaseFn "vm_repo" (name: backupMachines.${name}.backupResolved.repo)}
-      ${mkCaseFn "vm_pass_file" (name: backupMachines.${name}.backupResolved.passFile)}
-      ${mkCaseFn "vm_ssh_key" (name: backupMachines.${name}.backupResolved.sshKeyPath)}
-      ${mkCaseFn "vm_backup_unit" (name: "borgbackup-job-microvm-${name}.service")}
-      ${mkCaseFn "vm_service_unit" (name: "microvm@${name}.service")}
-
-      load_borg_context() {
-        local vm="$1"
-        local borg_pass_command
-        local borg_repo
-        local borg_rsh
-        borg_pass_command="cat $(vm_pass_file "$vm")"
-        export BORG_PASSCOMMAND="$borg_pass_command"
-        borg_rsh="ssh -i $(vm_ssh_key "$vm")"
-        export BORG_RSH="$borg_rsh"
-        borg_repo="$(vm_repo "$vm")"
-        export BORG_REPO="$borg_repo"
-      }
-
-      cmd=''${1:-}
-      case "$cmd" in
-        backup)
-          vm=''${2:-}
-          if [ -z "$vm" ]; then
-            usage
-            exit 1
-          fi
-          if ! vm_exists "$vm"; then
-            echo "Unknown VM: $vm" >&2
-            exit 1
-          fi
-          systemctl restart -v --wait "$(vm_backup_unit "$vm")"
-          ;;
-
-        list)
-          vm=''${2:-}
-          if [ -n "$vm" ]; then
-            if ! vm_exists "$vm"; then
-              echo "Unknown VM: $vm" >&2
-              exit 1
-            fi
-            load_borg_context "$vm"
-            echo "VM: $vm"
-            echo "Subvolume: $(vm_subvolume_path "$vm")"
-            borg list --short
-          else
-            for vm_name in "''${known_vms[@]}"; do
-              load_borg_context "$vm_name"
-              echo "VM: $vm_name"
-              echo "Subvolume: $(vm_subvolume_path "$vm_name")"
-              borg list --short
-              echo
-            done
-          fi
-          ;;
-
-        restore)
-          vm=''${2:-}
-          archive=''${3:-}
-          if [ -z "$vm" ] || [ -z "$archive" ]; then
-            usage
-            exit 1
-          fi
-          if ! vm_exists "$vm"; then
-            echo "Unknown VM: $vm" >&2
-            exit 1
-          fi
-
-          service="$(vm_service_unit "$vm")"
-          target_subvolume="$(vm_subvolume_path "$vm")"
-          stage_subvolume="$(vm_restore_stage_path "$vm")"
-          old_subvolume="$(vm_restore_old_path "$vm")"
-          was_active=0
-          swap_done=0
-          restore_finished=0
-
-          if ! is_btrfs_subvolume "$target_subvolume"; then
-            echo "Target VM path is not a btrfs subvolume: $target_subvolume" >&2
-            exit 1
-          fi
-
-          delete_subvolume_strict_if_exists "$stage_subvolume" "restore stage subvolume"
-          delete_subvolume_strict_if_exists "$old_subvolume" "restore old subvolume"
-
-          ${pkgs.btrfs-progs}/bin/btrfs subvolume create "$stage_subvolume"
-
-          restore_cleanup() {
-            local exit_code=$?
-            set +e
-
-            if [ "$restore_finished" -ne 1 ]; then
-              echo "Restore failed for VM '$vm'; attempting rollback." >&2
-              if [ "$swap_done" -eq 1 ]; then
-                if [ -e "$target_subvolume" ] && is_btrfs_subvolume "$target_subvolume"; then
-                  ${pkgs.btrfs-progs}/bin/btrfs subvolume delete "$target_subvolume" || \
-                    echo "warning: failed to delete partially restored target: $target_subvolume" >&2
-                fi
-                if [ -e "$old_subvolume" ]; then
-                  if mv "$old_subvolume" "$target_subvolume"; then
-                    echo "Rollback completed for VM '$vm'." >&2
-                  else
-                    echo "warning: rollback move failed ($old_subvolume -> $target_subvolume)" >&2
-                  fi
-                else
-                  echo "warning: rollback source missing: $old_subvolume" >&2
-                fi
-              fi
-
-              if [ "$was_active" -eq 1 ]; then
-                systemctl start -v "$service" || \
-                  echo "warning: failed to restart VM service after rollback: $service" >&2
-              fi
-            fi
-
-            cleanup_subvolume_best_effort "$stage_subvolume" "restore stage subvolume"
-            if [ "$restore_finished" -eq 1 ]; then
-              cleanup_subvolume_best_effort "$old_subvolume" "previous VM subvolume"
-            fi
-
-            trap - EXIT
-            exit "$exit_code"
-          }
-          trap restore_cleanup EXIT
-
-          load_borg_context "$vm"
-          (
-            cd "$stage_subvolume"
-            borg extract "::''${archive}"
-          )
-
-          if systemctl is-active --quiet "$service"; then
-            was_active=1
-            systemctl stop -v "$service"
-          fi
-
-          mv "$target_subvolume" "$old_subvolume"
-          mv "$stage_subvolume" "$target_subvolume"
-          swap_done=1
-
-          if [ "$was_active" -eq 1 ]; then
-            systemctl start -v "$service"
-          fi
-
-          restore_finished=1
-          ;;
-
-        *)
-          usage
-          exit 1
-          ;;
-      esac
-    '';
+  backupManifest = {
+    inherit volumePath;
+    vms = backupManifestVms;
   };
 in
 {

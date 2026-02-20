@@ -3,11 +3,12 @@ let
   homelabSecrets = import ../../../secrets/homelab.nix;
   vmLib = import ./lib.nix { inherit lib; };
   registry = import ./registry.nix;
+  volumePath = registry.volumePath or "/srv/microvms";
   inherit (registry) backupDefaults bridgeGroups machines;
 
   resolvedGroups = vmLib.resolveGroups bridgeGroups;
   resolvedMachines = vmLib.resolveMachines {
-    inherit backupDefaults machines;
+    inherit backupDefaults machines volumePath;
     bridgeGroups = resolvedGroups;
   };
   vmTopology = vmLib.mkTopology resolvedMachines;
@@ -16,7 +17,7 @@ let
   allMachineConfigs = builtins.attrValues resolvedMachines;
   dataVolumeMachines = builtins.filter (machine: machine.dataVolumeResolved != null) allMachineConfigs;
   dataVolumeSubvolumeTmpfiles = map (
-    machine: "v /srv/microvms/${machine.name} 0770 microvm kvm - -"
+    machine: "v ${builtins.dirOf machine.dataVolumeResolved.hostImagePath} 0770 microvm kvm - -"
   ) dataVolumeMachines;
 
   natInternalInterfaces = lib.unique (

@@ -3,11 +3,13 @@ let
   vmLib = import ./lib.nix { inherit lib; };
   registry = import ./registry.nix;
   backupDefaults = vmLib.resolveBackupDefaults (registry.backupDefaults or { });
+  snapshotRoot = vmLib.resolveSnapshotRoot (registry.snapshotRoot or null);
+  volumePath = registry.volumePath or "/srv/microvms";
   inherit (registry) bridgeGroups machines;
 
   resolvedGroups = vmLib.resolveGroups bridgeGroups;
   resolvedMachines = vmLib.resolveMachines {
-    inherit backupDefaults machines;
+    inherit backupDefaults machines volumePath;
     bridgeGroups = resolvedGroups;
   };
 
@@ -17,14 +19,23 @@ let
 
   snapshotTmpfiles =
     if hasBackupMachines then
-      [ "d ${backupDefaults.snapshotRoot} 0750 root root - -" ]
+      [ "d ${snapshotRoot} 0750 root root - -" ]
     else
       [ ];
+
+  subvolumePath = name: "${volumePath}/${name}";
+  snapshotParent = name: "${snapshotRoot}/${name}";
+  snapshotCurrent = name: "${snapshotParent name}/current";
+  restoreStage = name: "${volumePath}/.${name}.restore-new";
+  restoreOld = name: "${volumePath}/.${name}.restore-old";
 
   borgJobs = lib.mapAttrs' (
     name: machine:
     let
       backup = machine.backupResolved;
+      vmSubvolumePath = subvolumePath name;
+      vmSnapshotParent = snapshotParent name;
+      vmSnapshotCurrent = snapshotCurrent name;
     in
     {
       name = "microvm-${name}";
@@ -39,13 +50,8 @@ let
         environment = {
           BORG_RSH = "ssh -i ${backup.sshKeyPath}";
         };
-        readWritePaths = [
-          backup.snapshotRoot
-          backup.backupSnapshotParent
-          backup.backupSnapshotCurrentPath
-          backup.dataVolumeSubvolumePath
-        ];
-        paths = [ "${backup.backupSnapshotCurrentPath}/./." ];
+        readWritePaths = [ snapshotRoot ];
+        paths = [ "${vmSnapshotCurrent}/./." ];
         prune.keep = backup.pruneKeep;
         extraCreateArgs = [ "-p" ];
         preHook = ''
@@ -55,35 +61,35 @@ let
             ${pkgs.btrfs-progs}/bin/btrfs subvolume show "$1" >/dev/null 2>&1
           }
 
-          ${pkgs.coreutils}/bin/mkdir -p '${backup.backupSnapshotParent}'
+          ${pkgs.coreutils}/bin/mkdir -p '${vmSnapshotParent}'
 
-          if [ -e '${backup.backupSnapshotCurrentPath}' ]; then
-            if is_btrfs_subvolume '${backup.backupSnapshotCurrentPath}'; then
-              ${pkgs.btrfs-progs}/bin/btrfs subvolume delete '${backup.backupSnapshotCurrentPath}'
+          if [ -e '${vmSnapshotCurrent}' ]; then
+            if is_btrfs_subvolume '${vmSnapshotCurrent}'; then
+              ${pkgs.btrfs-progs}/bin/btrfs subvolume delete '${vmSnapshotCurrent}'
             else
-              echo "Refusing to delete stale non-subvolume snapshot path: ${backup.backupSnapshotCurrentPath}" >&2
+              echo "Refusing to delete stale non-subvolume snapshot path: ${vmSnapshotCurrent}" >&2
               exit 1
             fi
           fi
 
           ${pkgs.btrfs-progs}/bin/btrfs subvolume snapshot -r \
-            '${backup.dataVolumeSubvolumePath}' \
-            '${backup.backupSnapshotCurrentPath}'
+            '${vmSubvolumePath}' \
+            '${vmSnapshotCurrent}'
         '';
         postHook = ''
           set +e
 
-          if [ -e '${backup.backupSnapshotCurrentPath}' ]; then
-            if ${pkgs.btrfs-progs}/bin/btrfs subvolume show '${backup.backupSnapshotCurrentPath}' >/dev/null 2>&1; then
-              ${pkgs.btrfs-progs}/bin/btrfs subvolume delete '${backup.backupSnapshotCurrentPath}'
+          if [ -e '${vmSnapshotCurrent}' ]; then
+            if ${pkgs.btrfs-progs}/bin/btrfs subvolume show '${vmSnapshotCurrent}' >/dev/null 2>&1; then
+              ${pkgs.btrfs-progs}/bin/btrfs subvolume delete '${vmSnapshotCurrent}'
             else
-              echo "warning: expected snapshot path to be a btrfs subvolume: ${backup.backupSnapshotCurrentPath}" >&2
+              echo "warning: expected snapshot path to be a btrfs subvolume: ${vmSnapshotCurrent}" >&2
             fi
           fi
 
-          if [ -d '${backup.backupSnapshotParent}' ] && \
-             [ -z "$(${pkgs.findutils}/bin/find '${backup.backupSnapshotParent}' -mindepth 1 -maxdepth 1 -print -quit)" ]; then
-            ${pkgs.coreutils}/bin/rmdir '${backup.backupSnapshotParent}'
+          if [ -d '${vmSnapshotParent}' ] && \
+             [ -z "$(${pkgs.findutils}/bin/find '${vmSnapshotParent}' -mindepth 1 -maxdepth 1 -print -quit)" ]; then
+            ${pkgs.coreutils}/bin/rmdir '${vmSnapshotParent}'
           fi
         '';
       };
@@ -97,14 +103,12 @@ let
     in
     {
       repo = backup.repo;
-      imagePath = backup.imagePath;
-      imagePathInArchive = backup.imagePathInArchive;
-      subvolumePath = backup.dataVolumeSubvolumePath;
-      snapshotCurrentPath = backup.backupSnapshotCurrentPath;
-      backupUnit = "borgbackup-job-microvm-${name}.service";
-      vmServiceUnit = "microvm@${name}.service";
       passFile = backup.passFile;
       sshKeyPath = backup.sshKeyPath;
+      vmServiceUnit = "microvm@${name}.service";
+      subvolumePath = subvolumePath name;
+      restoreStageSubvolumePath = restoreStage name;
+      restoreOldSubvolumePath = restoreOld name;
     }
   ) backupMachines;
 
@@ -136,6 +140,7 @@ let
       set -euo pipefail
 
       known_vms=(${lib.concatMapStringsSep " " lib.escapeShellArg backupVmNames})
+      volume_path=${lib.escapeShellArg volumePath}
 
       if [ "''${#known_vms[@]}" -eq 0 ]; then
         echo "No backup-enabled VMs configured."
@@ -160,6 +165,18 @@ let
           fi
         done
         return 1
+      }
+
+      vm_subvolume_path() {
+        echo "$volume_path/$1"
+      }
+
+      vm_restore_stage_path() {
+        echo "$volume_path/.$1.restore-new"
+      }
+
+      vm_restore_old_path() {
+        echo "$volume_path/.$1.restore-old"
       }
 
       is_btrfs_subvolume() {
@@ -194,10 +211,6 @@ let
       }
 
       ${mkCaseFn "vm_repo" (name: backupMachines.${name}.backupResolved.repo)}
-      ${mkCaseFn "vm_image" (name: backupMachines.${name}.backupResolved.imagePath)}
-      ${mkCaseFn "vm_subvolume" (name: backupMachines.${name}.backupResolved.dataVolumeSubvolumePath)}
-      ${mkCaseFn "vm_restore_stage" (name: backupMachines.${name}.backupResolved.restoreStageSubvolumePath)}
-      ${mkCaseFn "vm_restore_old" (name: backupMachines.${name}.backupResolved.restoreOldSubvolumePath)}
       ${mkCaseFn "vm_pass_file" (name: backupMachines.${name}.backupResolved.passFile)}
       ${mkCaseFn "vm_ssh_key" (name: backupMachines.${name}.backupResolved.sshKeyPath)}
       ${mkCaseFn "vm_backup_unit" (name: "borgbackup-job-microvm-${name}.service")}
@@ -240,13 +253,13 @@ let
             fi
             load_borg_context "$vm"
             echo "VM: $vm"
-            echo "Image: $(vm_image "$vm")"
+            echo "Subvolume: $(vm_subvolume_path "$vm")"
             borg list --short
           else
             for vm_name in "''${known_vms[@]}"; do
               load_borg_context "$vm_name"
               echo "VM: $vm_name"
-              echo "Image: $(vm_image "$vm_name")"
+              echo "Subvolume: $(vm_subvolume_path "$vm_name")"
               borg list --short
               echo
             done
@@ -266,9 +279,9 @@ let
           fi
 
           service="$(vm_service_unit "$vm")"
-          target_subvolume="$(vm_subvolume "$vm")"
-          stage_subvolume="$(vm_restore_stage "$vm")"
-          old_subvolume="$(vm_restore_old "$vm")"
+          target_subvolume="$(vm_subvolume_path "$vm")"
+          stage_subvolume="$(vm_restore_stage_path "$vm")"
+          old_subvolume="$(vm_restore_old_path "$vm")"
           was_active=0
           swap_done=0
           restore_finished=0

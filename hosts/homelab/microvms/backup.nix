@@ -25,9 +25,6 @@ let
     name: machine:
     let
       backup = machine.backupResolved;
-      dumpCommandScript = pkgs.writeShellScript "microvm-borg-dump-${name}" ''
-        exec ${pkgs.coreutils}/bin/cat "$MICROVM_SNAPSHOT_IMAGE"
-      '';
     in
     {
       name = "microvm-${name}";
@@ -45,32 +42,43 @@ let
         readWritePaths = [
           backup.snapshotRoot
           backup.backupSnapshotParent
+          backup.backupSnapshotCurrentPath
           backup.dataVolumeSubvolumePath
         ];
-        dumpCommand = dumpCommandScript;
-        extraCreateArgs = [
-          "--stdin-name"
-          backup.imagePathInArchive
-        ];
+        paths = [ "${backup.backupSnapshotCurrentPath}/./." ];
         prune.keep = backup.pruneKeep;
         extraCreateArgs = [ "-p" ];
         preHook = ''
           set -eu
 
+          is_btrfs_subvolume() {
+            ${pkgs.btrfs-progs}/bin/btrfs subvolume show "$1" >/dev/null 2>&1
+          }
+
           ${pkgs.coreutils}/bin/mkdir -p '${backup.backupSnapshotParent}'
-          snapshot_id="$(${pkgs.coreutils}/bin/date -u +%Y%m%dT%H%M%SZ)-$$-$RANDOM"
-          export MICROVM_SNAPSHOT_PATH='${backup.backupSnapshotParent}'/"$snapshot_id"
-          export MICROVM_SNAPSHOT_IMAGE="$MICROVM_SNAPSHOT_PATH/${backup.dataVolumeImageBasename}"
+
+          if [ -e '${backup.backupSnapshotCurrentPath}' ]; then
+            if is_btrfs_subvolume '${backup.backupSnapshotCurrentPath}'; then
+              ${pkgs.btrfs-progs}/bin/btrfs subvolume delete '${backup.backupSnapshotCurrentPath}'
+            else
+              echo "Refusing to delete stale non-subvolume snapshot path: ${backup.backupSnapshotCurrentPath}" >&2
+              exit 1
+            fi
+          fi
 
           ${pkgs.btrfs-progs}/bin/btrfs subvolume snapshot -r \
             '${backup.dataVolumeSubvolumePath}' \
-            "$MICROVM_SNAPSHOT_PATH"
+            '${backup.backupSnapshotCurrentPath}'
         '';
         postHook = ''
           set +e
 
-          if [ -n "''${MICROVM_SNAPSHOT_PATH:-}" ] && [ -d "$MICROVM_SNAPSHOT_PATH" ]; then
-            ${pkgs.btrfs-progs}/bin/btrfs subvolume delete "$MICROVM_SNAPSHOT_PATH"
+          if [ -e '${backup.backupSnapshotCurrentPath}' ]; then
+            if ${pkgs.btrfs-progs}/bin/btrfs subvolume show '${backup.backupSnapshotCurrentPath}' >/dev/null 2>&1; then
+              ${pkgs.btrfs-progs}/bin/btrfs subvolume delete '${backup.backupSnapshotCurrentPath}'
+            else
+              echo "warning: expected snapshot path to be a btrfs subvolume: ${backup.backupSnapshotCurrentPath}" >&2
+            fi
           fi
 
           if [ -d '${backup.backupSnapshotParent}' ] && \
@@ -91,6 +99,8 @@ let
       repo = backup.repo;
       imagePath = backup.imagePath;
       imagePathInArchive = backup.imagePathInArchive;
+      subvolumePath = backup.dataVolumeSubvolumePath;
+      snapshotCurrentPath = backup.backupSnapshotCurrentPath;
       backupUnit = "borgbackup-job-microvm-${name}.service";
       vmServiceUnit = "microvm@${name}.service";
       passFile = backup.passFile;
@@ -152,9 +162,42 @@ let
         return 1
       }
 
+      is_btrfs_subvolume() {
+        ${pkgs.btrfs-progs}/bin/btrfs subvolume show "$1" >/dev/null 2>&1
+      }
+
+      delete_subvolume_strict_if_exists() {
+        local path="$1"
+        local label="$2"
+        if [ -e "$path" ]; then
+          if is_btrfs_subvolume "$path"; then
+            ${pkgs.btrfs-progs}/bin/btrfs subvolume delete "$path"
+          else
+            echo "Refusing to delete non-btrfs $label at $path" >&2
+            return 1
+          fi
+        fi
+      }
+
+      cleanup_subvolume_best_effort() {
+        local path="$1"
+        local label="$2"
+        if [ -e "$path" ]; then
+          if is_btrfs_subvolume "$path"; then
+            if ! ${pkgs.btrfs-progs}/bin/btrfs subvolume delete "$path"; then
+              echo "warning: failed to delete $label at $path" >&2
+            fi
+          else
+            echo "warning: $label at $path exists but is not a btrfs subvolume" >&2
+          fi
+        fi
+      }
+
       ${mkCaseFn "vm_repo" (name: backupMachines.${name}.backupResolved.repo)}
       ${mkCaseFn "vm_image" (name: backupMachines.${name}.backupResolved.imagePath)}
-      ${mkCaseFn "vm_archive_image" (name: backupMachines.${name}.backupResolved.imagePathInArchive)}
+      ${mkCaseFn "vm_subvolume" (name: backupMachines.${name}.backupResolved.dataVolumeSubvolumePath)}
+      ${mkCaseFn "vm_restore_stage" (name: backupMachines.${name}.backupResolved.restoreStageSubvolumePath)}
+      ${mkCaseFn "vm_restore_old" (name: backupMachines.${name}.backupResolved.restoreOldSubvolumePath)}
       ${mkCaseFn "vm_pass_file" (name: backupMachines.${name}.backupResolved.passFile)}
       ${mkCaseFn "vm_ssh_key" (name: backupMachines.${name}.backupResolved.sshKeyPath)}
       ${mkCaseFn "vm_backup_unit" (name: "borgbackup-job-microvm-${name}.service")}
@@ -223,34 +266,81 @@ let
           fi
 
           service="$(vm_service_unit "$vm")"
-          image="$(vm_image "$vm")"
-          archive_image="$(vm_archive_image "$vm")"
-          tmp_image="$image.tmp.$$"
-          restored_owner_group="microvm:kvm"
-          restored_mode="0660"
+          target_subvolume="$(vm_subvolume "$vm")"
+          stage_subvolume="$(vm_restore_stage "$vm")"
+          old_subvolume="$(vm_restore_old "$vm")"
           was_active=0
+          swap_done=0
+          restore_finished=0
+
+          if ! is_btrfs_subvolume "$target_subvolume"; then
+            echo "Target VM path is not a btrfs subvolume: $target_subvolume" >&2
+            exit 1
+          fi
+
+          delete_subvolume_strict_if_exists "$stage_subvolume" "restore stage subvolume"
+          delete_subvolume_strict_if_exists "$old_subvolume" "restore old subvolume"
+
+          ${pkgs.btrfs-progs}/bin/btrfs subvolume create "$stage_subvolume"
+
+          restore_cleanup() {
+            local exit_code=$?
+            set +e
+
+            if [ "$restore_finished" -ne 1 ]; then
+              echo "Restore failed for VM '$vm'; attempting rollback." >&2
+              if [ "$swap_done" -eq 1 ]; then
+                if [ -e "$target_subvolume" ] && is_btrfs_subvolume "$target_subvolume"; then
+                  ${pkgs.btrfs-progs}/bin/btrfs subvolume delete "$target_subvolume" || \
+                    echo "warning: failed to delete partially restored target: $target_subvolume" >&2
+                fi
+                if [ -e "$old_subvolume" ]; then
+                  if mv "$old_subvolume" "$target_subvolume"; then
+                    echo "Rollback completed for VM '$vm'." >&2
+                  else
+                    echo "warning: rollback move failed ($old_subvolume -> $target_subvolume)" >&2
+                  fi
+                else
+                  echo "warning: rollback source missing: $old_subvolume" >&2
+                fi
+              fi
+
+              if [ "$was_active" -eq 1 ]; then
+                systemctl start -v "$service" || \
+                  echo "warning: failed to restart VM service after rollback: $service" >&2
+              fi
+            fi
+
+            cleanup_subvolume_best_effort "$stage_subvolume" "restore stage subvolume"
+            if [ "$restore_finished" -eq 1 ]; then
+              cleanup_subvolume_best_effort "$old_subvolume" "previous VM subvolume"
+            fi
+
+            trap - EXIT
+            exit "$exit_code"
+          }
+          trap restore_cleanup EXIT
+
+          load_borg_context "$vm"
+          (
+            cd "$stage_subvolume"
+            borg extract "::''${archive}"
+          )
 
           if systemctl is-active --quiet "$service"; then
             was_active=1
             systemctl stop -v "$service"
           fi
 
-          trap 'rm -f "$tmp_image"' EXIT
-
-          if [ -e "$image" ]; then
-            restored_owner_group="$(${pkgs.coreutils}/bin/stat -c '%u:%g' "$image")"
-            restored_mode="$(${pkgs.coreutils}/bin/stat -c '%a' "$image")"
-          fi
-
-          load_borg_context "$vm"
-          borg extract --stdout "::''${archive}" "$archive_image" > "$tmp_image"
-          ${pkgs.coreutils}/bin/chown "$restored_owner_group" "$tmp_image"
-          ${pkgs.coreutils}/bin/chmod "$restored_mode" "$tmp_image"
-          mv "$tmp_image" "$image"
+          mv "$target_subvolume" "$old_subvolume"
+          mv "$stage_subvolume" "$target_subvolume"
+          swap_done=1
 
           if [ "$was_active" -eq 1 ]; then
             systemctl start -v "$service"
           fi
+
+          restore_finished=1
           ;;
 
         *)

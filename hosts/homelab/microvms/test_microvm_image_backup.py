@@ -1,6 +1,7 @@
 import concurrent.futures
 import importlib.util
 import io
+import logging
 import os
 import subprocess
 import sys
@@ -116,7 +117,117 @@ class BorgServiceTests(unittest.TestCase):
         self.assertNotIn("Selected Archive", summary)
 
 
+class SystemdManagerTests(unittest.TestCase):
+    def test_start_and_stop_are_quiet_and_capture_output(self) -> None:
+        runner = mock.Mock()
+        manager = mib.SystemdManager(runner)
+
+        manager.stop("microvm@vm1.service")
+        manager.start("microvm@vm1.service")
+
+        expected_calls = [
+            mock.call.check(
+                ["systemctl", "stop", "--quiet", "microvm@vm1.service"],
+                capture_output=True,
+                mutating=True,
+            ),
+            mock.call.check(
+                ["systemctl", "start", "--quiet", "microvm@vm1.service"],
+                capture_output=True,
+                mutating=True,
+            ),
+        ]
+        self.assertEqual(runner.mock_calls, expected_calls)
+
+    def test_start_best_effort_uses_quiet_mode(self) -> None:
+        runner = mock.Mock()
+        runner.run.return_value = subprocess.CompletedProcess(
+            args=["systemctl", "start", "--quiet", "microvm@vm1.service"],
+            returncode=0,
+            stdout="",
+            stderr="",
+        )
+        manager = mib.SystemdManager(runner)
+
+        manager.start_best_effort("microvm@vm1.service")
+
+        runner.run.assert_called_once_with(
+            ["systemctl", "start", "--quiet", "microvm@vm1.service"],
+            capture_output=True,
+            mutating=True,
+        )
+
+
+class LoggingTests(unittest.TestCase):
+    def test_color_level_formatter_colors_info_warning_error(self) -> None:
+        formatter = mib.ColorLevelFormatter(color_enabled=True)
+
+        info_record = logging.LogRecord(
+            name="test",
+            level=logging.INFO,
+            pathname=__file__,
+            lineno=1,
+            msg="info message",
+            args=(),
+            exc_info=None,
+        )
+        warn_record = logging.LogRecord(
+            name="test",
+            level=logging.WARNING,
+            pathname=__file__,
+            lineno=1,
+            msg="warn message",
+            args=(),
+            exc_info=None,
+        )
+        err_record = logging.LogRecord(
+            name="test",
+            level=logging.ERROR,
+            pathname=__file__,
+            lineno=1,
+            msg="err message",
+            args=(),
+            exc_info=None,
+        )
+
+        info = formatter.format(info_record)
+        warn = formatter.format(warn_record)
+        err = formatter.format(err_record)
+
+        self.assertIn("\x1b[", info)
+        self.assertIn("info message", info)
+        self.assertIn("\x1b[", warn)
+        self.assertIn("warn message", warn)
+        self.assertIn("\x1b[", err)
+        self.assertIn("err message", err)
+
+    def test_color_level_formatter_plain_when_disabled(self) -> None:
+        formatter = mib.ColorLevelFormatter(color_enabled=False)
+        record = logging.LogRecord(
+            name="test",
+            level=logging.ERROR,
+            pathname=__file__,
+            lineno=1,
+            msg="plain error",
+            args=(),
+            exc_info=None,
+        )
+        rendered = formatter.format(record)
+
+        self.assertNotIn("\x1b[", rendered)
+        self.assertEqual(rendered, "ERROR: plain error")
+
+
 class ParserTests(unittest.TestCase):
+    def test_backup_accepts_optional_vm(self) -> None:
+        parser = mib.build_parser()
+
+        no_vm = parser.parse_args(["backup"])
+        self.assertIsNone(no_vm.vm)
+
+        with_vm = parser.parse_args(["backup", "vm1"])
+        self.assertEqual(with_vm.vm, "vm1")
+
     def test_restore_accepts_optional_positionals(self) -> None:
         parser = mib.build_parser()
 
@@ -136,6 +247,36 @@ class ParserTests(unittest.TestCase):
 
 
 class FlowTests(unittest.TestCase):
+    def test_backup_with_explicit_vm_restarts_job(self) -> None:
+        parser = mib.build_parser()
+        args = parser.parse_args(["backup", "vm1"])
+        ctx = make_context(dry_run=False)
+
+        mib.handle_backup(ctx, args)
+
+        ctx.systemd.restart_backup_job.assert_called_once_with("vm1")
+
+    def test_backup_without_vm_uses_picker(self) -> None:
+        parser = mib.build_parser()
+        args = parser.parse_args(["backup"])
+        ctx = make_context(dry_run=False)
+
+        picker = mock.Mock()
+        picker.pick_vm.return_value = "vm1"
+        with mock.patch.object(mib, "InteractiveArchivePicker", return_value=picker):
+            mib.handle_backup(ctx, args)
+
+        picker.pick_vm.assert_called_once()
+        ctx.systemd.restart_backup_job.assert_called_once_with("vm1")
+
+    def test_backup_dry_run_requires_vm(self) -> None:
+        parser = mib.build_parser()
+        args = parser.parse_args(["--dry-run", "backup"])
+        ctx = make_context(dry_run=True)
+
+        with self.assertRaises(mib.CliError):
+            mib.handle_backup(ctx, args)
+
     def test_list_dry_run_requires_vm(self) -> None:
         parser = mib.build_parser()
         args = parser.parse_args(["--dry-run", "list"])
@@ -236,6 +377,20 @@ class FlowTests(unittest.TestCase):
 
         self.assertEqual(rc, 130)
 
+    def test_main_backup_returns_130_on_picker_cancel(self) -> None:
+        picker = mock.Mock()
+        picker.pick_vm.side_effect = mib.PickerCancelled()
+
+        with (
+            mock.patch.object(mib, "ensure_root_for_privileged_command"),
+            mock.patch.object(mib, "load_manifest", return_value=make_manifest()),
+            mock.patch.object(mib, "InteractiveArchivePicker", return_value=picker),
+            mock.patch.object(mib, "BorgService", return_value=mock.Mock()),
+        ):
+            rc = mib.main(["backup"])
+
+        self.assertEqual(rc, 130)
+
 
 class PreviewServerTests(unittest.TestCase):
     @staticmethod
@@ -328,8 +483,8 @@ class PreviewServerTests(unittest.TestCase):
                 thread.start()
                 self.assertTrue(
                     self._wait_for(
-                        lambda: "d1" in server._queued_demand,  # type: ignore[attr-defined]
-                        timeout=0.5,
+                        lambda: "d1" in server._demand_deadlines,  # type: ignore[attr-defined]
+                        timeout=1.5,
                     )
                 )
 

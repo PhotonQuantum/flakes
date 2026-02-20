@@ -27,6 +27,12 @@ FETCH_WORKERS = 2
 LOCK_RETRY_BASE_DELAY = 0.08
 LOCK_RETRY_MAX_DELAY = 0.30
 LOGGER = logging.getLogger("microvm-image-backup")
+ANSI_RESET = "\x1b[0m"
+ANSI_BOLD = "\x1b[1m"
+ANSI_BLUE = "\x1b[34m"
+ANSI_CYAN = "\x1b[36m"
+ANSI_YELLOW = "\x1b[33m"
+ANSI_RED = "\x1b[31m"
 
 
 class CliError(Exception):
@@ -95,9 +101,73 @@ class AppContext:
     systemd: "SystemdManager"
 
 
+class ColorLevelFormatter(logging.Formatter):
+    LEVEL_STYLES: dict[int, list[str]] = {
+        logging.INFO: [ANSI_BOLD, ANSI_BLUE],
+        logging.WARNING: [ANSI_BOLD, ANSI_YELLOW],
+        logging.ERROR: [ANSI_BOLD, ANSI_RED],
+        logging.CRITICAL: [ANSI_BOLD, ANSI_RED],
+    }
+
+    def __init__(self, *, color_enabled: bool) -> None:
+        super().__init__("%(levelname)s: %(message)s")
+        self.color_enabled = color_enabled
+
+    def format(self, record: logging.LogRecord) -> str:
+        if not self.color_enabled:
+            return super().format(record)
+
+        original_levelname = record.levelname
+        style = self.LEVEL_STYLES.get(record.levelno)
+        if style is not None:
+            record.levelname = ansi_wrap(original_levelname, codes=style, enabled=True)
+        try:
+            return super().format(record)
+        finally:
+            record.levelname = original_levelname
+
+
 def configure_logging(verbose: bool) -> None:
     level = logging.DEBUG if verbose else logging.INFO
-    logging.basicConfig(level=level, format="%(levelname)s: %(message)s")
+    handler = logging.StreamHandler()
+    handler.setFormatter(
+        ColorLevelFormatter(color_enabled=supports_ansi(sys.stderr))
+    )
+    logging.basicConfig(level=level, handlers=[handler], force=True)
+
+
+def supports_ansi(stream: object) -> bool:
+    if os.environ.get("NO_COLOR") is not None:
+        return False
+    if os.environ.get("TERM", "") == "dumb":
+        return False
+    isatty = getattr(stream, "isatty", None)
+    if not callable(isatty):
+        return False
+    try:
+        return bool(isatty())
+    except Exception:
+        return False
+
+
+def ansi_wrap(text: str, *, codes: Sequence[str], enabled: bool) -> str:
+    if not enabled:
+        return text
+    return f"{''.join(codes)}{text}{ANSI_RESET}"
+
+
+def stylize_key_value_block(text: str, *, enabled: bool) -> str:
+    if not enabled:
+        return text
+    lines: list[str] = []
+    for line in text.splitlines():
+        if ":" not in line:
+            lines.append(line)
+            continue
+        key, value = line.split(":", 1)
+        styled_key = ansi_wrap(key, codes=[ANSI_BOLD, ANSI_CYAN], enabled=True)
+        lines.append(f"{styled_key}:{value}")
+    return "\n".join(lines)
 
 
 def ensure_root_for_privileged_command(command: str, *, dry_run: bool) -> None:
@@ -374,15 +444,35 @@ class SystemdManager:
         return result.returncode == 0
 
     def stop(self, service: str) -> None:
-        self.runner.check(["systemctl", "stop", "-v", service], mutating=True)
+        self.runner.check(
+            ["systemctl", "stop", "--quiet", service],
+            capture_output=True,
+            mutating=True,
+        )
 
     def start(self, service: str) -> None:
-        self.runner.check(["systemctl", "start", "-v", service], mutating=True)
+        self.runner.check(
+            ["systemctl", "start", "--quiet", service],
+            capture_output=True,
+            mutating=True,
+        )
 
     def start_best_effort(self, service: str) -> None:
-        result = self.runner.run(["systemctl", "start", "-v", service], mutating=True)
+        result = self.runner.run(
+            ["systemctl", "start", "--quiet", service],
+            capture_output=True,
+            mutating=True,
+        )
         if result.returncode != 0:
-            LOGGER.warning("failed to restart VM service after rollback: %s", service)
+            detail = (result.stderr or "").strip()
+            if detail:
+                LOGGER.warning(
+                    "failed to restart VM service after rollback: %s: %s",
+                    service,
+                    detail,
+                )
+            else:
+                LOGGER.warning("failed to restart VM service after rollback: %s", service)
 
 
 class BorgService:
@@ -996,6 +1086,7 @@ def run_preview_client(args: argparse.Namespace) -> int:
         print("Missing archive name for preview", file=sys.stderr)
         return 1
 
+    style_enabled = supports_ansi(sys.stdout)
     print(f"Loading archive info for {archive}...", flush=True)
 
     try:
@@ -1023,6 +1114,9 @@ def run_preview_client(args: argparse.Namespace) -> int:
     elif status == "error" and text == "N/A":
         text = f"Failed to load preview for archive '{archive}'."
 
+    if status == "ready":
+        text = stylize_key_value_block(text, enabled=style_enabled)
+
     sys.stdout.write(PREVIEW_CLEAR_SCREEN)
     sys.stdout.write(text)
     if not text.endswith("\n"):
@@ -1046,6 +1140,7 @@ class RestoreTransaction:
         self.restore_finished = False
 
     def __enter__(self) -> "RestoreTransaction":
+        LOGGER.info("Preparing restore workspace for VM '%s'.", self.vm)
         if not self.ctx.btrfs.is_subvolume(self.paths.target):
             raise CliError(
                 f"Target VM path is not a btrfs subvolume: {self.paths.target}"
@@ -1058,18 +1153,25 @@ class RestoreTransaction:
             self.paths.old, "restore old subvolume"
         )
         self.ctx.btrfs.create_subvolume(self.paths.stage)
+        LOGGER.info("Restore workspace ready at %s.", self.paths.stage)
         return self
 
     def run(self) -> None:
+        LOGGER.info("Starting restore of VM '%s' from archive '%s'.", self.vm, self.archive)
+        LOGGER.info("Extracting archive into %s.", self.paths.stage)
         self.ctx.borg.extract_archive(self.vm_data, self.archive, cwd=self.paths.stage)
         if self.ctx.systemd.is_active(self.service):
             self.was_active = True
+            LOGGER.info("Stopping VM service: %s.", self.service)
             self.ctx.systemd.stop(self.service)
+        else:
+            LOGGER.info("VM service already stopped: %s.", self.service)
 
         if self.ctx.runner.dry_run:
             LOGGER.info("[dry-run] mv %s -> %s", self.paths.target, self.paths.old)
             LOGGER.info("[dry-run] mv %s -> %s", self.paths.stage, self.paths.target)
         else:
+            LOGGER.info("Switching subvolumes into place.")
             try:
                 self.paths.target.rename(self.paths.old)
                 self.target_moved_to_old = True
@@ -1080,9 +1182,11 @@ class RestoreTransaction:
                 ) from exc
 
         if self.was_active:
+            LOGGER.info("Starting VM service: %s.", self.service)
             self.ctx.systemd.start(self.service)
 
         self.restore_finished = True
+        LOGGER.info("Restore completed for VM '%s'.", self.vm)
 
     def __exit__(self, exc_type, exc, tb) -> bool:
         if exc_type is not None:
@@ -1138,15 +1242,28 @@ class RestoreTransaction:
 def ask_restore_confirmation(
     borg: BorgService, vm: str, info: ArchiveInfo, target: Path
 ) -> bool:
-    print("Restore Confirmation")
-    print(borg.format_archive_summary(vm=vm, target=target, info=info))
-    answer = input("Proceed with restore? [y/N]: ").strip().lower()
+    style_enabled = supports_ansi(sys.stdout)
+    title = ansi_wrap("Restore Confirmation", codes=[ANSI_BOLD], enabled=style_enabled)
+    print(title)
+    summary = borg.format_archive_summary(vm=vm, target=target, info=info)
+    print(stylize_key_value_block(summary, enabled=style_enabled))
+    prompt = ansi_wrap(
+        "Proceed with restore? [y/N]: ",
+        codes=[ANSI_BOLD, ANSI_BLUE],
+        enabled=style_enabled,
+    )
+    answer = input(prompt).strip().lower()
     return answer in {"y", "yes"}
 
 
 def handle_backup(ctx: AppContext, args: argparse.Namespace) -> None:
-    require_vm(ctx.manifest, args.vm)
-    ctx.systemd.restart_backup_job(args.vm)
+    if ctx.runner.dry_run and args.vm is None:
+        raise CliError(
+            "interactive mode is disabled in dry-run; provide VM explicitly for backup"
+        )
+
+    vm, _ = _resolve_vm_for_interactive(ctx, args.vm)
+    ctx.systemd.restart_backup_job(vm)
 
 
 def _resolve_vm_for_interactive(
@@ -1177,7 +1294,8 @@ def handle_list(ctx: AppContext, args: argparse.Namespace) -> None:
     selection = picker.pick_archive(vm, vm_data)
     info = selection.info or ctx.borg.fetch_archive_info(vm_data, selection.archive)
     target = vm_paths(ctx.manifest.volume_path, vm).target
-    print(ctx.borg.format_archive_summary(vm=vm, target=target, info=info))
+    summary = ctx.borg.format_archive_summary(vm=vm, target=target, info=info)
+    print(stylize_key_value_block(summary, enabled=supports_ansi(sys.stdout)))
 
 
 def handle_restore(ctx: AppContext, args: argparse.Namespace) -> None:
@@ -1239,7 +1357,7 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     backup_parser = subparsers.add_parser("backup")
-    backup_parser.add_argument("vm")
+    backup_parser.add_argument("vm", nargs="?")
     backup_parser.set_defaults(handler=handle_backup)
 
     list_parser = subparsers.add_parser("list")

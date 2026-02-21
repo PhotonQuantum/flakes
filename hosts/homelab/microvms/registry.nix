@@ -1,9 +1,13 @@
+let 
+  secrets = import ../../../secrets/homelab.nix;
+in
 {
   volumePath = "/srv/microvms";
   snapshotRoot = "/srv/.snapshots/microvm-borg";
 
   backupDefaults = {
     startAt = "daily";
+    compression = "zstd";
     passFile = "/var/keys/homelab_borg.pass";
     sshKeyPath = "/var/keys/id_ed25519_homelab_borg";
     prune = {
@@ -37,6 +41,25 @@
   };
 
   machines = {
+    forgejo = {
+      group = "isolated";
+      vmId = 2;
+      module = ./vms/forgejo.nix;
+      mem = 8192;
+      vcpu = 4;
+
+      dataVolume = {
+        sizeMiB = 65536;
+        mountPoint = "/mnt";
+        fsType = "ext4";
+        label = "forgejo-data";
+      };
+
+      backup = {
+        repo = secrets.backupRepos.forgejo;
+      };
+    };
+
     # Example configuration only (documentation).
     # Uncomment and adapt when you need to run a MicroVM.
     # example-http = {

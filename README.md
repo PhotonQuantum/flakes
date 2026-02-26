@@ -11,8 +11,7 @@ Canonical host outputs:
 ## Darwin
 
 ```bash
-$ nix build .#darwinConfigurations.mbp.system
-$ ./result/sw/bin/darwin-rebuild switch --flake .
+$ nh darwin switch .
 ```
 
 ## Deploy to remote NixOS machine
@@ -61,13 +60,11 @@ $ nix run github:nix-community/nixos-anywhere -- --flake .#homelab --generate-ha
 4. After install, rebuild remotely as needed:
 
 ```bash
-$ nixos-rebuild switch --flake .#homelab --target-host lightquantum@<target-ip-or-host> --use-remote-sudo
+$ colmena apply --target homelab
 ```
 
-Legacy aliases are still available during migration:
+## Manual configuration
 
-- `darwinConfigurations.lightquantum-mbp`
-- `nixosConfigurations.lightquantum-meow`
-- `nixosConfigurations.lightquantum-homelab`
-- `nixosConfigurations.orbstack-nixos`
-- `homeConfigurations."lightquantum@lightquantum-arch"`
+1. Setup cloudflare tunnel and add the tunnel ID and credentials to `secrets/cf`.
+2. Add borg repo to `secrets/homelab.nix` and add passphrase to `secrets/homelab_borg.pass`.
+3. Get forgejo action reg token from forgejo instance and add it to `secrets/homelab.nix`, then restart forgejo-runner microvm.

@@ -44,6 +44,7 @@ _: {
     "1password"
     "adguard"
     "adobe-acrobat-reader"
+    "agda"
     "apache-directory-studio"
     "background-music"
     "backuploupe"

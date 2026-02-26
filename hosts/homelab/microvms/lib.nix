@@ -476,8 +476,6 @@ let
         };
       };
 
-      networking.firewall.allowedTCPPorts = [ 80 ];
-
       microvm = {
         hypervisor = "qemu";
         interfaces = [

@@ -1,4 +1,11 @@
 { pkgs, lib, ... }:
+let
+  secrets = import ../../../../secrets/homelab.nix;
+  runnerName = "forgejo-runner";
+  runnerSecret = secrets.forgejo.runnerSecret;
+
+  forgejoStateDir = "/mnt/forgejo";
+in
 {
   services.cloudflared = {
     enable = true;
@@ -13,7 +20,7 @@
   services.forgejo = {
     enable = true;
     package = pkgs.forgejo;
-    stateDir = "/mnt/forgejo";
+    stateDir = forgejoStateDir;
 
     database = {
       type = "postgres";
@@ -33,6 +40,7 @@
     };
     settings = {
       service.DISABLE_REGISTRATION = true;
+      actions.DEFAULT_ACTIONS_URL = "https://github.com";
       cache = {
         ADAPTER = "twoqueue";
         HOST = ''{"size":100, "recent_ratio":0.25, "ghost_ratio":0.5}'';
@@ -49,6 +57,31 @@
     authentication = lib.mkBefore ''
       local forgejo forgejo peer
     '';
+  };
+
+  systemd.services.forgejo-register-runner = {
+    enable = true;
+
+    wantedBy = [ "multi-user.target" ];
+    wants = [ "forgejo.service" ];
+    after = [ "forgejo.service" ];
+
+    environment = {
+      USER = "forgejo";
+      HOME = forgejoStateDir;
+      FORGEJO_WORK_DIR = forgejoStateDir;
+      FORGEJO_CUSTOM = "${forgejoStateDir}/custom";
+    };
+
+    serviceConfig = {
+      Type = "oneshot";
+      User = "forgejo";
+      Group = "forgejo";
+
+      ExecStart = ''
+        ${pkgs.forgejo}/bin/forgejo forgejo-cli actions register --name ${runnerName} --secret ${runnerSecret} --keep-labels
+      '';
+    };
   };
 
   systemd.tmpfiles.rules = [

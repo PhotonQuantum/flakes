@@ -60,6 +60,21 @@ in
       };
     };
 
+    forgejo-runner = {
+      group = "isolated";
+      vmId = 3;
+      module = ./vms/forgejo-runner.nix;
+      mem = 8192;
+      vcpu = 4;
+
+      dataVolume = {
+        sizeMiB = 65536;
+        mountPoint = "/mnt";
+        fsType = "ext4";
+        label = "forgejo-r-data";
+      };
+    };
+
     # Example configuration only (documentation).
     # Uncomment and adapt when you need to run a MicroVM.
     # example-http = {

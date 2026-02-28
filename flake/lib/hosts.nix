@@ -64,6 +64,7 @@ rec {
         inherit sharedModules;
         extraSpecialArgs = {
           inherit
+            inputs
             lqPkgs
             nixvim
             pyproject-nix

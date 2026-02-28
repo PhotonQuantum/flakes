@@ -1,7 +1,7 @@
-{ lib, pkgs, ... }:
+{ inputs, lib, pkgs, ... }:
 let
   vmLib = import ./lib.nix { inherit lib; };
-  registry = import ./registry.nix;
+  registry = import ./registry.nix { inherit inputs; };
   backupDefaults = vmLib.resolveBackupDefaults (registry.backupDefaults or { });
   snapshotRoot = vmLib.resolveSnapshotRoot (registry.snapshotRoot or null);
   volumePath = registry.volumePath or "/srv/microvms";

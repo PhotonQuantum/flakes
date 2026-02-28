@@ -1,8 +1,8 @@
-{ lib, ... }:
+{ inputs, lib, ... }:
 let
   homelabSecrets = import ../../../secrets/homelab.nix;
   vmLib = import ./lib.nix { inherit lib; };
-  registry = import ./registry.nix;
+  registry = import ./registry.nix { inherit inputs; };
   volumePath = registry.volumePath or "/srv/microvms";
   inherit (registry) backupDefaults bridgeGroups machines;
 

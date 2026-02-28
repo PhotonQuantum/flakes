@@ -17,6 +17,7 @@ in
         nodeNixpkgs = lq.hostLib.mkDeployNodeNixpkgs {
           hosts = deployHosts;
         };
+        specialArgs = { inherit inputs; };
       };
     }
     // lq.hostLib.mkDeployNodes { hosts = deployHosts; }

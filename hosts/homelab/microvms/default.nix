@@ -34,7 +34,7 @@ in
         machine: "v ${builtins.dirOf machine.dataVolumeResolved.hostImagePath} 0770 microvm kvm - -"
       ) (builtins.filter (machine: machine.dataVolumeResolved != null) allMachineConfigs);
       journalDirRules = map (
-        machine: "d /var/lib/microvms/${machine.name}/journal 0755 root root - -"
+        machine: "d /var/lib/microvms/${machine.name}/journal 0755 microvm kvm - -"
       ) allMachineConfigs;
       journalRules = map (
         machine:

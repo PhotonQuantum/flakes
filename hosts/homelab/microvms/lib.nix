@@ -88,6 +88,10 @@ let
     in
     lib.substring 0 32 hash;
 
+  mkCredentialName =
+    targetPath:
+    "K${lib.toUpper (lib.substring 0 24 (builtins.hashString "sha256" targetPath))}";
+
   resolveBackupDefaults =
     backupDefaults:
     let
@@ -223,6 +227,59 @@ let
           ;
       };
 
+  resolveKeys =
+    {
+      name,
+      keys ? { },
+    }:
+    let
+      keyTargets = builtins.attrNames keys;
+      resolvedKeys = map (
+        targetPath:
+        let
+          keySpec = keys.${targetPath};
+          file =
+            keySpec.file
+              or (throw "machines.${name}.keys.\"${targetPath}\".file is required");
+          user = keySpec.user or "root";
+          group = keySpec.group or "root";
+          permissions = keySpec.permissions or "0600";
+          credentialName = mkCredentialName targetPath;
+        in
+        assert ensure
+          (builtins.isAttrs keySpec)
+          "machines.${name}.keys.\"${targetPath}\" must be an attribute set";
+        assert ensure
+          (builtins.match "^/.*" targetPath != null)
+          "machines.${name}.keys key `${targetPath}` must be an absolute guest target path";
+        assert ensure
+          (builtins.isString file && builtins.match "^/.*" file != null)
+          "machines.${name}.keys.\"${targetPath}\".file must be an absolute host path string; got `${toString file}`";
+        assert ensure
+          (builtins.isString user && user != "")
+          "machines.${name}.keys.\"${targetPath}\".user must be a non-empty string";
+        assert ensure
+          (builtins.isString group && group != "")
+          "machines.${name}.keys.\"${targetPath}\".group must be a non-empty string";
+        assert ensure
+          (builtins.isString permissions && builtins.match "^[0-7]{3,4}$" permissions != null)
+          "machines.${name}.keys.\"${targetPath}\".permissions must be a 3-4 digit octal string (e.g. 600 or 0600); got `${toString permissions}`";
+        {
+          inherit
+            targetPath
+            file
+            user
+            group
+            permissions
+            credentialName
+            ;
+        }
+      ) keyTargets;
+      credentialNames = map (key: key.credentialName) resolvedKeys;
+    in
+    assert ensureNoDuplicates "machines.${name}.keys credential names" credentialNames;
+    resolvedKeys;
+
   resolveGroups =
     bridgeGroups:
     let
@@ -287,6 +344,10 @@ let
         inherit name backupDefaults dataVolumeResolved;
         backup = machine.backup or null;
       };
+      keysResolved = resolveKeys {
+        inherit name;
+        keys = machine.keys or { };
+      };
       vmIdHi = builtins.div vmId 256;
       vmIdLo = vmId - (vmIdHi * 256);
     in
@@ -313,6 +374,7 @@ let
         extraConfig
         dataVolumeResolved
         backupResolved
+        keysResolved
         ;
       group = groupName;
       groupConfig = group;
@@ -444,11 +506,13 @@ let
       ],
       extraConfig ? [ ],
       dataVolumeResolved ? null,
+      keysResolved ? [ ],
       vmSelf ? null,
       vmTopology ? null,
       ...
     }:
     let
+      hasKeys = keysResolved != [ ];
       volumeFromDataVolume =
         if dataVolumeResolved == null then
           [ ]
@@ -464,6 +528,19 @@ let
               label = dataVolumeResolved.label;
             })
           ];
+      credentialFilesFromKeys = builtins.listToAttrs (map (key: {
+        name = key.credentialName;
+        value = key.file;
+      }) keysResolved);
+      installKeyCommands = lib.concatMapStringsSep "\n" (
+        key: ''
+          if [ ! -f "$CREDENTIALS_DIRECTORY/${key.credentialName}" ]; then
+            echo "Missing credential ${key.credentialName} for ${key.targetPath}" >&2
+            exit 1
+          fi
+          install -D -m ${lib.escapeShellArg key.permissions} -o ${lib.escapeShellArg key.user} -g ${lib.escapeShellArg key.group} "$CREDENTIALS_DIRECTORY/${key.credentialName}" ${lib.escapeShellArg key.targetPath}
+        ''
+      ) keysResolved;
     in
     {
       imports = if builtins.isList extraConfig then extraConfig else [ extraConfig ];
@@ -500,6 +577,26 @@ let
         };
       };
 
+      systemd.services.microvm-install-keys = lib.mkIf hasKeys {
+        description = "Install MicroVM key files from systemd credentials";
+        before = [ "basic.target" ];
+        after = [
+          "local-fs.target"
+          "systemd-sysusers.service"
+        ];
+        requiredBy = [ "basic.target" ];
+        unitConfig.DefaultDependencies = false;
+        serviceConfig = {
+          Type = "oneshot";
+          RemainAfterExit = true;
+          ImportCredential = map (key: key.credentialName) keysResolved;
+        };
+        script = ''
+          set -eu
+          ${installKeyCommands}
+        '';
+      };
+
       microvm = {
         hypervisor = "qemu";
         interfaces = [
@@ -521,6 +618,9 @@ let
         ];
         vsock.cid = vsockCid;
         inherit vcpu mem;
+      }
+      // lib.optionalAttrs hasKeys {
+        credentialFiles = credentialFilesFromKeys;
       };
 
       system.stateVersion = "25.11";
@@ -553,6 +653,7 @@ in
     resolveBackupDefaults
     resolveSnapshotRoot
     resolveGroups
+    resolveKeys
     resolveMachine
     resolveMachines
     mkTopology

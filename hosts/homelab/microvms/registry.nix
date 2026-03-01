@@ -76,6 +76,33 @@ in
       };
     };
 
+    tg3-rs = {
+      group = "isolated";
+      vmId = 4;
+      module = [ inputs.tg3-rs.nixosModules.tg3-bot ./vms/tg3-rs.nix ];
+      mem = 512;
+      vcpu = 1;
+
+      dataVolume = {
+        sizeMiB = 2048;
+        mountPoint = "/mnt";
+        fsType = "ext4";
+        label = "tg3rs-data";
+      };
+
+      backup = {
+        repo = secrets.backupRepos.tg3-rs;
+      };
+
+      keys = {
+        "/var/keys/tg3-rs.env" = {
+          file = "/var/keys/tg3-rs.env";
+          user = "tg3-bot";
+          group = "tg3-bot";
+        };
+      };
+    };
+
     # Example configuration only (documentation).
     # Uncomment and adapt when you need to run a MicroVM.
     # example-http = {

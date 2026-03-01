@@ -52,6 +52,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    tg3-rs = {
+      url = "git+https://git.lightquantum.me/LightQuantum/tg3-rs?ref=master";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     aerospace-mark = {
       url = "github:cristianoliveira/aerospace-marks";
       inputs.nixpkgs.follows = "nixpkgs";

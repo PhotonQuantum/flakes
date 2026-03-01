@@ -117,6 +117,23 @@ in
     #       yearly = 2;
     #     };
     #   };
+    #
+    #   # Optional per-VM key file injection via systemd credentials:
+    #   keys = {
+    #     "/var/keys/example-http-token" = {
+    #       # Required absolute host path string.
+    #       file = "/var/keys/example-http-token";
+    #       # Optional; defaults to "root".
+    #       user = "nginx";
+    #       # Optional; defaults to "root".
+    #       group = "nginx";
+    #       # Optional; defaults to "0600". Supports 3-4 octal digits.
+    #       permissions = "0640";
+    #     };
+    #     "/var/keys/example-http-defaults" = {
+    #       file = "/var/keys/example-http-defaults";
+    #     };
+    #   };
     # };
   };
 }

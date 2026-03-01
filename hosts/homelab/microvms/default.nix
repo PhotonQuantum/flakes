@@ -14,10 +14,6 @@ let
   vmTopology = vmLib.mkTopology resolvedMachines;
 
   allMachineConfigs = builtins.attrValues resolvedMachines;
-  dataVolumeMachines = builtins.filter (machine: machine.dataVolumeResolved != null) allMachineConfigs;
-  dataVolumeSubvolumeTmpfiles = map (
-    machine: "v ${builtins.dirOf machine.dataVolumeResolved.hostImagePath} 0770 microvm kvm - -"
-  ) dataVolumeMachines;
 in
 {
   imports = [
@@ -32,15 +28,31 @@ in
     })
   ];
 
-  systemd.tmpfiles.rules = dataVolumeSubvolumeTmpfiles;
+  systemd.tmpfiles.rules =
+    let
+      volumeRules = map (
+        machine: "v ${builtins.dirOf machine.dataVolumeResolved.hostImagePath} 0770 microvm kvm - -"
+      ) (builtins.filter (machine: machine.dataVolumeResolved != null) allMachineConfigs);
+      journalDirRules = map (
+        machine: "d /var/lib/microvms/${machine.name}/journal 0755 root root - -"
+      ) allMachineConfigs;
+      journalRules = map (
+        machine:
+        "L+ /var/log/journal/${machine.machineId} - - - - /var/lib/microvms/${machine.name}/journal/${machine.machineId}"
+      ) allMachineConfigs;
+    in
+    volumeRules ++ journalDirRules ++ journalRules;
 
   microvm = {
     autostart = builtins.attrNames resolvedMachines;
-    vms = builtins.listToAttrs (map (
-      machine: vmLib.mkVmEntry {
-        spec = machine;
-        inherit vmTopology;
-      }
-    ) allMachineConfigs);
+    vms = builtins.listToAttrs (
+      map (
+        machine:
+        vmLib.mkVmEntry {
+          spec = machine;
+          inherit vmTopology;
+        }
+      ) allMachineConfigs
+    );
   };
 }

@@ -81,6 +81,13 @@ let
       "tap name `${tapName}` for VM `${name}` is longer than Linux max length 15";
     tapName;
 
+  mkMachineId =
+    name:
+    let
+      hash = builtins.hashString "sha256" name;
+    in
+    lib.substring 0 32 hash;
+
   resolveBackupDefaults =
     backupDefaults:
     let
@@ -260,6 +267,7 @@ let
         bridgeGroups.${groupName}
           or (throw "Unknown MicroVM group `${groupName}` for machine `${name}`");
       vmId = machine.vmId;
+      machineId = mkMachineId name;
       ip = machine.ip or "${group.ipv4Prefix}.${toString vmId}";
       gateway = machine.gateway or group.gateway;
       tapName = machine.tapName or (mkTapNameAuto name vmId);
@@ -289,10 +297,14 @@ let
     assert ensure
       (builtins.stringLength tapName <= 15)
       "tap name `${tapName}` for machine `${name}` is longer than Linux max length 15";
+    assert ensure
+      (builtins.match "^[0-9a-f]{32}$" machineId != null)
+      "derived machine ID for machine `${name}` must be 32 lowercase hex characters; got `${machineId}`";
     machine
     // {
       inherit
         name
+        machineId
         groupName
         vmId
         ip
@@ -355,8 +367,10 @@ let
         (machine: machine.backupResolved.repo)
         (builtins.filter (machine: machine.backupResolved != null) machineValues);
     in
+    assert ensureNoDuplicates "machine names" (map (machine: machine.name) machineValues);
     assert builtins.all (check: check) groupVmIdChecks;
     assert ensureNoDuplicates "machine ip addresses" (map (machine: machine.ip) machineValues);
+    assert ensureNoDuplicates "machine IDs" (map (machine: machine.machineId) machineValues);
     assert ensureNoDuplicates "machine vsock CIDs" (map (machine: machine.vsockCid) machineValues);
     assert ensureNoDuplicates "machine MAC addresses" (map (machine: machine.mac) machineValues);
     assert ensureNoDuplicates "machine tap names" (map (machine: machine.tapName) machineValues);
@@ -367,6 +381,7 @@ let
   mkVmRef = machine: {
     inherit (machine)
       name
+      machineId
       group
       groupId
       vmId
@@ -420,6 +435,7 @@ let
       gateway,
       vsockCid,
       tapName,
+      machineId,
       mem ? 256,
       vcpu ? 1,
       nameservers ? [
@@ -461,6 +477,11 @@ let
       networking.useNetworkd = true;
       networking.nameservers = nameservers;
 
+      environment.etc."machine-id" = {
+        mode = "0644";
+        text = "${machineId}\n";
+      };
+
       systemd.network.enable = true;
       systemd.network.networks."10-uplink" = {
         matchConfig.MACAddress = mac;
@@ -489,6 +510,15 @@ let
           }
         ];
         volumes = volumeFromDataVolume;
+        shares = [
+          {
+            source = "/var/lib/microvms/${name}/journal";
+            mountPoint = "/var/log/journal";
+            tag = "journal";
+            proto = "virtiofs";
+            socket = "journal.sock";
+          }
+        ];
         vsock.cid = vsockCid;
         inherit vcpu mem;
       };
@@ -519,6 +549,7 @@ in
     sanitizeName
     hexByte
     mkTapNameAuto
+    mkMachineId
     resolveBackupDefaults
     resolveSnapshotRoot
     resolveGroups

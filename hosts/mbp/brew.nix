@@ -17,6 +17,7 @@ _: {
     "photonquantum/tap"
   ];
   homebrew.brews = [
+    "agda"
     "autoconf"
     "borgbackup-fuse"
     "cmake"
@@ -44,7 +45,6 @@ _: {
     "1password"
     "adguard"
     "adobe-acrobat-reader"
-    "agda"
     "apache-directory-studio"
     "background-music"
     "backuploupe"

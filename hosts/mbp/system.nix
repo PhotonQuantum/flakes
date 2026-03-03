@@ -184,9 +184,10 @@
   };
   nix.buildMachines = [
     {
-      hostName = "meow";
+      hostName = "lightquantum-homelab.local";
+      sshUser = "lightquantum";
       system = "x86_64-linux";
-      maxJobs = 1;
+      maxJobs = 16;
       supportedFeatures = [
         "benchmark"
         "big-parallel"

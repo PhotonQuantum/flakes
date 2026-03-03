@@ -49,6 +49,8 @@ in {
     };
     interactiveShellInit = ''
       set fish_escape_delay_ms 300
+      set -g sponge_purge_only_on_exit true
+      set -g sponge_delay 10
       test -r ~/.opam/opam-init/init.fish && source ~/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
     '';
     shellInitLast = if configOnly then ''

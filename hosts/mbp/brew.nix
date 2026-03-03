@@ -17,6 +17,7 @@ _: {
     "photonquantum/tap"
   ];
   homebrew.brews = [
+    "act"
     "agda"
     "autoconf"
     "borgbackup-fuse"

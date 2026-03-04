@@ -27,8 +27,11 @@ in
       ipv4Prefix = "10.200.0";
       cidr = 24;
       gatewayHost = 1;
-      isolated = false;
-      natEnabled = true;
+      networkPolicy = {
+        hostAccess = true;
+        lanAccess = true;
+        inBridgeInterconnect = true;
+      };
     };
     isolated = {
       groupId = 2;
@@ -36,8 +39,11 @@ in
       ipv4Prefix = "10.201.0";
       cidr = 24;
       gatewayHost = 1;
-      isolated = true;
-      natEnabled = true;
+      networkPolicy = {
+        hostAccess = false;
+        lanAccess = false;
+        inBridgeInterconnect = false;
+      };
     };
   };
 

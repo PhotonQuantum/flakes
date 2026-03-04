@@ -5,9 +5,14 @@
 }:
 let
   allGroupConfigs = builtins.attrValues resolvedGroups;
-  internetOnlyInterfaces = lib.unique (
+  noHostAccessInterfaces = lib.unique (
     map (group: group.bridgeName) (
-      builtins.filter (group: (group.isolated or false) && group.natEnabled) allGroupConfigs
+      builtins.filter (group: !group.networkPolicy.hostAccess) allGroupConfigs
+    )
+  );
+  noLanAccessInterfaces = lib.unique (
+    map (group: group.bridgeName) (
+      builtins.filter (group: !group.networkPolicy.lanAccess) allGroupConfigs
     )
   );
 
@@ -25,13 +30,13 @@ let
     "ff00::/8"
   ];
 
-  isolatedInputCommands = lib.concatMapStrings (bridgeName: ''
-    # Block isolated guests from reaching host services on any port.
+  noHostAccessCommands = lib.concatMapStrings (bridgeName: ''
+    # Block guests from reaching host services on any port when host access is disabled.
     iptables -w -I nixos-fw 1 -i '${bridgeName}' -j DROP
     ip6tables -w -I nixos-fw 1 -i '${bridgeName}' -j DROP
-  '') internetOnlyInterfaces;
+  '') noHostAccessInterfaces;
 
-  isolatedNatCommands =
+  noLanAccessCommands =
     let
       mkPrivateForwardDropCommands =
         bridgeName:
@@ -45,8 +50,7 @@ let
         ) (lib.reverseList privateIPv6Cidrs);
     in
     lib.concatMapStrings (bridgeName: ''
-      # NAT module already adds accept rules for internal interfaces, so force
-      # internet-only behavior by inserting stricter rules at chain head.
+      # Keep internet access but block local/private destinations when LAN access is disabled.
       iptables -w -I nixos-filter-forward 1 -i '${bridgeName}' -j DROP
       iptables -w -I nixos-filter-forward 1 -i '${bridgeName}' -o '${homelabSecrets.uplinkName}' -j ACCEPT
       ${mkPrivateForwardDropCommands bridgeName}
@@ -55,9 +59,9 @@ let
       ip6tables -w -I nixos-filter-forward 1 -i '${bridgeName}' -j DROP
       ip6tables -w -I nixos-filter-forward 1 -i '${bridgeName}' -o '${homelabSecrets.uplinkName}' -j ACCEPT
       ${mkPrivateForwardDropCommands6 bridgeName}
-    '') internetOnlyInterfaces;
+    '') noLanAccessInterfaces;
 in
 {
-  networking.firewall.extraCommands = isolatedInputCommands;
-  networking.nat.extraCommands = isolatedNatCommands;
+  networking.firewall.extraCommands = noHostAccessCommands;
+  networking.nat.extraCommands = noLanAccessCommands;
 }

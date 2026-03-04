@@ -291,15 +291,31 @@ let
             group = bridgeGroups.${groupName};
             gateway = group.gateway or "${group.ipv4Prefix}.${toString group.gatewayHost}";
             bridgeAddress = group.bridgeAddress or "${gateway}/${toString group.cidr}";
+            networkPolicyDefaults = {
+              hostAccess = false;
+              lanAccess = false;
+              inBridgeInterconnect = true;
+            };
+            networkPolicy = networkPolicyDefaults // (group.networkPolicy or { });
           in
           assert ensureRange "bridgeGroups.${groupName}.groupId" group.groupId 1 254;
           assert ensureRange "bridgeGroups.${groupName}.cidr" group.cidr 1 32;
           assert ensureRange "bridgeGroups.${groupName}.gatewayHost" group.gatewayHost 1 254;
+          assert ensure
+            (builtins.isBool networkPolicy.hostAccess)
+            "bridgeGroups.${groupName}.networkPolicy.hostAccess must be a boolean";
+          assert ensure
+            (builtins.isBool networkPolicy.lanAccess)
+            "bridgeGroups.${groupName}.networkPolicy.lanAccess must be a boolean";
+          assert ensure
+            (builtins.isBool networkPolicy.inBridgeInterconnect)
+            "bridgeGroups.${groupName}.networkPolicy.inBridgeInterconnect must be a boolean";
           {
             name = groupName;
             value = group // {
               name = groupName;
               inherit gateway bridgeAddress;
+              inherit networkPolicy;
             };
           }
         ) groupNames
@@ -380,7 +396,6 @@ let
       groupConfig = group;
       groupId = group.groupId;
       bridgeName = group.bridgeName;
-      isolated = machine.isolated or group.isolated;
       ipCidr = machine.ipCidr or "${ip}/${toString group.cidr}";
       vsockCid = machine.vsockCid or (20000 + (group.groupId * 256) + vmId);
       mac = machine.mac or "02:00:${hexByte group.groupId}:${hexByte vmIdHi}:${hexByte vmIdLo}:01";
@@ -454,7 +469,6 @@ let
       mac
       tapName
       bridgeName
-      isolated
       ;
   };
 

@@ -109,6 +109,14 @@ in
       };
     };
 
+    test = {
+      group = "routed";
+      vmId = 10;
+      module = ./vms/example-http.nix;
+      mem = 512;
+      vcpu = 1;
+    };
+
     # Example configuration only (documentation).
     # Uncomment and adapt when you need to run a MicroVM.
     # example-http = {

@@ -8,6 +8,7 @@ in
     ../../profiles/system/capabilities/minimal.nix
     ./disko.nix
     ./coredns.nix
+    ./tailscale.nix
     ./microvms
   ] ++ lib.optionals (builtins.pathExists hardwareConfig) [ hardwareConfig ];
 
@@ -31,6 +32,12 @@ in
           user = "microvm";
           group = "kvm";
         };
+        "tailscale_key" = {
+          keyFile = ../../secrets/tailscale_key;
+          destDir = "/var/keys";
+          user = "root";
+          group = "root";
+        };
       };
   };
 
@@ -50,11 +57,11 @@ in
     enable = true;
     links."10-uplink" = {
       matchConfig.MACAddress = homelabSecrets.uplinkMacAddress;
-      linkConfig.Name = homelabSecrets.uplinkName;
+      linkConfig.Name = "lan0";
     };
 
     networks."10-lan" = {
-      matchConfig.Name = homelabSecrets.uplinkName;
+      matchConfig.Name = "lan0";
       networkConfig = {
         DHCP = "ipv4";
         IPv6AcceptRA = true;

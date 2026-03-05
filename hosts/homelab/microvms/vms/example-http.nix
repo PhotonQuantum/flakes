@@ -18,4 +18,6 @@
       <body>hello from example-http microvm</body>
     </html>
   '';
+
+  networking.firewall.allowedTCPPorts = [ 80 ];
 }

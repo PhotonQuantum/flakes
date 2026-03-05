@@ -42,7 +42,10 @@ in
           value = {
             matchConfig.Name = group.bridgeName;
             address = [ group.bridgeAddress ];
-            networkConfig.ConfigureWithoutCarrier = true;
+            networkConfig = {
+              ConfigureWithoutCarrier = true;
+              MulticastDNS = group.networkPolicy.hostAccess;
+            };
           };
         }) allGroupConfigs);
 

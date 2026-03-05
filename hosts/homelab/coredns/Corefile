@@ -1,0 +1,25 @@
+home.arpa:53 {
+    errors
+    log
+
+    bind tailscale0
+
+    # Authoritative zone apex data is managed in a standard zonefile.
+    file /etc/coredns/db.home.arpa home.arpa {
+        fallthrough
+    }
+
+    # Rewrite client queries from home.arpa to local for upstream resolution.
+    rewrite stop {
+        name suffix .home.arpa. .local. answer auto
+    }
+
+    # Forward rewritten queries to systemd-resolved stub resolver.
+    forward . 127.0.0.53:53
+
+    # Force Authoritative Answer bit on all responses.
+    header {
+        response set aa
+        response clear ra
+    }
+}

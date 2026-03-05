@@ -7,6 +7,7 @@ in
   imports = [
     ../../profiles/system/capabilities/minimal.nix
     ./disko.nix
+    ./coredns.nix
     ./microvms
   ] ++ lib.optionals (builtins.pathExists hardwareConfig) [ hardwareConfig ];
 

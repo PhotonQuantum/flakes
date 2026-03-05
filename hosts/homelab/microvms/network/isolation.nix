@@ -52,12 +52,12 @@ let
     lib.concatMapStrings (bridgeName: ''
       # Keep internet access but block local/private destinations when LAN access is disabled.
       iptables -w -I nixos-filter-forward 1 -i '${bridgeName}' -j DROP
-      iptables -w -I nixos-filter-forward 1 -i '${bridgeName}' -o '${homelabSecrets.uplinkName}' -j ACCEPT
+      iptables -w -I nixos-filter-forward 1 -i '${bridgeName}' -o 'lan0' -j ACCEPT
       ${mkPrivateForwardDropCommands bridgeName}
 
       # Mirror internet-only behavior for IPv6 forwarding as well.
       ip6tables -w -I nixos-filter-forward 1 -i '${bridgeName}' -j DROP
-      ip6tables -w -I nixos-filter-forward 1 -i '${bridgeName}' -o '${homelabSecrets.uplinkName}' -j ACCEPT
+      ip6tables -w -I nixos-filter-forward 1 -i '${bridgeName}' -o 'lan0' -j ACCEPT
       ${mkPrivateForwardDropCommands6 bridgeName}
     '') noLanAccessInterfaces;
 in

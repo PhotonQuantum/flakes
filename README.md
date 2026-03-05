@@ -40,7 +40,6 @@ $ nh darwin switch .
 {
   mainDiskId = "REPLACE_WITH_REAL_DISK_BY_ID";
   uplinkMacAddress = "REPLACE_WITH_REAL_UPLINK_MAC";
-  uplinkName = "lan0";
 }
 ```
 
@@ -68,4 +67,5 @@ $ colmena apply --target homelab
 1. Setup cloudflare tunnel and add the tunnel ID and credentials to `secrets/cf`.
 2. Add borg repo to `secrets/homelab.nix` and add passphrase to `secrets/homelab_borg.pass`.
 3. Get forgejo action reg token from forgejo instance and add it to `secrets/homelab.nix`, then restart forgejo-runner microvm.
-4. Set homelab tailscale ip to 100.100.100.99 for dns to work.
+4. Put tailscale preauth key to `secrets/tailscale_key`.
+5. Set homelab tailscale ip to 100.101.100.100 for dns to work.

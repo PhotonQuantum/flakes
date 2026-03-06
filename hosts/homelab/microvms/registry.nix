@@ -109,12 +109,19 @@ in
       };
     };
 
-    test = {
+    syncthing = {
       group = "routed";
       vmId = 10;
-      module = ./vms/example-http.nix;
-      mem = 512;
-      vcpu = 1;
+      module = ./vms/syncthing.nix;
+      mem = 1024;
+      vcpu = 2;
+
+      dataVolume = {
+        sizeMiB = 32768;
+        mountPoint = "/mnt";
+        fsType = "ext4";
+        label = "syncthing-data";
+      };
     };
 
     # Example configuration only (documentation).

@@ -69,3 +69,4 @@ $ colmena apply --target homelab
 3. Get forgejo action reg token from forgejo instance and add it to `secrets/homelab.nix`, then restart forgejo-runner microvm.
 4. Put tailscale preauth key to `secrets/tailscale_key`.
 5. Set homelab tailscale ip to 100.101.100.100 for dns to work.
+6. Configure syncthing.

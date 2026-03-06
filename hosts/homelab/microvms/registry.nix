@@ -52,7 +52,7 @@ in
       group = "isolated";
       vmId = 2;
       module = ./vms/forgejo.nix;
-      mem = 2048;
+      mem = 2049;
       vcpu = 4;
 
       dataVolume = {

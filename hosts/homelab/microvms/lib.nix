@@ -563,6 +563,10 @@ let
         inherit vmSelf vmTopology;
       };
 
+      services.journald.extraConfig = ''
+        ForwardToSocket=vsock:2:19534
+      '';
+
       networking.hostName = name;
       networking.useDHCP = false;
       networking.useNetworkd = true;
@@ -621,15 +625,6 @@ let
           }
         ];
         volumes = volumeFromDataVolume;
-        shares = [
-          {
-            source = "/var/lib/microvms/${name}/journal";
-            mountPoint = "/var/log/journal";
-            tag = "journal";
-            proto = "virtiofs";
-            socket = "journal.sock";
-          }
-        ];
         vsock.cid = vsockCid;
         inherit vcpu mem;
       }

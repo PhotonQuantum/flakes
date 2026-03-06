@@ -95,7 +95,7 @@ in
 
   users.users.lightquantum = {
     isNormalUser = true;
-    extraGroups = [ "wheel" ];
+    extraGroups = [ "wheel" "systemd-journal-remote" ];
     openssh.authorizedKeys.keys = [ (builtins.readFile ../../secrets/id_rsa.pub) ];
   };
 

@@ -6,6 +6,15 @@
   dockerTools,
 }:
 {
+  ani-rss = {
+    pname = "ani-rss";
+    version = "v3.0.5";
+    src = fetchurl {
+      url = "https://github.com/wushuo894/ani-rss/releases/download/v3.0.5/ani-rss.jar";
+      name = "ani-rss.jar";
+      sha256 = "sha256-QfVe0mrLhSlk7xnPl/SIDbMUvAnbLVKuXtNYnYj/OC8=";
+    };
+  };
   fish_abbreviation_tips = {
     pname = "fish_abbreviation_tips";
     version = "8ed76a62bb044ba4ad8e3e6832640178880df485";

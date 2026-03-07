@@ -595,6 +595,10 @@ let
         };
       };
 
+      networking.firewall.allowedUDPPorts = [
+        5353 # mDNS
+      ];
+
       systemd.services.microvm-install-keys = lib.mkIf hasKeys {
         description = "Install MicroVM key files from systemd credentials";
         before = [ "basic.target" ];

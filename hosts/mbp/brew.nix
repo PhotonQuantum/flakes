@@ -98,6 +98,7 @@ _: {
     "syncplay"
     "syncthing-app"
     "syntax-highlight"
+    "tailscale-app"
     "tencent-meeting"
     "tg-pro"
     "tunnelblick"

@@ -70,3 +70,7 @@ fetch.github = "ericlay/fuzzy-pkg-finder"
 [vicinae_extensions]
 src.git = "https://github.com/vicinaehq/extensions"
 fetch.github = "vicinaehq/extensions"
+[ani-rss]
+src.github = "wushuo894/ani-rss"
+fetch.url = "https://github.com/wushuo894/ani-rss/releases/download/$ver/ani-rss.jar"
+url.name = "ani-rss.jar"

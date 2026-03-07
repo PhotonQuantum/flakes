@@ -4,7 +4,7 @@
   mkHmConfigModule,
 }:
 let
-  inherit (inputs) home-manager nixvim disko microvm;
+  inherit (inputs) home-manager nixvim disko microvm self;
 in
 {
   mbp = {
@@ -55,6 +55,7 @@ in
     nixosModules = [
       disko.nixosModules.disko
       microvm.nixosModules.host
+      self.nixosModules.ani-rss
       ../../hosts/homelab/system.nix
     ];
     nixosDeploy = {

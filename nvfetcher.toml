@@ -66,3 +66,8 @@ fetch.github = "PhotonQuantum/flavors"
 [fuzzy-pkg-finder]
 src.git = "https://github.com/ericlay/fuzzy-pkg-finder"
 fetch.github = "ericlay/fuzzy-pkg-finder"
+
+[ani-rss]
+src.github = "wushuo894/ani-rss"
+fetch.url = "https://github.com/wushuo894/ani-rss/releases/download/$ver/ani-rss.jar"
+url.name = "ani-rss.jar"

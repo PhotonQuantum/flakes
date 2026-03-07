@@ -10,6 +10,7 @@ in
     ./coredns.nix
     ./tailscale.nix
     ./microvms
+    ./media
   ] ++ lib.optionals (builtins.pathExists hardwareConfig) [ hardwareConfig ];
 
   deployment = {

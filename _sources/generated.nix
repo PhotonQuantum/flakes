@@ -15,6 +15,15 @@
       sha256 = "sha256-QfVe0mrLhSlk7xnPl/SIDbMUvAnbLVKuXtNYnYj/OC8=";
     };
   };
+  emby = {
+    pname = "emby";
+    version = "4.9.3.0";
+    src = fetchurl {
+      url = "https://github.com/MediaBrowser/Emby.Releases/releases/download/4.9.3.0/emby-server-deb_4.9.3.0_amd64.deb";
+      name = "emby-server-deb_4.9.3.0_amd64.deb";
+      sha256 = "sha256-Tt+P6BnYm5efSuu6sF9Zi7q/RLh/Rg+zIi5pEqiwpzM=";
+    };
+  };
   fish_abbreviation_tips = {
     pname = "fish_abbreviation_tips";
     version = "8ed76a62bb044ba4ad8e3e6832640178880df485";

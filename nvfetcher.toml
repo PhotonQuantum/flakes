@@ -71,3 +71,8 @@ fetch.github = "ericlay/fuzzy-pkg-finder"
 src.github = "wushuo894/ani-rss"
 fetch.url = "https://github.com/wushuo894/ani-rss/releases/download/$ver/ani-rss.jar"
 url.name = "ani-rss.jar"
+
+[emby]
+src.github = "MediaBrowser/Emby.Releases"
+fetch.url = "https://github.com/MediaBrowser/Emby.Releases/releases/download/$ver/emby-server-deb_$ver_amd64.deb"
+url.name = "emby-server-deb_$ver_amd64.deb"

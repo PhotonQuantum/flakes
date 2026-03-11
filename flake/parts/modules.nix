@@ -9,4 +9,14 @@
         config.packages."ani-rss"
       );
     };
+
+  flake.nixosModules.emby =
+    { pkgs, ... }:
+    {
+      imports = [ ../../modules/nixos/services/emby.nix ];
+      services.emby.package = withSystem pkgs.stdenv.hostPlatform.system (
+        { config, ... }:
+        config.packages.emby
+      );
+    };
 }

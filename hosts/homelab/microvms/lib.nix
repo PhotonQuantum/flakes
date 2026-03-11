@@ -289,8 +289,18 @@ let
           groupName:
           let
             group = bridgeGroups.${groupName};
-            gateway = group.gateway or "${group.ipv4Prefix}.${toString group.gatewayHost}";
-            bridgeAddress = group.bridgeAddress or "${gateway}/${toString group.cidr}";
+            layout = group.layout or "managed";
+            usesManagedSubnet = layout == "managed";
+            gateway =
+              if usesManagedSubnet then
+                group.gateway or "${group.ipv4Prefix}.${toString group.gatewayHost}"
+              else
+                null;
+            bridgeAddress =
+              if usesManagedSubnet then
+                group.bridgeAddress or "${gateway}/${toString group.cidr}"
+              else
+                null;
             networkPolicyDefaults = {
               hostAccess = false;
               lanAccess = false;
@@ -298,9 +308,31 @@ let
             };
             networkPolicy = networkPolicyDefaults // (group.networkPolicy or { });
           in
+          assert ensure
+            (builtins.elem layout [ "managed" "uplink-dhcp" ])
+            "bridgeGroups.${groupName}.layout must be one of `managed` or `uplink-dhcp`; got `${toString layout}`";
+          assert ensure
+            (usesManagedSubnet || !(group ? networkPolicy))
+            "bridgeGroups.${groupName}.networkPolicy is only supported when layout = \"managed\"";
           assert ensureRange "bridgeGroups.${groupName}.groupId" group.groupId 1 254;
-          assert ensureRange "bridgeGroups.${groupName}.cidr" group.cidr 1 32;
-          assert ensureRange "bridgeGroups.${groupName}.gatewayHost" group.gatewayHost 1 254;
+          assert ensure
+            (builtins.isString group.bridgeName && group.bridgeName != "")
+            "bridgeGroups.${groupName}.bridgeName must be a non-empty string";
+          assert ensure
+            (!usesManagedSubnet || (group ? ipv4Prefix))
+            "bridgeGroups.${groupName}.ipv4Prefix is required when layout = \"managed\"";
+          assert ensure
+            (!usesManagedSubnet || (group ? cidr))
+            "bridgeGroups.${groupName}.cidr is required when layout = \"managed\"";
+          assert ensure
+            (!usesManagedSubnet || (group ? gatewayHost))
+            "bridgeGroups.${groupName}.gatewayHost is required when layout = \"managed\"";
+          assert ensure
+            (!usesManagedSubnet || ensureRange "bridgeGroups.${groupName}.cidr" group.cidr 1 32)
+            "bridgeGroups.${groupName}.cidr must be between 1 and 32";
+          assert ensure
+            (!usesManagedSubnet || ensureRange "bridgeGroups.${groupName}.gatewayHost" group.gatewayHost 1 254)
+            "bridgeGroups.${groupName}.gatewayHost must be between 1 and 254";
           assert ensure
             (builtins.isBool networkPolicy.hostAccess)
             "bridgeGroups.${groupName}.networkPolicy.hostAccess must be a boolean";
@@ -314,6 +346,7 @@ let
             name = groupName;
             value = group // {
               name = groupName;
+              inherit layout usesManagedSubnet;
               inherit gateway bridgeAddress;
               inherit networkPolicy;
             };
@@ -321,9 +354,13 @@ let
         ) groupNames
       );
       groupValues = builtins.attrValues resolved;
+      uplinkDhcpGroups = builtins.filter (group: group.layout == "uplink-dhcp") groupValues;
     in
     assert ensureNoDuplicates "bridgeGroups.*.groupId" (map (group: group.groupId) groupValues);
     assert ensureNoDuplicates "bridgeGroups.*.bridgeName" (map (group: group.bridgeName) groupValues);
+    assert ensure
+      (builtins.length uplinkDhcpGroups <= 1)
+      "Only one bridgeGroups entry may use layout = `uplink-dhcp`";
     resolved;
 
   resolveMachine =
@@ -341,8 +378,18 @@ let
           or (throw "Unknown MicroVM group `${groupName}` for machine `${name}`");
       vmId = machine.vmId;
       machineId = mkMachineId name;
-      ip = machine.ip or "${group.ipv4Prefix}.${toString vmId}";
-      gateway = machine.gateway or group.gateway;
+      usesManagedSubnet = group.usesManagedSubnet;
+      usesDhcp = !usesManagedSubnet;
+      ip =
+        if usesManagedSubnet then
+          machine.ip or "${group.ipv4Prefix}.${toString vmId}"
+        else
+          null;
+      gateway =
+        if usesManagedSubnet then
+          machine.gateway or group.gateway
+        else
+          null;
       tapName = machine.tapName or (mkTapNameAuto name vmId);
       moduleInput = machine.module or machine.extraConfig or null;
       extraConfig =
@@ -370,7 +417,7 @@ let
     in
     assert ensureRange "machines.${name}.vmId" vmId 2 254;
     assert ensure
-      (vmId != group.gatewayHost)
+      (!usesManagedSubnet || vmId != group.gatewayHost)
       "machines.${name}.vmId (${toString vmId}) must not match gateway host (${toString group.gatewayHost})";
     assert ensure
       (builtins.stringLength tapName <= 15)
@@ -381,6 +428,15 @@ let
     assert ensure
       (builtins.isAttrs extraOptions)
       "machines.${name}.extraOptions must be an attribute set";
+    assert ensure
+      (usesManagedSubnet || !(machine ? ip))
+      "machines.${name}.ip is only supported when the group layout is `managed`";
+    assert ensure
+      (usesManagedSubnet || !(machine ? gateway))
+      "machines.${name}.gateway is only supported when the group layout is `managed`";
+    assert ensure
+      (usesManagedSubnet || !(machine ? ipCidr))
+      "machines.${name}.ipCidr is only supported when the group layout is `managed`";
     machine
     // {
       inherit
@@ -396,12 +452,18 @@ let
         dataVolumeResolved
         backupResolved
         keysResolved
+        usesManagedSubnet
+        usesDhcp
         ;
       group = groupName;
       groupConfig = group;
       groupId = group.groupId;
       bridgeName = group.bridgeName;
-      ipCidr = machine.ipCidr or "${ip}/${toString group.cidr}";
+      ipCidr =
+        if usesManagedSubnet then
+          machine.ipCidr or "${ip}/${toString group.cidr}"
+        else
+          null;
       vsockCid = machine.vsockCid or (20000 + (group.groupId * 256) + vmId);
       mac = machine.mac or "02:00:${hexByte group.groupId}:${hexByte vmIdHi}:${hexByte vmIdLo}:01";
     };
@@ -448,10 +510,13 @@ let
       backupRepos = map
         (machine: machine.backupResolved.repo)
         (builtins.filter (machine: machine.backupResolved != null) machineValues);
+      managedMachineIps = map
+        (machine: machine.ip)
+        (builtins.filter (machine: machine.ip != null) machineValues);
     in
     assert ensureNoDuplicates "machine names" (map (machine: machine.name) machineValues);
     assert builtins.all (check: check) groupVmIdChecks;
-    assert ensureNoDuplicates "machine ip addresses" (map (machine: machine.ip) machineValues);
+    assert ensureNoDuplicates "machine ip addresses" managedMachineIps;
     assert ensureNoDuplicates "machine IDs" (map (machine: machine.machineId) machineValues);
     assert ensureNoDuplicates "machine vsock CIDs" (map (machine: machine.vsockCid) machineValues);
     assert ensureNoDuplicates "machine MAC addresses" (map (machine: machine.mac) machineValues);
@@ -517,6 +582,7 @@ let
       vsockCid,
       tapName,
       machineId,
+      usesDhcp ? false,
       mem ? 256,
       vcpu ? 1,
       nameservers ? [
@@ -592,7 +658,7 @@ let
       networking.hostName = name;
       networking.useDHCP = false;
       networking.useNetworkd = true;
-      networking.nameservers = nameservers;
+      networking.nameservers = if usesDhcp then [ ] else nameservers;
 
       environment.etc."machine-id" = {
         mode = "0644";
@@ -600,15 +666,26 @@ let
       };
 
       systemd.network.enable = true;
-      systemd.network.networks."10-uplink" = {
-        matchConfig.MACAddress = mac;
-        address = [ ipCidr ];
-        routes = [ { Gateway = gateway; } ];
-        networkConfig = {
-          DNS = nameservers;
-          MulticastDNS = true;
-        };
-      };
+      systemd.network.networks."10-uplink" =
+        if usesDhcp then
+          {
+            matchConfig.MACAddress = mac;
+            networkConfig = {
+              DHCP = "ipv4";
+              IPv6AcceptRA = true;
+              MulticastDNS = true;
+            };
+          }
+        else
+          {
+            matchConfig.MACAddress = mac;
+            address = [ ipCidr ];
+            routes = [ { Gateway = gateway; } ];
+            networkConfig = {
+              DNS = nameservers;
+              MulticastDNS = true;
+            };
+          };
       services.resolved = {
         enable = true;
         settings.Resolve = {

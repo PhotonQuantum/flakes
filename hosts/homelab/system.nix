@@ -60,16 +60,9 @@ in
       linkConfig.Name = "lan0";
     };
 
-    networks."10-lan" = {
-      matchConfig.Name = "lan0";
-      networkConfig = {
-        DHCP = "ipv4";
-        IPv6AcceptRA = true;
-        MulticastDNS = true;
-      };
-      dhcpV4Config.UseDNS = false;
-      linkConfig.RequiredForOnline = "routable";
-    };
+    # Host uplink DHCP/bridge membership is intentionally managed in ./microvms.
+    # That module keeps the host on plain `lan0` unless an uplink-bridged
+    # MicroVM group is enabled, in which case the bridge holds the DHCP lease.
   };
 
   time.timeZone = "Etc/UTC";

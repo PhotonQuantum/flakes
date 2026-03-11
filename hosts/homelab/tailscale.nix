@@ -5,19 +5,19 @@
   ...
 }:
 let
+  homelabSecrets = import ../../secrets/homelab.nix;
   registry = import ./microvms/registry.nix { inherit inputs; };
   vmLib = import ./microvms/lib.nix { inherit lib; };
   resolvedGroups = vmLib.resolveGroups registry.bridgeGroups;
 
-  advertisedRoutes = lib.unique (
-    map
-      (group: "${group.ipv4Prefix}.0/${toString group.cidr}")
-      (
-        builtins.filter
-          (group: group.usesManagedSubnet && group.networkPolicy.hostAccess)
-          (builtins.attrValues resolvedGroups)
-      )
-  );
+  microvmRoutes = map
+    (group: "${group.ipv4Prefix}.0/${toString group.cidr}")
+    (
+      builtins.filter
+        (group: group.usesManagedSubnet && group.networkPolicy.hostAccess)
+        (builtins.attrValues resolvedGroups)
+    );
+  advertisedRoutes = lib.unique ([ homelabSecrets.lanSubnet ] ++ microvmRoutes);
 in
 {
   services.tailscale = {

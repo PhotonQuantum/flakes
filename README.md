@@ -66,7 +66,8 @@ $ colmena apply --target homelab
 
 1. Setup cloudflare tunnel and add the tunnel ID and credentials to `secrets/cf`.
 2. Add borg repo to `secrets/homelab.nix` and add passphrase to `secrets/homelab_borg.pass`.
-3. Get forgejo action reg token from forgejo instance and add it to `secrets/homelab.nix`, then restart forgejo-runner microvm.
-4. Put tailscale preauth key to `secrets/tailscale_key`.
-5. Set homelab tailscale ip to 100.101.100.100 for dns to work.
-6. Configure syncthing.
+3. Set `lanSubnet` in `secrets/homelab.nix` to the local LAN CIDR.
+4. Get forgejo action reg token from forgejo instance and add it to `secrets/homelab.nix`, then restart forgejo-runner microvm.
+5. Put tailscale preauth key to `secrets/tailscale_key`.
+6. Set homelab tailscale ip to 100.101.100.100 for dns to work.
+7. Configure syncthing.

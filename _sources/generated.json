@@ -14,6 +14,21 @@
         },
         "version": "v3.0.5"
     },
+    "emby": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "emby",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "name": "emby-server-deb_4.9.3.0_amd64.deb",
+            "sha256": "sha256-Tt+P6BnYm5efSuu6sF9Zi7q/RLh/Rg+zIi5pEqiwpzM=",
+            "type": "url",
+            "url": "https://github.com/MediaBrowser/Emby.Releases/releases/download/4.9.3.0/emby-server-deb_4.9.3.0_amd64.deb"
+        },
+        "version": "4.9.3.0"
+    },
     "fish_abbreviation_tips": {
         "cargoLock": null,
         "date": "2023-01-23",

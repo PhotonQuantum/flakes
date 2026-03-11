@@ -22,6 +22,8 @@ in
 
   bridgeGroups = {
     routed = {
+      # Optional; defaults to "managed".
+      layout = "managed";
       groupId = 1;
       bridgeName = "microvm";
       ipv4Prefix = "10.200.0";
@@ -34,6 +36,7 @@ in
       };
     };
     isolated = {
+      layout = "managed";
       groupId = 2;
       bridgeName = "microvm-iso";
       ipv4Prefix = "10.201.0";
@@ -198,4 +201,11 @@ in
     #   };
     # };
   };
+
+  # Example uplink-bridged group for DHCP-on-LAN guests:
+  # bridgeGroups.lan = {
+  #   layout = "uplink-dhcp";
+  #   groupId = 3;
+  #   bridgeName = "microvm-lan";
+  # };
 }

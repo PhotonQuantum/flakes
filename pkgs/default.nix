@@ -14,4 +14,5 @@ in
   "validate-cam-imports" = pkgs.callPackage ./validate-cam-imports { };
   "gen-compose" = pkgs.callPackage ./gen-compose { };
   "ani-rss" = pkgs.callPackage ./ani-rss { inherit generated; };
+  emby = pkgs.callPackage ./emby { inherit generated; };
 }

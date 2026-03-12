@@ -19,7 +19,6 @@ _: {
     "d /srv/media/data 0750 media media - -"
     "d /srv/media/downloads 0750 media media - -"
     "d /srv/media/qbittorrent 0750 media media - -"
-    "d /srv/media/emby 0750 media media - -"
   ];
 
   virtualisation.arion = {
@@ -31,14 +30,7 @@ _: {
         imports = [ ./ani-rss.nix ];
       };
     };
-    projects.emby = {
-      serviceName = "emby";
-      settings = {
-        # Specify you project here, or import it from a file.
-        imports = [ ./emby.nix ];
-      };
-    };
   };
 
-  networking.firewall.allowedTCPPorts = [ 7789 8080 8096 ];
+  networking.firewall.allowedTCPPorts = [ 7789 8080 ];
 }

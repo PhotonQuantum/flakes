@@ -1,5 +1,5 @@
 { inputs, ... }:
-let 
+let
   secrets = import ../../../secrets/homelab.nix;
 in
 {
@@ -48,6 +48,11 @@ in
         inBridgeInterconnect = false;
       };
     };
+    lan = {
+      layout = "uplink-dhcp";
+      groupId = 3;
+      bridgeName = "microvm-lan";
+    };
   };
 
   machines = {
@@ -74,7 +79,7 @@ in
       group = "isolated";
       vmId = 3;
       module = ./vms/forgejo-runner.nix;
-      mem = 8192;
+      mem = 4096;
       vcpu = 4;
 
       dataVolume = {
@@ -124,6 +129,33 @@ in
         mountPoint = "/mnt";
         fsType = "ext4";
         label = "syncthing-data";
+      };
+    };
+
+    emby = {
+      group = "lan";
+      vmId = 11;
+      module = [ inputs.self.nixosModules.emby ./vms/emby.nix ];
+      mem = 4096;
+      vcpu = 4;
+
+      dataVolume = {
+        sizeMiB = 16384;
+        mountPoint = "/srv/media";
+        fsType = "ext4";
+        label = "emby-data";
+      };
+
+      extraOptions = {
+        shares = [
+          {
+            source = "/srv/media/data";
+            mountPoint = "/srv/media/data";
+            tag = "emby-media";
+            proto = "virtiofs";
+            readOnly = true;
+          }
+        ];
       };
     };
 
@@ -201,11 +233,4 @@ in
     #   };
     # };
   };
-
-  # Example uplink-bridged group for DHCP-on-LAN guests:
-  # bridgeGroups.lan = {
-  #   layout = "uplink-dhcp";
-  #   groupId = 3;
-  #   bridgeName = "microvm-lan";
-  # };
 }

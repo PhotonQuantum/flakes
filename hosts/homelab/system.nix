@@ -87,6 +87,7 @@ in
       nix-fast-build
       colmena;
   }) ];
+  nixpkgs.config.allowUnfree = true;
   nix.package = pkgs.lixPackageSets.stable.lix;
   nix.settings = {
     trusted-users = [

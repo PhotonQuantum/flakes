@@ -1,5 +1,5 @@
 { inputs, ... }:
-let 
+let
   secrets = import ../../../secrets/homelab.nix;
 in
 {
@@ -60,6 +60,11 @@ in
         lanAccess = false;
         inBridgeInterconnect = true;
       };
+    };
+    lan = {
+      layout = "uplink-dhcp";
+      groupId = 4;
+      bridgeName = "microvm-lan";
     };
     paperless = {
       layout = "managed";
@@ -193,6 +198,33 @@ in
       };
     };
 
+    emby = {
+      group = "lan";
+      vmId = 12;
+      module = [ inputs.self.nixosModules.emby ./vms/emby.nix ];
+      mem = 4096;
+      vcpu = 4;
+
+      dataVolume = {
+        sizeMiB = 16384;
+        mountPoint = "/srv/media";
+        fsType = "ext4";
+        label = "emby-data";
+      };
+
+      extraOptions = {
+        shares = [
+          {
+            source = "/srv/media/data";
+            mountPoint = "/srv/media/data";
+            tag = "emby-media";
+            proto = "virtiofs";
+            readOnly = true;
+          }
+        ];
+      };
+    };
+
     # Example configuration only (documentation).
     # Uncomment and adapt when you need to run a MicroVM.
     # example-http = {
@@ -269,11 +301,4 @@ in
     #   };
     # };
   };
-
-  # Example uplink-bridged group for DHCP-on-LAN guests:
-  # bridgeGroups.lan = {
-  #   layout = "uplink-dhcp";
-  #   groupId = 3;
-  #   bridgeName = "microvm-lan";
-  # };
 }

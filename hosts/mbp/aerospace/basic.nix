@@ -82,14 +82,7 @@
         cmd-enter =
           let
             script = pkgs.writeText "ghostty.applescript" ''
-              tell application "Ghostty"
-                if it is running then
-                  activate
-                  tell application "System Events" to keystroke "n" using {command down}
-                else
-                  activate
-                end if
-              end tell
+              tell application "Ghostty" to new window
             '';
           in
           "exec-and-forget osascript ${script}";

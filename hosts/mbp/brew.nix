@@ -36,6 +36,7 @@ _: {
     "pipenv"
     "pipx"
     "pnpm"
+    "poppler"
     "sqlx-cli"
     "terminal-notifier"
     "textidote"

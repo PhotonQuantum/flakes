@@ -41,6 +41,16 @@ let
 
   noLanAccessCommands =
     let
+      interconnectEnabledInterfaces = lib.unique (
+        map (group: group.bridgeName) (
+          builtins.filter (group: group.networkPolicy.inBridgeInterconnect) allGroupConfigs
+        )
+      );
+      mkSameBridgeAcceptCommands = bridgeName: ''
+        # Allow guest-to-guest traffic on the same bridge when interconnect is enabled.
+        iptables -w -I nixos-filter-forward 1 -i '${bridgeName}' -o '${bridgeName}' -j ACCEPT
+        ip6tables -w -I nixos-filter-forward 1 -i '${bridgeName}' -o '${bridgeName}' -j ACCEPT
+      '';
       mkPrivateForwardDropCommands =
         bridgeName:
         lib.concatMapStrings (
@@ -57,6 +67,9 @@ let
       iptables -w -I nixos-filter-forward 1 -i '${bridgeName}' -j DROP
       iptables -w -I nixos-filter-forward 1 -i '${bridgeName}' -o '${externalInterface}' -j ACCEPT
       ${mkPrivateForwardDropCommands bridgeName}
+      ${lib.optionalString (builtins.elem bridgeName interconnectEnabledInterfaces) (
+        mkSameBridgeAcceptCommands bridgeName
+      )}
 
       # Mirror internet-only behavior for IPv6 forwarding as well.
       ip6tables -w -I nixos-filter-forward 1 -i '${bridgeName}' -j DROP

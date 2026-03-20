@@ -38,6 +38,7 @@ let
         archiveBaseName = backup.archivePrefix;
         repo = backup.repo;
         startAt = backup.startAt;
+        compression = backup.compression;
         encryption = {
           mode = "repokey-blake2";
           passCommand = "cat ${backup.passFile}";

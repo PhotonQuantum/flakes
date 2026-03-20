@@ -86,8 +86,29 @@ def repo_root() -> Path:
     return Path(__file__).resolve().parent.parent
 
 
+def root_input_node(lock: dict, input_name: str = "nixpkgs") -> str:
+    root_name = lock.get("root", "root")
+    try:
+        mapped = lock["nodes"][root_name]["inputs"][input_name]
+    except KeyError as error:
+        raise RuntimeError(f'flake.lock does not define root input "{input_name}"') from error
+
+    if isinstance(mapped, list):
+        if len(mapped) != 1 or not isinstance(mapped[0], str):
+            raise RuntimeError(f'flake.lock root input "{input_name}" has unsupported path mapping: {mapped!r}')
+        mapped = mapped[0]
+
+    if not isinstance(mapped, str):
+        raise RuntimeError(f'flake.lock root input "{input_name}" did not resolve to a node name')
+    if mapped not in lock["nodes"]:
+        raise RuntimeError(f'flake.lock root input "{input_name}" points to missing node "{mapped}"')
+    return mapped
+
+
 def current_nixpkgs_rev(root: Path) -> str:
-    return json.loads((root / "flake.lock").read_text())["nodes"]["nixpkgs"]["locked"]["rev"]
+    lock = json.loads((root / "flake.lock").read_text())
+    node_name = root_input_node(lock, "nixpkgs")
+    return lock["nodes"][node_name]["locked"]["rev"]
 
 
 def latest_branch_revision(branch: str) -> str:
@@ -137,7 +158,9 @@ def apply_selection(root: Path, branch: str, sha: str) -> None:
 
         dst_lock = json.loads((root / "flake.lock").read_text())
         src_lock = json.loads((flake_dir / "flake.lock").read_text())
-        dst_lock["nodes"]["nixpkgs"] = src_lock["nodes"]["nixpkgs"]
+        dst_node_name = root_input_node(dst_lock, "nixpkgs")
+        src_node_name = root_input_node(src_lock, "nixpkgs")
+        dst_lock["nodes"][dst_node_name] = src_lock["nodes"][src_node_name]
         (root / "flake.lock").write_text(f"{json.dumps(dst_lock, indent=2)}\n")
 
 

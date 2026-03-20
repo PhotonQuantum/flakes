@@ -1,4 +1,18 @@
 {
+  backupDefaults = {
+    snapshotRoot = "/srv/.snapshots/microvm-borg";
+    startAt = "daily";
+    passFile = "/var/keys/homelab_borg.pass";
+    sshKeyPath = "/var/keys/id_ed25519_homelab_borg";
+    prune = {
+      within = "24H";
+      daily = 7;
+      weekly = 4;
+      monthly = 6;
+      yearly = 2;
+    };
+  };
+
   bridgeGroups = {
     routed = {
       groupId = 1;
@@ -37,6 +51,22 @@
       #   fsType = "ext4";
       #   # Optional; defaults to null.
       #   label = "static-http-data";
+      # };
+      # Optional per-VM image backup:
+      # backup = {
+      #   repo = "ssh://user@example/./repo-static-http";
+      #   # Optional; defaults to backupDefaults.startAt.
+      #   startAt = "daily";
+      #   # Optional; defaults to VM name.
+      #   archivePrefix = "static-http";
+      #   # Optional; defaults to backupDefaults.prune.
+      #   prune = {
+      #     within = "24H";
+      #     daily = 7;
+      #     weekly = 4;
+      #     monthly = 6;
+      #     yearly = 2;
+      #   };
       # };
     };
     routed-peer-http = {

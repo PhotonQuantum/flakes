@@ -81,6 +81,39 @@ let
       "tap name `${tapName}` for VM `${name}` is longer than Linux max length 15";
     tapName;
 
+  resolveDataVolume =
+    name: dataVolume:
+    if dataVolume == null then
+      null
+    else
+      let
+        sizeMiB =
+          dataVolume.sizeMiB
+            or (throw "machines.${name}.dataVolume.sizeMiB is required");
+        mountPoint = dataVolume.mountPoint or "/mnt";
+        hostImagePath = "/srv/microvms/${name}/image.img";
+        fsType = dataVolume.fsType or "ext4";
+        label = dataVolume.label or null;
+      in
+      assert ensure
+        (!(dataVolume ? hostImagePath))
+        "machines.${name}.dataVolume.hostImagePath is no longer supported; image path is fixed to `${hostImagePath}`";
+      assert ensure
+        (builtins.isInt sizeMiB && sizeMiB >= 1)
+        "machines.${name}.dataVolume.sizeMiB must be a positive integer (MiB); got `${toString sizeMiB}`";
+      assert ensure
+        (builtins.match "^/.*" mountPoint != null)
+        "machines.${name}.dataVolume.mountPoint must be an absolute path; got `${mountPoint}`";
+      {
+        inherit
+          sizeMiB
+          mountPoint
+          hostImagePath
+          fsType
+          label
+          ;
+      };
+
   resolveGroups =
     bridgeGroups:
     let
@@ -134,6 +167,7 @@ let
           moduleInput
         else
           [ moduleInput ];
+      dataVolumeResolved = resolveDataVolume name (machine.dataVolume or null);
       vmIdHi = builtins.div vmId 256;
       vmIdLo = vmId - (vmIdHi * 256);
     in
@@ -154,6 +188,7 @@ let
         gateway
         tapName
         extraConfig
+        dataVolumeResolved
         ;
       group = groupName;
       groupConfig = group;
@@ -195,12 +230,16 @@ let
       groupVmIdChecks = map (
         groupName: ensureNoDuplicates "machines in group `${groupName}` vmId" vmIdsByGroup.${groupName}
       ) (builtins.attrNames vmIdsByGroup);
+      dataVolumeHostImagePaths = map
+        (machine: machine.dataVolumeResolved.hostImagePath)
+        (builtins.filter (machine: machine.dataVolumeResolved != null) machineValues);
     in
     assert builtins.all (check: check) groupVmIdChecks;
     assert ensureNoDuplicates "machine ip addresses" (map (machine: machine.ip) machineValues);
     assert ensureNoDuplicates "machine vsock CIDs" (map (machine: machine.vsockCid) machineValues);
     assert ensureNoDuplicates "machine MAC addresses" (map (machine: machine.mac) machineValues);
     assert ensureNoDuplicates "machine tap names" (map (machine: machine.tapName) machineValues);
+    assert ensureNoDuplicates "machines.*.dataVolume.hostImagePath" dataVolumeHostImagePaths;
     resolved;
 
   mkVmRef = machine: {
@@ -266,10 +305,28 @@ let
         "8.8.8.8"
       ],
       extraConfig ? [ ],
+      dataVolumeResolved ? null,
       vmSelf ? null,
       vmTopology ? null,
       ...
     }:
+    let
+      volumeFromDataVolume =
+        if dataVolumeResolved == null then
+          [ ]
+        else
+          [
+            ({
+              image = dataVolumeResolved.hostImagePath;
+              mountPoint = dataVolumeResolved.mountPoint;
+              size = dataVolumeResolved.sizeMiB;
+              fsType = dataVolumeResolved.fsType;
+            }
+            // lib.optionalAttrs (dataVolumeResolved.label != null) {
+              label = dataVolumeResolved.label;
+            })
+          ];
+    in
     {
       imports = if builtins.isList extraConfig then extraConfig else [ extraConfig ];
 
@@ -303,7 +360,7 @@ let
       networking.firewall.allowedTCPPorts = [ 80 ];
 
       microvm = {
-        hypervisor = "cloud-hypervisor";
+        hypervisor = "qemu";
         interfaces = [
           {
             type = "tap";
@@ -311,6 +368,7 @@ let
             inherit mac;
           }
         ];
+        volumes = volumeFromDataVolume;
         vsock.cid = vsockCid;
         inherit vcpu mem;
       };

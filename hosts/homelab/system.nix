@@ -122,7 +122,7 @@ in
     extraOptions = ''
       min-free = ${toString (1024*1024*1024)}
       max-free = ${toString (1024*1024*1024*5)}
-    ''
+    '';
   };
 
   boot.loader.systemd-boot.enable = true;

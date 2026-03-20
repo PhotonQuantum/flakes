@@ -1,0 +1,134 @@
+#!/usr/bin/env python3
+
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+from _hydra_nixpkgs import hydra_job_name, lookup_latest_revision
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        prog="hydra-latest-nixpkgs-rev",
+        description=(
+            "Query Hydra for the latest finished successful build of one or more "
+            "nixpkgs jobs and print the newest nixpkgs revision where all of them "
+            "are present."
+        ),
+        epilog=(
+            "Examples:\n"
+            "  hydra-latest-nixpkgs-rev hello --system x86_64-linux\n"
+            "  hydra-latest-nixpkgs-rev hello ripgrep --system x86_64-linux\n"
+            "  hydra-latest-nixpkgs-rev hello.x86_64-linux\n"
+            "  hydra-latest-nixpkgs-rev nixosTests.postgresql --system x86_64-linux --json\n"
+            "  hydra-latest-nixpkgs-rev hello --system aarch64-darwin --jobset staging-next"
+        ),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    parser.add_argument(
+        "packages",
+        nargs="+",
+        help=(
+            "one or more package attribute names such as 'hello', or full Hydra job "
+            "names such as 'hello.x86_64-linux'"
+        ),
+    )
+    parser.add_argument(
+        "--system",
+        help="target system to append when PACKAGE is not already a full Hydra job name",
+    )
+    parser.add_argument(
+        "--project",
+        default="nixpkgs",
+        help="Hydra project name",
+    )
+    parser.add_argument(
+        "--jobset",
+        default="unstable",
+        help="Hydra jobset name",
+    )
+    parser.add_argument(
+        "--input",
+        default="nixpkgs",
+        help="evaluation input name that carries the git revision",
+    )
+    parser.add_argument(
+        "--hydra-url",
+        default="https://hydra.nixos.org",
+        help="Hydra base URL",
+    )
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        help="print structured JSON instead of just the revision",
+    )
+    parser.add_argument("--verbose", action="store_true", help="print a short human-readable summary to stderr")
+    parser.add_argument("--max-eval-id", type=int, help="only consider jobset evaluations at or before this eval id")
+    return parser
+
+
+def main() -> None:
+    parser = build_parser()
+    args = parser.parse_args()
+
+    jobs = [hydra_job_name(package, args.system) for package in args.packages]
+
+    try:
+        lookup = lookup_latest_revision(
+            base_url=args.hydra_url,
+            project=args.project,
+            jobset=args.jobset,
+            jobs=jobs,
+            input_name=args.input,
+            max_eval_id=args.max_eval_id,
+        )
+    except RuntimeError as error:
+        raise SystemExit(str(error))
+    if not lookup.resolution:
+        absent = ", ".join(lookup.absent_jobs) or "none"
+        dropped = ", ".join(lookup.dropped_jobs) or "none"
+        raise SystemExit(f"no Hydra resolution found; absent jobs: {absent}; dropped jobs: {dropped}")
+
+    resolution = lookup.resolution
+
+    if args.verbose:
+        summary = ", ".join(f"{info.job}#{info.build_id}" for info in resolution.jobs)
+        print(f"{args.project}:{args.jobset} -> {resolution.revision} (eval {resolution.eval_id})", file=sys.stderr)
+        print(f"jobs: {summary}", file=sys.stderr)
+        if lookup.absent_jobs:
+            print(f"absent: {', '.join(lookup.absent_jobs)}", file=sys.stderr)
+        if lookup.dropped_jobs:
+            print(f"dropped: {', '.join(lookup.dropped_jobs)}", file=sys.stderr)
+
+    if args.json:
+        print(
+            json.dumps(
+                {
+                    "revision": resolution.revision,
+                    "project": args.project,
+                    "jobset": args.jobset,
+                    "eval_id": resolution.eval_id,
+                    "jobs": [
+                        {
+                            "job": info.job,
+                            "system": info.system,
+                            "nix_name": info.nix_name,
+                            "build_id": info.build_id,
+                            "finished_at": info.finished_at,
+                            "jobsetevals": list(info.eval_ids),
+                        }
+                        for info in resolution.jobs
+                    ],
+                    "absent_jobs": list(lookup.absent_jobs),
+                    "dropped_jobs": list(lookup.dropped_jobs),
+                }
+            )
+        )
+        return
+
+    print(resolution.revision)
+
+
+if __name__ == "__main__":
+    main()

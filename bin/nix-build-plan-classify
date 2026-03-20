@@ -1,0 +1,56 @@
+#!/usr/bin/env python3
+
+from __future__ import annotations
+
+import argparse
+import shutil
+from _nix_build_plan import classify_build_plan, format_rows
+
+
+parser = argparse.ArgumentParser(
+        prog="nix-build-plan-classify",
+        description=(
+            "Classify derivations from a dry-run build plan as real-ish, "
+            "wrapper-ish, or inspect."
+        ),
+        epilog=(
+            "Examples:\n"
+            "  nix-build-plan-classify .#darwinConfigurations.mbp.config.system.build.toplevel\n"
+            "  nix-build-plan-classify nixpkgs#hello\n"
+            "  nix-build-plan-classify .#packages.aarch64-darwin.default --impure\n"
+            "  nix-build-plan-classify --format tsv .#darwinConfigurations.mbp.config.system.build.toplevel"
+        ),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+parser.add_argument(
+    "--format",
+    choices=("table", "tsv"),
+    default="table",
+    help="output format",
+)
+parser.add_argument(
+    "build_args",
+    nargs=argparse.REMAINDER,
+    help="installable followed by any additional nix build arguments",
+)
+
+
+def main() -> None:
+    if shutil.which("nix") is None:
+        raise SystemExit("missing required command: nix")
+
+    args = parser.parse_args()
+    build_args = args.build_args[1:] if args.build_args[:1] == ["--"] else args.build_args
+    if not build_args:
+        parser.error("missing installable")
+
+    rows = classify_build_plan(build_args)
+    if not rows:
+        print("no derivations need to be built")
+        return
+
+    print(format_rows(rows, output_format=args.format))
+
+
+if __name__ == "__main__":
+    main()

@@ -14,6 +14,20 @@ $ nix build .#darwinConfigurations.mbp.system
 $ ./result/sw/bin/darwin-rebuild switch --flake .
 ```
 
+## Tools
+
+- `bin/nix-build-plan-classify <installable>`: dry-run a build and classify derivations as `real-ish`, `wrapper-ish`, or `inspect`.
+- `bin/hydra-latest-nixpkgs-rev <pkg...> --system <system>`: query Hydra for the newest nixpkgs revision where the given jobs are present.
+- `bin/pick-nixpkgs-rev [installable]`: start from the latest `nixpkgs-unstable` revision, dry-run the target, walk backward with Hydra until the missing package set stabilizes, and optionally apply the resolved revision to `flake.lock`.
+
+Examples:
+
+```bash
+$ ./bin/nix-build-plan-classify .#darwinConfigurations.mbp.config.system.build.toplevel
+$ ./bin/hydra-latest-nixpkgs-rev hello --system x86_64-linux
+$ ./bin/pick-nixpkgs-rev .#darwinConfigurations.mbp.config.system.build.toplevel
+```
+
 ## Deploy to remote NixOS machine
 
 ```bash

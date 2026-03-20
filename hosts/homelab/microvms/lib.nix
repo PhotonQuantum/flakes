@@ -700,6 +700,7 @@ let
           LLMNR = false;
         };
       };
+      services.fstrim.enable = true;
 
       networking.firewall.allowedUDPPorts = [
         5353 # mDNS

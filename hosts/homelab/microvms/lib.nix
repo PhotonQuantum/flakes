@@ -96,6 +96,7 @@ let
     backupDefaults:
     let
       startAt = backupDefaults.startAt or "daily";
+      compression = backupDefaults.compression or "auto,zstd";
       passFile = backupDefaults.passFile or "/var/keys/homelab_borg.pass";
       sshKeyPath = backupDefaults.sshKeyPath or "/var/keys/id_ed25519_homelab_borg";
       prune = backupDefaults.prune or {
@@ -115,6 +116,7 @@ let
     {
       inherit
         startAt
+        compression
         passFile
         sshKeyPath
         prune
@@ -193,6 +195,7 @@ let
           backup.repo
             or (throw "machines.${name}.backup.repo is required when backup is configured");
         startAt = backup.startAt or backupDefaults.startAt;
+        compression = backup.compression or backupDefaults.compression;
         archivePrefix = backup.archivePrefix or name;
         pruneKeep = backupDefaults.prune // (backup.prune or { });
         passFile = backup.passFile or backupDefaults.passFile;
@@ -208,6 +211,9 @@ let
         (builtins.isString startAt && startAt != "")
         "machines.${name}.backup.startAt must be a non-empty string";
       assert ensure
+        (builtins.isString compression && compression != "")
+        "machines.${name}.backup.compression must be a non-empty string";
+      assert ensure
         (builtins.isString archivePrefix && archivePrefix != "")
         "machines.${name}.backup.archivePrefix must be a non-empty string";
       assert ensure
@@ -220,6 +226,7 @@ let
         inherit
           repo
           startAt
+          compression
           archivePrefix
           pruneKeep
           passFile

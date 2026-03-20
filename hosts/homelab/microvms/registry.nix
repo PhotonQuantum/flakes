@@ -153,6 +153,8 @@ in
     #     repo = "ssh://user@example/./repo-example-http";
     #     # Optional; defaults to backupDefaults.startAt.
     #     startAt = "daily";
+    #     # Optional; defaults to backupDefaults.compression.
+    #     compression = "zstd";
     #     # Optional; defaults to backupDefaults.passFile.
     #     passFile = "/var/keys/homelab_borg.pass";
     #     # Optional; defaults to backupDefaults.sshKeyPath.

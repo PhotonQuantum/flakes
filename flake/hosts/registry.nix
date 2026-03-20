@@ -4,7 +4,7 @@
   mkHmConfigModule,
 }:
 let
-  inherit (inputs) determinate home-manager nixvim;
+  inherit (inputs) determinate disko home-manager nixvim;
 in
 {
   mbp = {
@@ -45,6 +45,22 @@ in
       targetPort = 20422;
       targetUser = "lightquantum";
       buildOnTarget = true;
+    };
+  };
+
+  homelab = {
+    system = "x86_64-linux";
+    names = [
+      "homelab"
+    ];
+    nixosModules = [
+      disko.nixosModules.disko
+      ../../hosts/homelab/system.nix
+    ];
+    nixosDeploy = {
+      targetHost = "lightquantum-homelab.local";
+      targetUser = "lightquantum";
+      buildOnTarget = false;
     };
   };
 

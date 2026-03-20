@@ -4,7 +4,13 @@
   mkHmConfigModule,
 }:
 let
-  inherit (inputs) determinate disko home-manager microvm nixvim;
+  inherit (inputs) colmena determinate disko home-manager microvm nixvim;
+  colmenaNixosModules = [
+    colmena.nixosModules.assertionModule
+    colmena.nixosModules.keyChownModule
+    colmena.nixosModules.keyServiceModule
+    colmena.nixosModules.deploymentOptions
+  ];
 in
 {
   mbp = {
@@ -33,7 +39,7 @@ in
       "meow"
       "lightquantum-meow"
     ];
-    nixosModules = [
+    nixosModules = colmenaNixosModules ++ [
       home-manager.nixosModules.home-manager
       ../../hosts/meow/system.nix
       (mkHmConfigModule false "x86_64-linux" {
@@ -53,7 +59,7 @@ in
     names = [
       "homelab"
     ];
-    nixosModules = [
+    nixosModules = colmenaNixosModules ++ [
       disko.nixosModules.disko
       microvm.nixosModules.host
       ../../hosts/homelab/system.nix
@@ -71,7 +77,7 @@ in
       "orb"
       "orbstack-nixos"
     ];
-    nixosModules = [
+    nixosModules = colmenaNixosModules ++ [
       lqOverlays.generated
       home-manager.nixosModules.home-manager
       ../../hosts/orb/system.nix

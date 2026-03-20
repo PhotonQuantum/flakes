@@ -1,3 +1,4 @@
+{ inputs, ... }:
 let 
   secrets = import ../../../secrets/homelab.nix;
 in

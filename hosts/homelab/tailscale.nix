@@ -12,7 +12,11 @@ let
   advertisedRoutes = lib.unique (
     map
       (group: "${group.ipv4Prefix}.0/${toString group.cidr}")
-      (builtins.filter (group: group.networkPolicy.hostAccess) (builtins.attrValues resolvedGroups))
+      (
+        builtins.filter
+          (group: group.usesManagedSubnet && group.networkPolicy.hostAccess)
+          (builtins.attrValues resolvedGroups)
+      )
   );
 in
 {

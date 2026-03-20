@@ -1,10 +1,8 @@
 { pkgs, ... }:
 let
-  secrets = import ../../../../secrets/homelab.nix;
-
   package = pkgs.forgejo-runner;
-  secret = secrets.forgejo.runnerSecret;
   url = "https://git.lightquantum.me";
+  secretFile = "/var/keys/forgejo-runner-secret";
 
   settings = {
     runner = {
@@ -72,8 +70,9 @@ in
 
       ExecStartPre = [
         (pkgs.writeShellScript "forgejo-register-runner" ''
+          secret="$(< ${secretFile})"
           # perform the registration
-          ${package}/bin/act_runner create-runner-file --instance ${url} --secret ${secret} --config ${configFile}
+          exec ${package}/bin/act_runner create-runner-file --instance ${url} --secret "$secret" --config ${configFile}
         '')
       ];
       ExecStart = "${package}/bin/act_runner daemon --config ${configFile}";

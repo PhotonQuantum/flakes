@@ -24,6 +24,7 @@ in
       };
       pull.ff = "only";
       init.defaultBranch = "master";
+      diff.algorithm = "histogram";
       rerere = {
         enabled = true;
         autoupdate = true;

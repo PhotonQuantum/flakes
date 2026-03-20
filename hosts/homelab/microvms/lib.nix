@@ -154,6 +154,9 @@ let
       assert ensure
         (builtins.match "^/.*" mountPoint != null)
         "machines.${name}.dataVolume.mountPoint must be an absolute path; got `${mountPoint}`";
+      assert ensure
+        (label == null || builtins.stringLength label <= 16)
+        "machines.${name}.dataVolume.label must be at most 16 characters; got `${toString label}`";
       {
         inherit
           sizeMiB

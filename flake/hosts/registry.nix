@@ -4,7 +4,7 @@
   mkHmConfigModule,
 }:
 let
-  inherit (inputs) home-manager nixvim;
+  inherit (inputs) determinate home-manager nixvim;
 in
 {
   mbp = {
@@ -13,6 +13,7 @@ in
       [ "mbp" "lightquantum-mbp" ]
       ++ builtins.map (n: "lightquantum-mbp-${toString n}") (builtins.genList (x: x + 1) 8);
     darwinModules = [
+      determinate.darwinModules.default
       lqOverlays.generated
       lqOverlays.texFmt
       lqOverlays.colmena
@@ -75,6 +76,7 @@ in
       "lightquantum@lightquantum-arch"
     ];
     homeModules = [
+      determinate.homeManagerModules.default
       lqOverlays.generated
       nixvim.homeModules.nixvim
       ../../modules/home/package-restrictions/stage1.nix

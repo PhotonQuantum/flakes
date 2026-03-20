@@ -1,5 +1,11 @@
-_: {
-  nix.settings = {
+{
+  config,
+  lib,
+  options,
+  ...
+}:
+let
+  cacheSettings = {
     substituters = [
       "https://cache.nixos.org"
       "https://nocargo.cachix.org"
@@ -23,4 +29,17 @@ _: {
       "colmena.cachix.org-1:7BzpDnjjH8ki2CT3f6GdOk7QAzPOl+1t3LvTLXqYcSg="
     ];
   };
+
+  usesDeterminateDarwin = options ? determinateNix;
+in
+{
+  config =
+    if usesDeterminateDarwin then
+      {
+        determinateNix.customSettings = cacheSettings;
+      }
+    else
+      {
+        nix.settings = cacheSettings;
+      };
 }

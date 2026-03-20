@@ -7,23 +7,24 @@
 let
   allGroupConfigs = builtins.attrValues resolvedGroups;
   allMachineConfigs = builtins.attrValues resolvedMachines;
-  natEnabledGroups = builtins.filter (group: group.natEnabled) allGroupConfigs;
-  natInternalInterfaces = lib.unique (map (group: group.bridgeName) natEnabledGroups);
-  trustedInternalInterfaces = lib.unique (
-    map (group: group.bridgeName) (
-      builtins.filter (group: !(group.isolated or false)) natEnabledGroups
-    )
-  );
 in
 {
-  # Keep routed groups trusted for host access, but do not trust isolated groups.
-  networking.firewall.trustedInterfaces = trustedInternalInterfaces;
+  # Only groups with host access enabled are trusted for host firewall bypass.
+  networking.firewall.trustedInterfaces = lib.unique (
+    map (group: group.bridgeName) (
+      builtins.filter (group: group.networkPolicy.hostAccess) allGroupConfigs
+    )
+  );
 
-  networking.nat = {
-    enable = natInternalInterfaces != [ ];
-    externalInterface = homelabSecrets.uplinkName;
-    internalInterfaces = natInternalInterfaces;
-  };
+  networking.nat =
+    let
+      natInternalInterfaces = lib.unique (map (group: group.bridgeName) allGroupConfigs);
+    in
+    {
+      enable = natInternalInterfaces != [ ];
+      externalInterface = homelabSecrets.uplinkName;
+      internalInterfaces = natInternalInterfaces;
+    };
 
   systemd.network = {
     netdevs = builtins.listToAttrs (map (group: {
@@ -51,7 +52,7 @@ in
           value = {
             matchConfig.Name = machine.tapName;
             networkConfig.Bridge = machine.bridgeName;
-            bridgeConfig.Isolated = machine.isolated;
+            bridgeConfig.Isolated = !machine.groupConfig.networkPolicy.inBridgeInterconnect;
           };
         }) allMachineConfigs);
       in

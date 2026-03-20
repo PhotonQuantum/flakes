@@ -182,6 +182,20 @@ in
     #       file = "/var/keys/example-http-defaults";
     #     };
     #   };
+    #
+    #   # Optional extra MicroVM options merged into `microvm`.
+    #   # `extraOptions` wins on conflicts with generated values.
+    #   extraOptions = {
+    #     shares = [
+    #       {
+    #         source = "/srv/share/example-http";
+    #         mountPoint = "/share";
+    #         tag = "example-share";
+    #         proto = "virtiofs";
+    #       }
+    #     ];
+    #     qemu.extraArgs = [ "-device" "virtio-rng-pci" ];
+    #   };
     # };
   };
 }

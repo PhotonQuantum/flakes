@@ -352,6 +352,7 @@ let
           moduleInput
         else
           [ moduleInput ];
+      extraOptions = machine.extraOptions or { };
       dataVolumeResolved = resolveDataVolume {
         inherit name volumePath;
         dataVolume = machine.dataVolume or null;
@@ -377,6 +378,9 @@ let
     assert ensure
       (builtins.match "^[0-9a-f]{32}$" machineId != null)
       "derived machine ID for machine `${name}` must be 32 lowercase hex characters; got `${machineId}`";
+    assert ensure
+      (builtins.isAttrs extraOptions)
+      "machines.${name}.extraOptions must be an attribute set";
     machine
     // {
       inherit
@@ -388,6 +392,7 @@ let
         gateway
         tapName
         extraConfig
+        extraOptions
         dataVolumeResolved
         backupResolved
         keysResolved
@@ -519,6 +524,7 @@ let
         "8.8.8.8"
       ],
       extraConfig ? [ ],
+      extraOptions ? { },
       dataVolumeResolved ? null,
       keysResolved ? [ ],
       vmSelf ? null,
@@ -555,6 +561,22 @@ let
           install -D -m ${lib.escapeShellArg key.permissions} -o ${lib.escapeShellArg key.user} -g ${lib.escapeShellArg key.group} "$CREDENTIALS_DIRECTORY/${key.credentialName}" ${lib.escapeShellArg key.targetPath}
         ''
       ) keysResolved;
+      generatedMicrovm = {
+        hypervisor = "qemu";
+        interfaces = [
+          {
+            type = "tap";
+            id = tapName;
+            inherit mac;
+          }
+        ];
+        volumes = volumeFromDataVolume;
+        vsock.cid = vsockCid;
+        inherit vcpu mem;
+      }
+      // lib.optionalAttrs hasKeys {
+        credentialFiles = credentialFilesFromKeys;
+      };
     in
     {
       imports = if builtins.isList extraConfig then extraConfig else [ extraConfig ];
@@ -619,22 +641,7 @@ let
         '';
       };
 
-      microvm = {
-        hypervisor = "qemu";
-        interfaces = [
-          {
-            type = "tap";
-            id = tapName;
-            inherit mac;
-          }
-        ];
-        volumes = volumeFromDataVolume;
-        vsock.cid = vsockCid;
-        inherit vcpu mem;
-      }
-      // lib.optionalAttrs hasKeys {
-        credentialFiles = credentialFilesFromKeys;
-      };
+      microvm = generatedMicrovm // extraOptions;
 
       system.stateVersion = "25.11";
     };

@@ -1,4 +1,9 @@
-{ inputs, lib, pkgs, ... }:
+{
+  inputs,
+  lib,
+  pkgs,
+  ...
+}:
 let
   vmLib = import ./lib.nix { inherit lib; };
   registry = import ./registry.nix { inherit inputs; };
@@ -14,10 +19,6 @@ let
   };
 
   backupMachines = lib.filterAttrs (_: machine: machine.backupResolved != null) resolvedMachines;
-  backupVmNames = builtins.attrNames backupMachines;
-  hasBackupMachines = backupVmNames != [ ];
-
-  snapshotTmpfiles = if hasBackupMachines then [ "d ${snapshotRoot} 0750 root root - -" ] else [ ];
 
   subvolumePath = name: "${volumePath}/${name}";
   snapshotParent = name: "${snapshotRoot}/${name}";
@@ -42,7 +43,7 @@ let
           passCommand = "cat ${backup.passFile}";
         };
         environment = {
-          BORG_RSH = "ssh -i ${backup.sshKeyPath}";
+          BORG_RSH = "ssh -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=/root/.config/borg/known_hosts -i ${backup.sshKeyPath}";
         };
         readWritePaths = [ snapshotRoot ];
         paths = [ "${vmSnapshotCurrent}/./." ];
@@ -103,7 +104,11 @@ let
   ) backupMachines;
 
   backupCli = pkgs.writers.writePython3Bin "microvm-image-backup" {
-    flakeIgnore = [ "E501" "E265" "W503" ];
+    flakeIgnore = [
+      "E501"
+      "E265"
+      "W503"
+    ];
     makeWrapperArgs =
       let
         runtimeInputs = with pkgs; [
@@ -129,7 +134,14 @@ let
   };
 in
 {
-  systemd.tmpfiles.rules = snapshotTmpfiles;
+  systemd.tmpfiles.rules =
+    let
+      hasBackupMachines = builtins.attrNames backupMachines != [ ];
+    in
+    if hasBackupMachines then [
+      "d ${snapshotRoot} 0750 root root - -"
+      "f /root/.config/borg/known_hosts 0600 root root - - "
+      ] else [ ];
 
   services.borgbackup.jobs = borgJobs;
 

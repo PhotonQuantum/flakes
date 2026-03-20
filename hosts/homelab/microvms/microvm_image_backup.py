@@ -27,6 +27,7 @@ FETCH_WORKERS = 2
 LOCK_RETRY_BASE_DELAY = 0.08
 LOCK_RETRY_MAX_DELAY = 0.30
 LOGGER = logging.getLogger("microvm-image-backup")
+_BORG_KNOWN_HOSTS = Path("/root/.config/borg/known_hosts")
 ANSI_RESET = "\x1b[0m"
 ANSI_BOLD = "\x1b[1m"
 ANSI_BLUE = "\x1b[34m"
@@ -485,7 +486,12 @@ class BorgService:
     def environment(vm_data: VmBackupConfig) -> dict[str, str]:
         env = os.environ.copy()
         env["BORG_REPO"] = vm_data.repo
-        env["BORG_RSH"] = f"ssh -i {vm_data.ssh_key_path}"
+        env["BORG_RSH"] = (
+            "ssh "
+            "-o StrictHostKeyChecking=accept-new "
+            f"-o UserKnownHostsFile={_BORG_KNOWN_HOSTS} "
+            f"-i {vm_data.ssh_key_path}"
+        )
         env["BORG_PASSCOMMAND"] = f"cat {vm_data.pass_file}"
         return env
 

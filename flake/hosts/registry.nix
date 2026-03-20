@@ -93,6 +93,7 @@ in
     ];
     homeModules = [
       determinate.homeManagerModules.default
+      lqOverlays.colmena
       lqOverlays.generated
       nixvim.homeModules.nixvim
       ../../modules/home/package-restrictions/stage1.nix

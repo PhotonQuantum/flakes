@@ -22,7 +22,7 @@ in
     in
     {
       enable = natInternalInterfaces != [ ];
-      externalInterface = homelabSecrets.uplinkName;
+      externalInterface = "lan0";
       internalInterfaces = natInternalInterfaces;
     };
 

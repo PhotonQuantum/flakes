@@ -103,7 +103,7 @@ let
   ) backupMachines;
 
   backupCli = pkgs.writers.writePython3Bin "microvm-image-backup" {
-    flakeIgnore = [ "E501" "E265" ];
+    flakeIgnore = [ "E501" "E265" "W503" ];
     makeWrapperArgs =
       let
         runtimeInputs = with pkgs; [
@@ -111,6 +111,7 @@ let
           borgbackup
           btrfs-progs
           coreutils
+          fzf
           systemd
         ];
       in

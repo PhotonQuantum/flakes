@@ -1,7 +1,7 @@
-{ pkgs, ... }:
+{ pkgs, vmTopology, ... }:
 let
   package = pkgs.forgejo-runner;
-  url = "https://git.lightquantum.me";
+  url = "http://${vmTopology.byName.forgejo.ip}:3000";
   secretFile = "/var/keys/forgejo-runner-secret";
 
   settings = {

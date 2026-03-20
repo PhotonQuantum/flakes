@@ -48,11 +48,24 @@ in
         inBridgeInterconnect = false;
       };
     };
+    forgejo = {
+      layout = "managed";
+      groupId = 3;
+      bridgeName = "microvm-forgejo";
+      ipv4Prefix = "10.202.0";
+      cidr = 24;
+      gatewayHost = 1;
+      networkPolicy = {
+        hostAccess = false;
+        lanAccess = false;
+        inBridgeInterconnect = true;
+      };
+    };
   };
 
   machines = {
     forgejo = {
-      group = "isolated";
+      group = "forgejo";
       vmId = 2;
       module = ./vms/forgejo.nix;
       mem = 2049;
@@ -84,7 +97,7 @@ in
     };
 
     forgejo-runner = {
-      group = "isolated";
+      group = "forgejo";
       vmId = 3;
       module = ./vms/forgejo-runner.nix;
       mem = 8192;

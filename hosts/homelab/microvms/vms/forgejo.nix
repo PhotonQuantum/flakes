@@ -33,7 +33,7 @@ in
     settings.server = {
       DOMAIN = "git.lightquantum.me";
       ROOT_URL = "https://git.lightquantum.me/";
-      HTTP_ADDR = "127.0.0.1";
+      HTTP_ADDR = "0.0.0.0";
       HTTP_PORT = 3000;
       DISABLE_SSH = true;
       LANDING_PAGE = "explore";
@@ -92,5 +92,9 @@ in
   systemd.tmpfiles.rules = [
     "d /mnt/forgejo 0750 forgejo forgejo - -"
     "d /mnt/postgresql 0700 postgres postgres - -"
+  ];
+
+  networking.firewall.allowedTCPPorts = [
+    3000 # Forgejo LAN
   ];
 }

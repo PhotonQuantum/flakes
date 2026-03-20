@@ -113,6 +113,18 @@ in
 
   services.apcupsd.enable = true;
 
+  nix = {
+    optimise.automatic = true;
+    gc = {
+      automatic = true;
+      options = "--delete-older-than 14d";
+    };
+    extraOptions = ''
+      min-free = ${toString (1024*1024*1024)}
+      max-free = ${toString (1024*1024*1024*5)}
+    ''
+  };
+
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 

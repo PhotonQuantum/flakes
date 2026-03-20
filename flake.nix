@@ -49,6 +49,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    microvm = {
+      url = "github:microvm-nix/microvm.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     aerospace-mark = {
       url = "github:cristianoliveira/aerospace-marks";
       inputs.nixpkgs.follows = "nixpkgs";

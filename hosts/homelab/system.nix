@@ -24,6 +24,12 @@ in
           user = "root";
           group = "root";
         };
+        "tg3-rs.env" = {
+          keyFile = ../../secrets/tg3-rs.env;
+          destDir = "/var/keys";
+          user = "microvm";
+          group = "kvm";
+        };
       };
   };
 
@@ -98,8 +104,10 @@ in
   services.resolved = {
     enable = true;
     settings.Resolve = {
+      DNS = "1.1.1.1#cloudflare-dns.com 8.8.8.8#dns.google";
       MulticastDNS = true;
       LLMNR = false;
+      DNSOverTLS = true;
     };
   };
 

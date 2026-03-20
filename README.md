@@ -73,7 +73,14 @@ $ nix run github:nix-community/nixos-anywhere -- --flake .#homelab --generate-ha
 4. After install, rebuild remotely as needed:
 
 ```bash
-$ colmena apply --target homelab
+$ colmena apply --on homelab
+```
+
+If using determinate nix,
+
+```bash
+$ colmena upload-keys --on homelab --nix-option lazy-trees false
+$ colmena apply --on homelab --no-keys
 ```
 
 ## Manual configuration

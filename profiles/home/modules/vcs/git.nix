@@ -24,6 +24,10 @@ in
       };
       pull.ff = "only";
       init.defaultBranch = "master";
+      rerere = {
+        enabled = true;
+        autoupdate = true;
+      };
       push.autoSetupRemote = true;
       absorb.maxStack = 50;
       merge.tool = "nvimdiff";

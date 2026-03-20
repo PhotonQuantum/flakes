@@ -25,7 +25,7 @@ in
 
           root = {
             name = "root";
-            end = "-0";
+            end = "101GiB";
             content = {
               type = "btrfs";
               extraArgs = [ "-f" ];
@@ -45,15 +45,40 @@ in
                     "noatime"
                   ];
                 };
-
-                "/srv" = {
-                  mountpoint = "/srv";
-                  mountOptions = [
-                    "compress=zstd"
-                    "noatime"
-                  ];
-                };
               };
+            };
+          };
+
+          srv = {
+            name = "srv";
+            end = "-0";
+          };
+        };
+      };
+    };
+
+    disk.secondary = {
+      type = "disk";
+      device = "/dev/disk/by-id/${diskIds.secondaryDiskId}";
+      content = {
+        type = "gpt";
+        partitions = {
+          srv = {
+            name = "srv";
+            end = "-0";
+            content = {
+              type = "btrfs";
+              extraArgs = [
+                "-f"
+                "-d raid0"
+                "-m raid1"
+                "/dev/disk/by-partlabel/disk-main-srv"
+              ];
+              mountpoint = "/srv";
+              mountOptions = [
+                "compress=zstd"
+                "noatime"
+              ];
             };
           };
         };

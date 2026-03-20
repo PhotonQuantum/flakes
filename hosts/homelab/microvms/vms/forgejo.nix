@@ -1,18 +1,18 @@
 { pkgs, lib, ... }:
 let
-  secrets = import ../../../../secrets/homelab.nix;
   runnerName = "forgejo-runner";
-  runnerSecret = secrets.forgejo.runnerSecret;
-
   forgejoStateDir = "/mnt/forgejo";
+  runnerSecretFile = "/var/keys/forgejo-runner-secret";
+  cloudflaredCredentialsFile = "/var/keys/forgejo-cloudflared-credentials.json";
+  tunnelId = "578db42b-141f-463a-983c-8100761b2527";
 in
 {
   services.cloudflared = {
     enable = true;
     tunnels = {
-      "578db42b-141f-463a-983c-8100761b2527" = {
+      "${tunnelId}" = {
         default = "http_status:404";
-        credentialsFile = ../../../../secrets/cf/forgejo.json;
+        credentialsFile = cloudflaredCredentialsFile;
       };
     };
   };
@@ -77,10 +77,15 @@ in
       Type = "oneshot";
       User = "forgejo";
       Group = "forgejo";
-
-      ExecStart = ''
-        ${pkgs.forgejo}/bin/forgejo forgejo-cli actions register --name ${runnerName} --secret ${runnerSecret} --keep-labels
-      '';
+      ExecStart = [
+        ""
+        "${pkgs.bash}/bin/bash"
+        "-euc"
+        ''
+          runner_secret="$(< ${lib.escapeShellArg runnerSecretFile})"
+          exec ${pkgs.forgejo}/bin/forgejo forgejo-cli actions register --name ${lib.escapeShellArg runnerName} --secret "$runner_secret" --keep-labels
+        ''
+      ];
     };
   };
 

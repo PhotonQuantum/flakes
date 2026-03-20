@@ -68,6 +68,19 @@ in
       backup = {
         repo = secrets.backupRepos.forgejo;
       };
+
+      keys = {
+        "/var/keys/forgejo-runner-secret" = {
+          file = "/var/keys/forgejo_runner_secret";
+          user = "forgejo";
+          group = "forgejo";
+        };
+        "/var/keys/forgejo-cloudflared-credentials.json" = {
+          file = "/var/keys/forgejo_cloudflared_credentials.json";
+          user = "root";
+          group = "root";
+        };
+      };
     };
 
     forgejo-runner = {
@@ -82,6 +95,14 @@ in
         mountPoint = "/mnt";
         fsType = "ext4";
         label = "forgejo-r-data";
+      };
+
+      keys = {
+        "/var/keys/forgejo-runner-secret" = {
+          file = "/var/keys/forgejo_runner_secret";
+          user = "forgejo-runner";
+          group = "forgejo-runner";
+        };
       };
     };
 

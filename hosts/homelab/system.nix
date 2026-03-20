@@ -32,6 +32,18 @@ in
           user = "microvm";
           group = "kvm";
         };
+        "forgejo_runner_secret" = {
+          keyFile = ../../secrets/forgejo_runner_secret;
+          destDir = "/var/keys";
+          user = "microvm";
+          group = "kvm";
+        };
+        "forgejo_cloudflared_credentials.json" = {
+          keyFile = ../../secrets/cf/forgejo.json;
+          destDir = "/var/keys";
+          user = "microvm";
+          group = "kvm";
+        };
         "tailscale_key" = {
           keyFile = ../../secrets/tailscale_key;
           destDir = "/var/keys";

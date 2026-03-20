@@ -1,6 +1,8 @@
 {
+  volumePath = "/srv/microvms";
+  snapshotRoot = "/srv/.snapshots/microvm-borg";
+
   backupDefaults = {
-    snapshotRoot = "/srv/.snapshots/microvm-borg";
     startAt = "daily";
     passFile = "/var/keys/homelab_borg.pass";
     sshKeyPath = "/var/keys/id_ed25519_homelab_borg";
@@ -46,7 +48,7 @@
       #   sizeMiB = 1024;
       #   # Optional; defaults to "/mnt".
       #   mountPoint = "/mnt";
-      #   # Image path is fixed to "/srv/microvms/${name}/image.img".
+      #   # Image path is fixed to "${volumePath}/${name}/image.img".
       #   # Optional; defaults to "ext4".
       #   fsType = "ext4";
       #   # Optional; defaults to null.
@@ -57,6 +59,10 @@
       #   repo = "ssh://user@example/./repo-static-http";
       #   # Optional; defaults to backupDefaults.startAt.
       #   startAt = "daily";
+      #   # Optional; defaults to backupDefaults.passFile.
+      #   passFile = "/var/keys/homelab_borg.pass";
+      #   # Optional; defaults to backupDefaults.sshKeyPath.
+      #   sshKeyPath = "/var/keys/id_ed25519_homelab_borg";
       #   # Optional; defaults to VM name.
       #   archivePrefix = "static-http";
       #   # Optional; defaults to backupDefaults.prune.

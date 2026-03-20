@@ -4,7 +4,10 @@
   resolvedGroups,
 }:
 let
-  allGroupConfigs = builtins.attrValues resolvedGroups;
+  allGroupConfigs = builtins.filter (group: group.usesManagedSubnet) (builtins.attrValues resolvedGroups);
+  uplinkDhcpGroups = builtins.filter (group: group.layout == "uplink-dhcp") (builtins.attrValues resolvedGroups);
+  uplinkDhcpGroup = if uplinkDhcpGroups == [ ] then null else builtins.head uplinkDhcpGroups;
+  externalInterface = if uplinkDhcpGroup == null then "lan0" else uplinkDhcpGroup.bridgeName;
   noHostAccessInterfaces = lib.unique (
     map (group: group.bridgeName) (
       builtins.filter (group: !group.networkPolicy.hostAccess) allGroupConfigs
@@ -52,12 +55,12 @@ let
     lib.concatMapStrings (bridgeName: ''
       # Keep internet access but block local/private destinations when LAN access is disabled.
       iptables -w -I nixos-filter-forward 1 -i '${bridgeName}' -j DROP
-      iptables -w -I nixos-filter-forward 1 -i '${bridgeName}' -o 'lan0' -j ACCEPT
+      iptables -w -I nixos-filter-forward 1 -i '${bridgeName}' -o '${externalInterface}' -j ACCEPT
       ${mkPrivateForwardDropCommands bridgeName}
 
       # Mirror internet-only behavior for IPv6 forwarding as well.
       ip6tables -w -I nixos-filter-forward 1 -i '${bridgeName}' -j DROP
-      ip6tables -w -I nixos-filter-forward 1 -i '${bridgeName}' -o 'lan0' -j ACCEPT
+      ip6tables -w -I nixos-filter-forward 1 -i '${bridgeName}' -o '${externalInterface}' -j ACCEPT
       ${mkPrivateForwardDropCommands6 bridgeName}
     '') noLanAccessInterfaces;
 in

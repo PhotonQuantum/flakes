@@ -49,25 +49,22 @@
         cargo-insta
         cargo-modules
         cargo-msrv
-        # cargo-nextest # TODO compile fail
+        cargo-nextest
         cargo-outdated
         cargo-readme
         cargo-sort
         cargo-udeps
-        # cargo-update  # TODO compile fail
+        cargo-update
         cargo-wipe
       ];
 
       gitPackages = with pkgs; [
         delta
         git-absorb
-        # (git-branchless.overrideAttrs (old: {
-        #   doCheck = false;
-        #   doInstallCheck = false;
-        # }))
+        git-branchless
         git-crypt
         git-filter-repo
-        # git-machete # TODO compile failed
+        git-machete
       ];
 
       migratedPackages = with pkgs; [

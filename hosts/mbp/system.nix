@@ -8,16 +8,6 @@
     ../../profiles/system/capabilities/minimal.nix
   ];
 
-  nixpkgs.overlays = [ (final: prev: {
-    inherit (prev.lixPackageSets.stable)
-      nixpkgs-review
-      nix-eval-jobs
-      nix-fast-build
-      colmena;
-  }) ];
-
-  nix.package = pkgs.lixPackageSets.stable.lix;
-
   system.primaryUser = "lightquantum";
 
   users.users.lightquantum = {
@@ -173,30 +163,34 @@
 
   security.pam.services.sudo_local.touchIdAuth = true;
 
-  #nix.package = pkgs.nix;
-  nix.gc.automatic = true;
-  nix.settings = {
-    trusted-users = [ "lightquantum" ]; # Allow me to interact with the daemon without sudo
-    experimental-features = [
-      "nix-command"
-      "flakes"
-    ]; # Enable flakes support
-  };
-  nix.buildMachines = [
-    {
-      hostName = "lightquantum-homelab.local";
-      sshUser = "lightquantum";
-      system = "x86_64-linux";
-      maxJobs = 16;
-      supportedFeatures = [
-        "benchmark"
-        "big-parallel"
-        "kvm"
-        "nixos-test"
+  nix.enable = false;
+
+  determinateNix = {
+    enable = true;
+    distributedBuilds = true;
+    buildMachines = [
+      {
+        hostName = "lightquantum-homelab.local";
+        sshUser = "lightquantum";
+        system = "x86_64-linux";
+        maxJobs = 16;
+        supportedFeatures = [
+          "benchmark"
+          "big-parallel"
+          "kvm"
+          "nixos-test"
+        ];
+      }
+    ];
+    customSettings = {
+      trusted-users = [ "lightquantum" ]; # Allow me to interact with the daemon without sudo
+      experimental-features = [
+        "nix-command"
+        "flakes"
       ];
-    }
-  ];
-  nix.distributedBuilds = true;
+    };
+    determinateNixd.garbageCollector.strategy = "automatic";
+  };
   nixpkgs.config = {
     permittedInsecurePackages = [
       "openssl-1.1.1u"

@@ -1,0 +1,320 @@
+#!/usr/bin/env python3
+
+from __future__ import annotations
+
+import argparse
+import json
+import shutil
+import subprocess
+import sys
+import tempfile
+import urllib.request
+from dataclasses import dataclass
+from pathlib import Path
+
+from _hydra_nixpkgs import lookup_latest_revision
+from _nix_build_plan import classify_build_plan, hydra_job_candidate
+
+
+@dataclass
+class Options:
+    branch: str
+    max_attempts: int
+    installable: str
+    extra_args: list[str]
+    apply_choice: bool
+    project: str
+    jobset: str
+    input_name: str
+    hydra_url: str
+
+
+@dataclass
+class AttemptResult:
+    attempt: int
+    revision: str
+    missing_rows: list
+    hydra_jobs: list[str]
+    ignored_jobs: list[str]
+    dropped_jobs: list[str]
+    next_revision: str | None
+    action: str
+    eval_id: int | None
+
+
+@dataclass(frozen=True)
+class CommitInfo:
+    date: str
+    title: str
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        prog="pick-nixpkgs-rev",
+        description=(
+            "Resolve a nixpkgs revision by iteratively dry-running a target and using "
+            "Hydra to move to the newest revision where missing packages are available."
+        ),
+        epilog=(
+            "Examples:\n"
+            "  pick-nixpkgs-rev\n"
+            "  pick-nixpkgs-rev .#darwinConfigurations.mbp.config.system.build.toplevel\n"
+            "  pick-nixpkgs-rev --max-attempts 5 .#packages.aarch64-darwin.default\n"
+            "  pick-nixpkgs-rev --apply .#darwinConfigurations.mbp.config.system.build.toplevel -- --impure"
+        ),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    parser.add_argument("--branch", default="nixpkgs-unstable", help="GitHub branch to start from")
+    parser.add_argument("--max-attempts", type=int, default=10, help="maximum Hydra-resolution iterations")
+    parser.add_argument("--limit", type=int, help="deprecated alias for --max-attempts")
+    parser.add_argument("--apply", action="store_true", help="apply the resolved nixpkgs lock entry to flake.lock")
+    parser.add_argument("--project", default="nixpkgs", help="Hydra project name")
+    parser.add_argument("--jobset", default="unstable", help="Hydra jobset name")
+    parser.add_argument("--input", default="nixpkgs", dest="input_name", help="Hydra input carrying the revision")
+    parser.add_argument("--hydra-url", default="https://hydra.nixos.org", help="Hydra base URL")
+    parser.add_argument(
+        "installable",
+        nargs="?",
+        default=".#darwinConfigurations.mbp.config.system.build.toplevel",
+        help="nix installable to evaluate",
+    )
+    parser.add_argument("extra_args", nargs=argparse.REMAINDER, help="additional nix build arguments")
+    return parser
+
+
+def repo_root() -> Path:
+    return Path(__file__).resolve().parent.parent
+
+
+def current_nixpkgs_rev(root: Path) -> str:
+    return json.loads((root / "flake.lock").read_text())["nodes"]["nixpkgs"]["locked"]["rev"]
+
+
+def latest_branch_revision(branch: str) -> str:
+    url = f"https://api.github.com/repos/NixOS/nixpkgs/commits/{branch}"
+    request = urllib.request.Request(
+        url,
+        headers={"Accept": "application/vnd.github+json", "User-Agent": "pick-nixpkgs-rev"},
+    )
+    with urllib.request.urlopen(request) as response:
+        return json.load(response)["sha"]
+
+
+def commit_info(revision: str, cache: dict[str, CommitInfo]) -> CommitInfo:
+    if revision not in cache:
+        url = f"https://api.github.com/repos/NixOS/nixpkgs/commits/{revision}"
+        request = urllib.request.Request(
+            url,
+            headers={"Accept": "application/vnd.github+json", "User-Agent": "pick-nixpkgs-rev"},
+        )
+        with urllib.request.urlopen(request) as response:
+            payload = json.load(response)
+        cache[revision] = CommitInfo(
+            date=payload["commit"]["committer"]["date"][:10],
+            title=payload["commit"]["message"].splitlines()[0],
+        )
+    return cache[revision]
+
+
+def apply_selection(root: Path, branch: str, sha: str) -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        flake_dir = Path(tmp) / "selected-flake"
+        flake_dir.mkdir()
+        (flake_dir / "flake.nix").write_text(
+            "{\n"
+            f'  inputs.nixpkgs.url = "git+https://github.com/NixOS/nixpkgs?shallow=1&ref={branch}&rev={sha}";\n'
+            "  outputs = { self, nixpkgs }: {};\n"
+            "}\n"
+        )
+
+        proc = subprocess.run(
+            ["nix", "flake", "lock", str(flake_dir)],
+            text=True,
+            capture_output=True,
+        )
+        if proc.returncode != 0:
+            raise RuntimeError(proc.stderr.strip() or "failed to synthesize nixpkgs lock entry")
+
+        dst_lock = json.loads((root / "flake.lock").read_text())
+        src_lock = json.loads((flake_dir / "flake.lock").read_text())
+        dst_lock["nodes"]["nixpkgs"] = src_lock["nodes"]["nixpkgs"]
+        (root / "flake.lock").write_text(f"{json.dumps(dst_lock, indent=2)}\n")
+
+
+def classify_revision(root: Path, installable: str, extra_args: list[str], revision: str):
+    return classify_build_plan(
+        [
+            installable,
+            "--override-input",
+            "nixpkgs",
+            f"github:NixOS/nixpkgs/{revision}",
+            *extra_args,
+        ],
+        cwd=root,
+    )
+
+
+def main() -> None:
+    root = repo_root()
+    if shutil.which("nix") is None:
+        raise SystemExit("missing required command: nix")
+
+    parser = build_parser()
+    parsed = parser.parse_args()
+    extra_args = parsed.extra_args[1:] if parsed.extra_args[:1] == ["--"] else parsed.extra_args
+    max_attempts = parsed.limit if parsed.limit is not None else parsed.max_attempts
+    if max_attempts <= 0:
+        parser.error("--max-attempts must be greater than 0")
+
+    options = Options(
+        branch=parsed.branch,
+        max_attempts=max_attempts,
+        installable=parsed.installable,
+        extra_args=extra_args,
+        apply_choice=parsed.apply,
+        project=parsed.project,
+        jobset=parsed.jobset,
+        input_name=parsed.input_name,
+        hydra_url=parsed.hydra_url,
+    )
+
+    current_locked = current_nixpkgs_rev(root)
+    revision = latest_branch_revision(options.branch)
+    current_eval_id: int | None = None
+    ignored_jobs: set[str] = set()
+    attempts: list[AttemptResult] = []
+    stop_reason = "attempt cap reached"
+    final_revision = revision
+    final_missing_rows = []
+    commit_cache: dict[str, CommitInfo] = {}
+
+    print(f"Current locked nixpkgs rev: {current_locked[:12]}", file=sys.stderr)
+    start_info = commit_info(revision, commit_cache)
+    print(
+        f"Starting from branch head {options.branch}: {revision[:12]}  {start_info.date}  {start_info.title}",
+        file=sys.stderr,
+    )
+    print("attempt  revision      date        missing  hydra  ignored  action  title")
+
+    for attempt in range(1, options.max_attempts + 1):
+        lookup = None
+        rows = classify_revision(root, options.installable, options.extra_args, revision)
+        missing_rows = [row for row in rows if row.kind == "real-ish"]
+        hydra_candidates = sorted(
+            {
+                job
+                for row in missing_rows
+                if (job := hydra_job_candidate(row)) and job not in ignored_jobs
+            }
+        )
+        action = "done"
+        next_revision = None
+
+        if not hydra_candidates:
+            stop_reason = "no Hydra-trackable missing packages remain"
+        else:
+            lookup = lookup_latest_revision(
+                base_url=options.hydra_url,
+                project=options.project,
+                jobset=options.jobset,
+                jobs=hydra_candidates,
+                input_name=options.input_name,
+                max_eval_id=current_eval_id,
+            )
+            ignored_jobs.update(lookup.absent_jobs)
+            hydra_candidates = [
+                job for job in hydra_candidates if job not in lookup.absent_jobs and job not in lookup.dropped_jobs
+            ]
+
+            if not hydra_candidates:
+                if lookup.dropped_jobs:
+                    stop_reason = "Hydra could not find a common evaluation for remaining jobs"
+                    action = "dropped-all"
+                else:
+                    stop_reason = "all remaining missing packages are ignored by Hydra"
+                    action = "ignored-only"
+            elif not lookup.resolution:
+                stop_reason = "Hydra returned no revision for remaining jobs"
+                action = "no-hydra-revision"
+            else:
+                next_revision = lookup.resolution.revision
+                if next_revision == revision:
+                    stop_reason = "Hydra candidate revision repeated"
+                    action = "repeat"
+                else:
+                    action = f"retry->{next_revision[:12]}"
+
+        result = AttemptResult(
+            attempt=attempt,
+            revision=revision,
+            missing_rows=missing_rows,
+            hydra_jobs=hydra_candidates,
+            ignored_jobs=sorted(ignored_jobs),
+            dropped_jobs=sorted(lookup.dropped_jobs if lookup else []),
+            next_revision=next_revision,
+            action=action,
+            eval_id=lookup.resolution.eval_id if lookup and lookup.resolution else None,
+        )
+        attempts.append(result)
+        final_revision = revision
+        final_missing_rows = missing_rows
+        info = commit_info(revision, commit_cache)
+        print(
+            f"{attempt:<7}  {revision[:12]:<12}  {info.date:<10}  {len(missing_rows):<7}  "
+            f"{len(hydra_candidates):<5}  {len(ignored_jobs):<7}  {action:<20}  {info.title}"
+        )
+        if missing_rows:
+            names = sorted({row.name for row in missing_rows})
+            suffix = f", +{len(names) - 12} more" if len(names) > 12 else ""
+            print(f"         missing: {', '.join(names[:12])}{suffix}")
+        if result.dropped_jobs:
+            print(f"         dropped: {', '.join(result.dropped_jobs)}")
+        if ignored_jobs:
+            print(f"         ignored: {', '.join(sorted(ignored_jobs))}")
+
+        if action != "retry" and not action.startswith("retry->"):
+            break
+        revision = next_revision
+        current_eval_id = result.eval_id
+    else:
+        final_revision = revision
+        final_missing_rows = [
+            row
+            for row in classify_revision(root, options.installable, options.extra_args, revision)
+            if row.kind == "real-ish"
+        ]
+
+    remaining_names = sorted({row.name for row in final_missing_rows})
+    final_info = commit_info(final_revision, commit_cache)
+
+    print()
+    print("Final resolution:")
+    print(f"  revision: {final_revision}")
+    print(f"  date:     {final_info.date}")
+    print(f"  title:    {final_info.title}")
+    print(f"  attempts: {len(attempts)} / {options.max_attempts}")
+    print(f"  reason:   {stop_reason}")
+    print(f"  missing:  {len(final_missing_rows)}")
+    print(f"  ignored:  {', '.join(sorted(ignored_jobs)) if ignored_jobs else '-'}")
+    print(f"  remain:   {', '.join(remaining_names[:10]) if remaining_names else '-'}")
+    if len(remaining_names) > 10:
+        print(f"  more:     +{len(remaining_names) - 10} more")
+    print()
+
+    apply_choice = options.apply_choice
+    if not apply_choice:
+        reply = input("Apply this nixpkgs revision to flake.lock? [y/N] ").strip()
+        apply_choice = reply.lower() in {"y", "yes"}
+
+    if not apply_choice:
+        return
+
+    try:
+        apply_selection(root, options.branch, final_revision)
+    except RuntimeError as error:
+        raise SystemExit(str(error))
+    print(f"Updated flake.lock nixpkgs -> {final_revision[:12]}")
+
+
+if __name__ == "__main__":
+    main()

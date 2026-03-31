@@ -41,6 +41,7 @@ _: {
     "terminal-notifier"
     "textidote"
     "tmexclude"
+    "uv"
   ];
   homebrew.casks = [
     "1password-cli"

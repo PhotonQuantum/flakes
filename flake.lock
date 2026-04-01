@@ -8,11 +8,11 @@
         "utils": "utils"
       },
       "locked": {
-        "lastModified": 1770538635,
-        "narHash": "sha256-1bNZ/CdCrxt4zQTSgP0qzm6IYKF6TUg5YgO5GUWj63g=",
+        "lastModified": 1774600511,
+        "narHash": "sha256-eoTzm+S7oqzAkzX7adG2lF2cYuNZHcMkX/8xF0uu5To=",
         "owner": "cristianoliveira",
         "repo": "aerospace-marks",
-        "rev": "6edcdff6e959cad54339def1c91a7d771599e830",
+        "rev": "eff5e7940ca123b06d64ef6e16662d4a9ab6f52c",
         "type": "github"
       },
       "original": {
@@ -515,10 +515,10 @@
     },
     "nixpkgs_3": {
       "locked": {
-        "lastModified": 1773628058,
-        "narHash": "sha256-hpXH0z3K9xv0fHaje136KY872VT2T5uwxtezlAskQgY=",
+        "lastModified": 1774916514,
+        "narHash": "sha256-YDWtTFGwWSOG6RTpsPwaV3xf3ViPaBl33/F1CAoRvos=",
         "ref": "nixpkgs-unstable",
-        "rev": "f8573b9c935cfaa162dd62cc9e75ae2db86f85df",
+        "rev": "2bcb781670da8b876f4954d60b129e0e1d9e63fa",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/NixOS/nixpkgs"

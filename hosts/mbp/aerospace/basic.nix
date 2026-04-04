@@ -79,13 +79,13 @@
 
         # All possible commands: https://nikitabobko.github.io/AeroSpace/commands
 
-        cmd-enter =
-          let
-            script = pkgs.writeText "ghostty.applescript" ''
-              tell application "Ghostty" to new window
-            '';
-          in
-          "exec-and-forget osascript ${script}";
+        # cmd-enter =
+        #   let
+        #     script = pkgs.writeText "ghostty.applescript" ''
+        #       tell application "Ghostty" to new window
+        #     '';
+        #   in
+        #   "exec-and-forget osascript ${script}";
 
         alt-w = "close";
 

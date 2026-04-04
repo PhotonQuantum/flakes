@@ -15,9 +15,11 @@ in {
       background-opacity = 0.8;
       background-blur-radius = 80;
       shell-integration-features = true;
-      keybind = (if isDarwin then [ "global:super+,=toggle_quick_terminal" ] else []);
+      keybind = (if isDarwin then [ "global:super+enter=toggle_quick_terminal" ] else []);
     } // lib.optionalAttrs isDarwin {
       quick-terminal-animation-duration = 0.1;
+      quick-terminal-size = "70%";
+      initial-window = false;
     };
   };
 }

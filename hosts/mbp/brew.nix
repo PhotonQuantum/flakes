@@ -61,7 +61,7 @@ _: {
     "element"
     "font-iosevka-nerd-font"
     "font-libertinus"
-    "ghostty"
+    # "ghostty"
     "github"
     "grammarly-desktop"
     "handbrake-app"

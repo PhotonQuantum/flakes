@@ -20,9 +20,16 @@ def copy2_and_set_writable(src: str, dst: str):
     os.chmod(dst, os.stat(dst).st_mode | 0o220)
 
 
+def get_denix_paths(path: str) -> tuple[str, str]:
+    parent = os.path.dirname(path)
+    name = os.path.basename(path)
+    denix_name = f".{name}.denix"
+    bak_name = f".{name}.denix.bak"
+    return os.path.join(parent, denix_name), os.path.join(parent, bak_name)
+
+
 def do(path: str):
-    denix_path = f".{path}.denix"
-    bak_path = f".{path}.denix.bak"
+    denix_path, bak_path = get_denix_paths(path)
     # This is a simple script, so no need to deal with TOCTOU
     checkPaths(
         [denix_path, bak_path],
@@ -39,12 +46,11 @@ def do(path: str):
     click.echo(f"Backing up {path} to {bak_path}...", err=True)
     shutil.move(path, bak_path)
     click.echo(f"Linking {denix_path} to {path}...", err=True)
-    os.symlink(denix_path, path)
+    os.symlink(os.path.basename(denix_path), path)
 
 
 def do_revert(path: str):
-    denix_path = f".{path}.denix"
-    bak_path = f".{path}.denix.bak"
+    denix_path, bak_path = get_denix_paths(path)
     checkPaths(
         [denix_path, bak_path],
         lambda p: f"File {p} does not exist. Are you sure this path was denixed?",

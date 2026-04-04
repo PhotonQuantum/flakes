@@ -22,7 +22,7 @@
       exec-on-workspace-change = [
         "/bin/bash"
         "-c"
-        "${sketchybar} --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE"
+        "${sketchybar} --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE PREV_WORKSPACE=$AEROSPACE_PREV_WORKSPACE"
       ];
       on-focus-changed = [
         "exec-and-forget ${sketchybar} --trigger aerospace_focus_change"
@@ -30,19 +30,31 @@
       on-window-detected = [
         {
           "if".app-name-regex-substring = "qq|wechat|telegram";
-          run = [ "move-node-to-workspace 4" ];
+          run = [
+            "move-node-to-workspace 4"
+            "exec-and-forget ${sketchybar} --trigger aerospace_focus_change"
+          ];
         }
         {
           "if".app-name-regex-substring = "slack|discord|zulip|element";
-          run = [ "move-node-to-workspace 5" ];
+          run = [
+            "move-node-to-workspace 5"
+            "exec-and-forget ${sketchybar} --trigger aerospace_focus_change"
+          ];
         }
         {
           "if".app-name-regex-substring = "code|cursor";
-          run = [ "move-node-to-workspace --focus-follows-window 3" ];
+          run = [
+            "move-node-to-workspace --focus-follows-window 3"
+            "exec-and-forget ${sketchybar} --trigger aerospace_focus_change"
+          ];
         }
         {
           "if".app-name-regex-substring = "arc|zen";
-          run = [ "move-node-to-workspace --focus-follows-window 2" ];
+          run = [
+            "move-node-to-workspace --focus-follows-window 2"
+            "exec-and-forget ${sketchybar} --trigger aerospace_focus_change"
+          ];
         }
         {
           "if".window-title-regex-substring = ".+ — 1Password";
@@ -124,7 +136,10 @@
           # See: https://nikitabobko.github.io/AeroSpace/commands#workspace
           "alt-${lib.strings.toLower letter}" = "workspace ${letter}";
           # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
-          "alt-shift-${lib.strings.toLower letter}" = "move-node-to-workspace ${letter}";
+          "alt-shift-${lib.strings.toLower letter}" = [
+            "move-node-to-workspace ${letter}"
+            "exec-and-forget ${sketchybar} --trigger aerospace_focus_change"
+          ];
         }
       ) { } (lib.strings.stringToCharacters "123456789ABCDEF"));
 

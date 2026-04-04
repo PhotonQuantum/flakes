@@ -137,7 +137,7 @@
           "alt-${lib.strings.toLower letter}" = "workspace ${letter}";
           # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
           "alt-shift-${lib.strings.toLower letter}" = [
-            "move-node-to-workspace ${letter}"
+            "move-node-to-workspace --focus-follows-window ${letter}"
             "exec-and-forget ${sketchybar} --trigger aerospace_focus_change"
           ];
         }

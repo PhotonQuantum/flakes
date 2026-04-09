@@ -13,6 +13,7 @@
   users.users.lightquantum = {
     home = "/Users/lightquantum";
     shell = pkgs.fish;
+    openssh.authorizedKeys.keys = [ (builtins.readFile ../../secrets/id_ed25519_litter.pub) ];
   };
   users.users.root = {
     home = "/var/root";
@@ -159,6 +160,17 @@
   };
 
   security.pam.services.sudo_local.touchIdAuth = true;
+
+  services.openssh = {
+    enable = true;
+    extraConfig = ''
+      AllowUsers lightquantum
+      PasswordAuthentication no
+      KbdInteractiveAuthentication no
+      PermitRootLogin no
+      PubkeyAuthentication yes
+    '';
+  };
 
   nix.enable = false;
 

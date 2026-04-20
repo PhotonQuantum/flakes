@@ -50,7 +50,7 @@
           ];
         }
         {
-          "if".app-name-regex-substring = "arc|zen";
+          "if".app-name-regex-substring = "arc|vivaldi";
           run = [
             "move-node-to-workspace --focus-follows-window 2"
             "exec-and-forget ${sketchybar} --trigger aerospace_focus_change"

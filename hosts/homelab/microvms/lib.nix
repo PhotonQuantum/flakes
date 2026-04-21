@@ -326,6 +326,9 @@ let
             (builtins.isString group.bridgeName && group.bridgeName != "")
             "bridgeGroups.${groupName}.bridgeName must be a non-empty string";
           assert ensure
+            (builtins.stringLength group.bridgeName <= 15)
+            "bridgeGroups.${groupName}.bridgeName `${group.bridgeName}` is longer than Linux max length 15";
+          assert ensure
             (!usesManagedSubnet || (group ? ipv4Prefix))
             "bridgeGroups.${groupName}.ipv4Prefix is required when layout = \"managed\"";
           assert ensure

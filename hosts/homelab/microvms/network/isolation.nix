@@ -82,8 +82,20 @@ let
         mkSameBridgeAcceptCommands6 bridgeName
       )}
     '') noLanAccessInterfaces;
+
+  interBridgeIsolationCommands = lib.concatMapStrings (
+    sourceGroup:
+    lib.concatMapStrings (
+      targetGroup:
+      lib.optionalString (sourceGroup.bridgeName != targetGroup.bridgeName) ''
+        # Prevent routing between different microvm bridge groups.
+        iptables -w -I nixos-filter-forward 1 -i '${sourceGroup.bridgeName}' -o '${targetGroup.bridgeName}' -j DROP
+        ip6tables -w -I nixos-filter-forward 1 -i '${sourceGroup.bridgeName}' -o '${targetGroup.bridgeName}' -j DROP
+      ''
+    ) allGroupConfigs
+  ) allGroupConfigs;
 in
 {
   networking.firewall.extraCommands = noHostAccessCommands;
-  networking.nat.extraCommands = noLanAccessCommands;
+  networking.nat.extraCommands = noLanAccessCommands + interBridgeIsolationCommands;
 }

@@ -49,6 +49,9 @@ let
       mkSameBridgeAcceptCommands = bridgeName: ''
         # Allow guest-to-guest traffic on the same bridge when interconnect is enabled.
         iptables -w -I nixos-filter-forward 1 -i '${bridgeName}' -o '${bridgeName}' -j ACCEPT
+      '';
+      mkSameBridgeAcceptCommands6 = bridgeName: ''
+        # Allow guest-to-guest traffic on the same bridge when interconnect is enabled.
         ip6tables -w -I nixos-filter-forward 1 -i '${bridgeName}' -o '${bridgeName}' -j ACCEPT
       '';
       mkPrivateForwardDropCommands =
@@ -75,6 +78,9 @@ let
       ip6tables -w -I nixos-filter-forward 1 -i '${bridgeName}' -j DROP
       ip6tables -w -I nixos-filter-forward 1 -i '${bridgeName}' -o '${externalInterface}' -j ACCEPT
       ${mkPrivateForwardDropCommands6 bridgeName}
+      ${lib.optionalString (builtins.elem bridgeName interconnectEnabledInterfaces) (
+        mkSameBridgeAcceptCommands6 bridgeName
+      )}
     '') noLanAccessInterfaces;
 in
 {

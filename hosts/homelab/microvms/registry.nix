@@ -61,6 +61,19 @@ in
         inBridgeInterconnect = true;
       };
     };
+    paperless = {
+      layout = "managed";
+      groupId = 5;
+      bridgeName = "microvm-ppless";
+      ipv4Prefix = "10.203.0";
+      cidr = 24;
+      gatewayHost = 1;
+      networkPolicy = {
+        hostAccess = true;
+        lanAccess = true;
+        inBridgeInterconnect = true;
+      };
+    };
   };
 
   machines = {
@@ -158,6 +171,25 @@ in
         mountPoint = "/mnt";
         fsType = "ext4";
         label = "syncthing-data";
+      };
+    };
+
+    paperless = {
+      group = "paperless";
+      vmId = 11;
+      module = ./vms/paperless.nix;
+      mem = 4096;
+      vcpu = 4;
+
+      dataVolume = {
+        sizeMiB = 32768;
+        mountPoint = "/mnt";
+        fsType = "ext4";
+        label = "paperless-data";
+      };
+
+      backup = {
+        repo = secrets.backupRepos.paperless;
       };
     };
 

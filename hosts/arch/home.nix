@@ -67,6 +67,49 @@
       --enable-features=TouchpadOverscrollHistoryNavigation
     '';
 
+    systemd.user.services.adguard-tray = { # TODO workaround: https://github.com/RiDDiX/adguard-tray/issues/3
+      Unit = {
+        Description = "AdGuard Tray";
+        Requires = [ "hybar.service" ];
+        PartOf = [ "wayland-session@hyprland.desktop.target" ];
+      };
+
+      Service = {
+        Type = "simple";
+        ExecStart = "/usr/lib/adguard-tray/adguard-tray.py"; # FIXME: wip hardcoded path
+        Restart = "always";
+        RestartSec = 1;
+      };
+
+      Install = {
+        WantedBy = [ "wayland-session@hyprland.desktop.target" ];
+      };
+    };
+
+    systemd.user.services.adguard-cli = {
+      Unit = {
+        Description = "AdGuard CLI";
+        After = [ "network.target" ];
+      };
+
+      Service = {
+        Type = "forking";
+        WorkingDirectory = "/opt/adguard-cli";
+        ExecStart = "/opt/adguard-cli/adguard-cli start";
+        ExecStop = "/opt/adguard-cli/adguard-cli stop";
+        Restart = "always"; # TODO workaround: https://github.com/RiDDiX/adguard-tray/issues/3
+        RestartSec = 1;
+        TimeoutStartSec = 0;
+        TimeoutStopSec = 0;
+        StandardOutput = "journal";
+        RemainAfterExit = true;
+      };
+
+      Install = {
+        WantedBy = [ "default.target" ];
+      };
+    };
+
     programs = {
       # Do not generate any man page.
       man.enable = false;

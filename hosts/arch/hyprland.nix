@@ -29,6 +29,26 @@ let
     };
 in
 {
+  systemd.user.services.hybar = {
+    Unit = {
+      Description = "Hyprland QuickShell bar";
+      After = [ "wayland-session@hyprland.desktop.target" ];
+      Before = [ "wayland-session-xdg-autostart@hyprland.desktop.target" ];
+      PartOf = [ "wayland-session@hyprland.desktop.target" ];
+    };
+
+    Service = {
+      Type = "simple";
+      ExecStart = "/usr/bin/qs -p %h/Projects/hybar/shell.qml"; # FIXME: wip hardcoded path
+      Restart = "on-failure";
+      RestartSec = 1;
+    };
+
+    Install = {
+      WantedBy = [ "wayland-session@hyprland.desktop.target" ];
+    };
+  };
+
   wayland.windowManager.hyprland = {
     enable = true;
     package = null;
@@ -316,6 +336,7 @@ in
     echo "enabling hyprland related systemd user units..." >&2
     PATH="$PATH:/usr/bin" $DRY_RUN_CMD systemctl --user enable hyprpolkitagent.service
     PATH="$PATH:/usr/bin" $DRY_RUN_CMD systemctl --user enable swaync.service
+    PATH="$PATH:/usr/bin" $DRY_RUN_CMD systemctl --user enable hybar.service
   '';
 
   xdg.configFile."electron-flags.conf".text = ''

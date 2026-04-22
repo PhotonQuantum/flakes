@@ -63,6 +63,10 @@
 
     fonts.fontconfig.enable = true;
 
+    xdg.configFile."vivaldi-stable.conf".text = ''
+      --enable-features=TouchpadOverscrollHistoryNavigation
+    '';
+
     programs = {
       # Do not generate any man page.
       man.enable = false;

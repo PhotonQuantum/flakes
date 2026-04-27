@@ -66,3 +66,7 @@ fetch.github = "PhotonQuantum/flavors"
 [fuzzy-pkg-finder]
 src.git = "https://github.com/ericlay/fuzzy-pkg-finder"
 fetch.github = "ericlay/fuzzy-pkg-finder"
+
+[vicinae_extensions]
+src.git = "https://github.com/vicinaehq/extensions"
+fetch.github = "vicinaehq/extensions"

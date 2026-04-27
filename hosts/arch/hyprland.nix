@@ -63,7 +63,7 @@ in
       ];
 
       # Programs
-      "$menu" = "walker";
+      "$menu" = "vicinae toggle";
       "$terminal" = "ghostty";
       "$fileManager" = "dolphin";
       "$screenshot" = "qsview";

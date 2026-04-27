@@ -649,6 +649,7 @@ let
         volumes = volumeFromDataVolume;
         vsock.cid = vsockCid;
         inherit vcpu mem;
+        storeDiskErofsFlags = ["-zlz4hc" "-Eztailpacking"]; # FIXME debug
       }
       // lib.optionalAttrs hasKeys {
         credentialFiles = credentialFilesFromKeys;

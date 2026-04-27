@@ -27,6 +27,10 @@
         name = "arch-packages";
         src = pkgs.generated.vicinae_extensions.src + "/extensions/arch-packages";
       })
+      (config.lib.vicinae.mkExtension {
+        name = "bluetooth";
+        src = pkgs.generated.vicinae_extensions.src + "/extensions/bluetooth";
+      })
     ];
   };
 

@@ -81,13 +81,6 @@ let
       "tap name `${tapName}` for VM `${name}` is longer than Linux max length 15";
     tapName;
 
-  mkMachineId =
-    name:
-    let
-      hash = builtins.hashString "sha256" name;
-    in
-    lib.substring 0 32 hash;
-
   mkCredentialName =
     targetPath:
     "K${lib.toUpper (lib.substring 0 24 (builtins.hashString "sha256" targetPath))}";
@@ -387,7 +380,6 @@ let
         bridgeGroups.${groupName}
           or (throw "Unknown MicroVM group `${groupName}` for machine `${name}`");
       vmId = machine.vmId;
-      machineId = mkMachineId name;
       usesManagedSubnet = group.usesManagedSubnet;
       usesDhcp = !usesManagedSubnet;
       ip =
@@ -433,9 +425,6 @@ let
       (builtins.stringLength tapName <= 15)
       "tap name `${tapName}` for machine `${name}` is longer than Linux max length 15";
     assert ensure
-      (builtins.match "^[0-9a-f]{32}$" machineId != null)
-      "derived machine ID for machine `${name}` must be 32 lowercase hex characters; got `${machineId}`";
-    assert ensure
       (builtins.isAttrs extraOptions)
       "machines.${name}.extraOptions must be an attribute set";
     assert ensure
@@ -451,7 +440,6 @@ let
     // {
       inherit
         name
-        machineId
         groupName
         vmId
         ip
@@ -527,7 +515,6 @@ let
     assert ensureNoDuplicates "machine names" (map (machine: machine.name) machineValues);
     assert builtins.all (check: check) groupVmIdChecks;
     assert ensureNoDuplicates "machine ip addresses" managedMachineIps;
-    assert ensureNoDuplicates "machine IDs" (map (machine: machine.machineId) machineValues);
     assert ensureNoDuplicates "machine vsock CIDs" (map (machine: machine.vsockCid) machineValues);
     assert ensureNoDuplicates "machine MAC addresses" (map (machine: machine.mac) machineValues);
     assert ensureNoDuplicates "machine tap names" (map (machine: machine.tapName) machineValues);
@@ -538,7 +525,6 @@ let
   mkVmRef = machine: {
     inherit (machine)
       name
-      machineId
       group
       groupId
       vmId
@@ -591,7 +577,6 @@ let
       gateway,
       vsockCid,
       tapName,
-      machineId,
       usesDhcp ? false,
       mem ? 256,
       vcpu ? 1,
@@ -624,10 +609,20 @@ let
               label = dataVolumeResolved.label;
             })
           ];
-      credentialFilesFromKeys = builtins.listToAttrs (map (key: {
-        name = key.credentialName;
-        value = key.file;
-      }) keysResolved);
+      credentialFiles = let 
+        credentialFilesFromKeys = builtins.listToAttrs (map (key: {
+          name = key.credentialName;
+          value = key.file;
+        }) keysResolved);
+        ephemeralSshCredentialFiles = {
+          # NOTE QEMU fw_cfg names are limited to 55 bytes including
+          # "opt/io.systemd.credentials/", so use the shorter root-specific
+          # systemd SSH credential rather than ssh.ephemeral-authorized_keys-all.
+          # TODO we can probably switch to the all-users ephemeral SSH key once https://github.com/microvm-nix/microvm.nix/issues/511 gets implemented.
+          "ssh.authorized_keys.root" = ../../../secrets/id_rsa.pub;
+        };
+        in
+        credentialFilesFromKeys // ephemeralSshCredentialFiles;
       installKeyCommands = lib.concatMapStringsSep "\n" (
         key: ''
           if [ ! -f "$CREDENTIALS_DIRECTORY/${key.credentialName}" ]; then
@@ -648,11 +643,10 @@ let
         ];
         volumes = volumeFromDataVolume;
         vsock.cid = vsockCid;
+        registerWithMachined = true;
         inherit vcpu mem;
         storeDiskErofsFlags = ["-zlz4hc" "-Eztailpacking"]; # FIXME debug
-      }
-      // lib.optionalAttrs hasKeys {
-        credentialFiles = credentialFilesFromKeys;
+        inherit credentialFiles;
       };
     in
     {
@@ -670,11 +664,6 @@ let
       networking.useDHCP = false;
       networking.useNetworkd = true;
       networking.nameservers = if usesDhcp then [ ] else nameservers;
-
-      environment.etc."machine-id" = {
-        mode = "0644";
-        text = "${machineId}\n";
-      };
 
       systemd.network.enable = true;
       systemd.network.networks."10-uplink" =
@@ -730,6 +719,24 @@ let
         '';
       };
 
+      services.openssh = {
+        enable = true;
+        ports = lib.mkDefault [];
+        startWhenNeeded = true;
+        settings = {
+          PasswordAuthentication = false;
+          KbdInteractiveAuthentication = false;
+          PermitRootLogin = "prohibit-password";
+          AllowAgentForwarding = false;
+          X11Forwarding = false;
+          PermitTunnel = false;
+        };
+      };
+
+      # Keep sshd available for systemd-ssh-generator without exposing
+      # a TCP listener from the guest network.
+      boot.kernelParams = [ "systemd.ssh_listen=vsock::22" ];
+
       microvm = generatedMicrovm // extraOptions;
 
       system.stateVersion = "25.11";
@@ -758,7 +765,6 @@ in
     sanitizeName
     hexByte
     mkTapNameAuto
-    mkMachineId
     resolveBackupDefaults
     resolveSnapshotRoot
     resolveGroups

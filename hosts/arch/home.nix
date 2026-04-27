@@ -11,7 +11,7 @@
     ../../profiles/home/capabilities/interactive.nix
     ../../profiles/home/capabilities/graphics.nix
     ../../profiles/home/capabilities/development.nix
-    ./walker.nix
+    ./vicinae.nix
     ./hyprland.nix
     ./darkman.nix
     ./toshy.nix
@@ -144,6 +144,7 @@
         "nvfetcher"
         "devenv"
         "colmena"
+        "vicinae"
 
         # vim is managed by nixvim
         "nixvim"

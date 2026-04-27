@@ -138,6 +138,18 @@
     };
     date = "2024-08-12";
   };
+  vicinae_extensions = {
+    pname = "vicinae_extensions";
+    version = "bedd4c9f180ca2c83bb73a4474fb41194bc23873";
+    src = fetchFromGitHub {
+      owner = "vicinaehq";
+      repo = "extensions";
+      rev = "bedd4c9f180ca2c83bb73a4474fb41194bc23873";
+      fetchSubmodules = false;
+      sha256 = "sha256-NfO+rYviCA6Nr3B/qEHpjM+9KRal61PmLKyOtrJPP2g=";
+    };
+    date = "2026-04-25";
+  };
   yazi_flavors = {
     pname = "yazi_flavors";
     version = "614f2b5792ce0811b6527cb44cc5689876f71503";

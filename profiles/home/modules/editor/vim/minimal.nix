@@ -183,6 +183,15 @@
       }
       {
         mode = "n";
+        key = "<Leader>p";
+        action = "<cmd>AutoSession search<CR>";
+        options = {
+          silent = true;
+          desc = "Open project";
+        };
+      }
+      {
+        mode = "n";
         key = "<Leader>s";
         action = "<cmd>Telescope live_grep<CR>";
         options = {

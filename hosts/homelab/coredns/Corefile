@@ -2,7 +2,7 @@ home.arpa:53 {
     errors
     log
 
-    bind tailscale0
+    bind 100.101.100.100
 
     # Authoritative zone apex data is managed in a standard zonefile.
     file /etc/coredns/db.home.arpa home.arpa {

@@ -1,7 +1,7 @@
 { inputs, ... }:
 {
   perSystem =
-    { system, ... }:
+    { inputs', system, ... }:
     let
       pkgs = import inputs.nixpkgs {
         inherit system;
@@ -9,6 +9,6 @@
       };
     in
     {
-      packages = import ../../pkgs { inherit pkgs; };
+      packages = import ../../pkgs { inherit inputs' pkgs; };
     };
 }

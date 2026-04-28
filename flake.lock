@@ -320,6 +320,24 @@
         "systems": "systems_3"
       },
       "locked": {
+        "lastModified": 1710146030,
+        "narHash": "sha256-SZ5L6eA7HJ/nmkzGG7/ISclqe6oZdOZTNoesiInkXPQ=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "b1d9ab70662946ef0850d488da1c9019f3a9752a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "flake-utils_3": {
+      "inputs": {
+        "systems": "systems_4"
+      },
+      "locked": {
         "lastModified": 1731533236,
         "narHash": "sha256-l0KFg5HjrsfsO/JpG+r7fRrqm12kzFHyUHqHCVpMMbI=",
         "owner": "numtide",
@@ -333,9 +351,9 @@
         "type": "github"
       }
     },
-    "flake-utils_3": {
+    "flake-utils_4": {
       "inputs": {
-        "systems": "systems_4"
+        "systems": "systems_5"
       },
       "locked": {
         "lastModified": 1731533236,
@@ -652,6 +670,27 @@
         "type": "github"
       }
     },
+    "qbittorrent-password": {
+      "inputs": {
+        "flake-utils": "flake-utils_2",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1719059917,
+        "narHash": "sha256-76wtPKKwF+TLOHAyq5t1lH5i9dxgihVpAnfpZxosStg=",
+        "ref": "refs/heads/main",
+        "rev": "6c1886fbea9647572ea523077bf86b141fdc6c62",
+        "revCount": 3,
+        "type": "git",
+        "url": "https://codeberg.org/feathecutie/qbittorrent_password"
+      },
+      "original": {
+        "type": "git",
+        "url": "https://codeberg.org/feathecutie/qbittorrent_password"
+      }
+    },
     "root": {
       "inputs": {
         "aerospace-mark": "aerospace-mark",
@@ -667,6 +706,7 @@
         "nixvim": "nixvim",
         "nur": "nur",
         "pyproject-nix": "pyproject-nix",
+        "qbittorrent-password": "qbittorrent-password",
         "tex-fmt": "tex-fmt",
         "tg3-rs": "tg3-rs"
       }
@@ -747,9 +787,24 @@
         "type": "github"
       }
     },
+    "systems_5": {
+      "locked": {
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default",
+        "type": "github"
+      }
+    },
     "tex-fmt": {
       "inputs": {
-        "flake-utils": "flake-utils_2",
+        "flake-utils": "flake-utils_3",
         "nixpkgs": [
           "nixpkgs"
         ]
@@ -770,7 +825,7 @@
     },
     "tg3-rs": {
       "inputs": {
-        "flake-utils": "flake-utils_3",
+        "flake-utils": "flake-utils_4",
         "nix-gitignore": "nix-gitignore",
         "nixpkgs": [
           "nixpkgs"

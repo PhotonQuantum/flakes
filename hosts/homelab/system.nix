@@ -53,14 +53,14 @@ in
         group = "root";
       };
       "qbittorrent_password_pbkdf2" = {
-        keyFile = ../../secrets/qbittorrent_password_pbkdf2;
+        keyFile = ../../secrets/qbittorrent/password_pbkdf2;
         destDir = "/var/keys";
         user = "microvm";
         group = "kvm";
         permissions = "0400";
       };
       "qbittorrent_password" = {
-        keyFile = ../../secrets/qbittorrent_password;
+        keyFile = ../../secrets/qbittorrent/password;
         destDir = "/var/keys";
         user = "microvm";
         group = "kvm";

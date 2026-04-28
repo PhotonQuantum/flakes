@@ -140,7 +140,10 @@ in
     tg3-rs = {
       group = "isolated";
       vmId = 4;
-      module = [ inputs.tg3-rs.nixosModules.tg3-bot ./vms/tg3-rs.nix ];
+      module = [
+        inputs.tg3-rs.nixosModules.tg3-bot
+        ./vms/tg3-rs.nix
+      ];
       mem = 512;
       vcpu = 1;
 
@@ -201,7 +204,10 @@ in
     emby = {
       group = "lan";
       vmId = 12;
-      module = [ inputs.self.nixosModules.emby ./vms/emby.nix ];
+      module = [
+        inputs.self.nixosModules.emby
+        ./vms/emby.nix
+      ];
       mem = 4096;
       vcpu = 4;
 
@@ -220,6 +226,65 @@ in
             tag = "emby-media";
             proto = "virtiofs";
             readOnly = true;
+          }
+        ];
+      };
+    };
+
+    qbittorrent = {
+      group = "lan";
+      vmId = 13;
+      module = ./vms/qbittorrent.nix;
+      mem = 2049;
+      vcpu = 2;
+
+      extraOptions = {
+        shares = [
+          {
+            source = "/srv/media/qbittorrent";
+            mountPoint = "/config";
+            tag = "qbittorrent-config";
+            proto = "virtiofs";
+          }
+          {
+            source = "/srv/media/downloads";
+            mountPoint = "/downloads";
+            tag = "qbittorrent-downloads";
+            proto = "virtiofs";
+          }
+          {
+            source = "/srv/media/data";
+            mountPoint = "/Media";
+            tag = "qbittorrent-media";
+            proto = "virtiofs";
+          }
+        ];
+      };
+    };
+
+    ani-rss = {
+      group = "lan";
+      vmId = 14;
+      module = [
+        inputs.self.nixosModules.ani-rss
+        ./vms/ani-rss.nix
+      ];
+      mem = 1024;
+      vcpu = 1;
+
+      extraOptions = {
+        shares = [
+          {
+            source = "/srv/media/ani-rss";
+            mountPoint = "/config";
+            tag = "ani-rss-config";
+            proto = "virtiofs";
+          }
+          {
+            source = "/srv/media/data";
+            mountPoint = "/Media";
+            tag = "ani-rss-media";
+            proto = "virtiofs";
           }
         ];
       };

@@ -26,7 +26,7 @@ let
       General.Locale = "en";
       WebUI = {
         Address = "*";
-        Password_PBKDF2 = passwordPlaceholder;
+        Password_PBKDF2 = "@ByteArray(${passwordPlaceholder})";
         ServerDomains = "*";
       };
     };

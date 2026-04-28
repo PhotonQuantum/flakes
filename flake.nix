@@ -68,6 +68,11 @@
       url = "github:hercules-ci/arion";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    qbittorrent-password = {
+      url = "git+https://codeberg.org/feathecutie/qbittorrent_password";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =

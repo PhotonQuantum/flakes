@@ -8,11 +8,11 @@
 {
   ani-rss = {
     pname = "ani-rss";
-    version = "v3.0.5";
+    version = "v3.1.7";
     src = fetchurl {
-      url = "https://github.com/wushuo894/ani-rss/releases/download/v3.0.5/ani-rss.jar";
+      url = "https://github.com/wushuo894/ani-rss/releases/download/v3.1.7/ani-rss.jar";
       name = "ani-rss.jar";
-      sha256 = "sha256-QfVe0mrLhSlk7xnPl/SIDbMUvAnbLVKuXtNYnYj/OC8=";
+      sha256 = "sha256-sllzEUY1SetoEkPxdY5myP37Q6U4CgTJkKc+O6X8Tjk=";
     };
   };
   emby = {

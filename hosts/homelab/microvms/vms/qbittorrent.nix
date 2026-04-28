@@ -1,4 +1,41 @@
-_: {
+{ lib, pkgs, ... }:
+let
+  passwordPlaceholder = "__QBITTORRENT_PASSWORD_PBKDF2__";
+  passwordFile = "/var/keys/qbittorrent-password-pbkdf2";
+  configFile = "/config/qBittorrent/config/qBittorrent.conf";
+  serverConfig = {
+    AutoRun = {
+      enabled = false;
+      program = "";
+    };
+
+    BitTorrent.Session.QueueingSystemEnabled = false;
+
+    LegalNotice.Accepted = true;
+
+    Network.PortForwardingEnabled = true;
+
+    Preferences = {
+      Connection = {
+        PortRangeMin = 6881;
+      };
+      Downloads = {
+        SavePath = "/downloads/";
+        TempPath = "/downloads/incomplete/";
+      };
+      General.Locale = "en";
+      WebUI = {
+        Address = "*";
+        Password_PBKDF2 = passwordPlaceholder;
+        ServerDomains = "*";
+      };
+    };
+  };
+  patchPassword = pkgs.writeShellScript "qbittorrent-patch-password" ''
+    ${pkgs.replace-secret}/bin/replace-secret ${lib.escapeShellArg passwordPlaceholder} ${lib.escapeShellArg passwordFile} ${lib.escapeShellArg configFile}
+  '';
+in
+{
   users = {
     users.media = {
       description = "media user";
@@ -30,7 +67,10 @@ _: {
     torrentingPort = 6881;
     openFirewall = true;
     extraArgs = [ "--confirm-legal-notice" ];
+    inherit serverConfig;
   };
+
+  systemd.services.qbittorrent.serviceConfig.ExecStartPre = lib.mkAfter [ "${patchPassword}" ];
 
   networking.firewall.allowedUDPPorts = [ 6881 ];
 }

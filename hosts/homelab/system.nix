@@ -59,6 +59,13 @@ in
         group = "kvm";
         permissions = "0400";
       };
+      "qbittorrent_password" = {
+        keyFile = ../../secrets/qbittorrent_password;
+        destDir = "/var/keys";
+        user = "microvm";
+        group = "kvm";
+        permissions = "0400";
+      };
     };
   };
 

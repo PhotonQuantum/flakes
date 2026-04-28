@@ -1,4 +1,16 @@
-_: {
+{ lib, pkgs, ... }:
+let
+  qbittorrentPasswordFile = "/var/keys/qbittorrent-password";
+  configFile = "/config/config.v2.json";
+  patchQbittorrentPassword = pkgs.writeShellScript "ani-rss-patch-qbittorrent-password" ''
+    set -euo pipefail
+
+    ${pkgs.jq}/bin/jq --arg password "$(${pkgs.coreutils}/bin/cat ${lib.escapeShellArg qbittorrentPasswordFile})" \
+      '.downloadToolPassword = $password' \
+      ${lib.escapeShellArg configFile} | ${pkgs.moreutils}/bin/sponge ${lib.escapeShellArg configFile}
+  '';
+in
+{
   users = {
     users.media = {
       description = "media user";
@@ -33,7 +45,13 @@ _: {
       TZ = "America/Toronto";
     };
     settings = {
+      delete = true;
       downloadToolHost = "http://qbittorrent.local:8080";
+      downloadToolType = "qBittorrent";
+      downloadToolUsername = "admin";
+      tmdbId = true;
     };
   };
+
+  systemd.services.ani-rss.serviceConfig.ExecStartPre = lib.mkAfter [ "${patchQbittorrentPassword}" ];
 }

@@ -281,6 +281,15 @@ in
       mem = 1024;
       vcpu = 1;
 
+      keys = {
+        "/var/keys/qbittorrent-password" = {
+          file = "/var/keys/qbittorrent_password";
+          user = "media";
+          group = "media";
+          permissions = "0400";
+        };
+      };
+
       extraOptions = {
         shares = [
           {

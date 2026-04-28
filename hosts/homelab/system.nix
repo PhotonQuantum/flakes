@@ -10,48 +10,56 @@ in
     ./coredns.nix
     ./tailscale.nix
     ./microvms
-    ./media
-  ] ++ lib.optionals (builtins.pathExists hardwareConfig) [ hardwareConfig ];
+    ./media.nix
+  ]
+  ++ lib.optionals (builtins.pathExists hardwareConfig) [ hardwareConfig ];
 
   deployment = {
-      keys = {
-        "homelab_borg.pass" = {
-          keyFile = ../../secrets/homelab_borg.pass;
-          destDir = "/var/keys";
-          user = "root";
-          group = "root";
-        };
-        "id_ed25519_homelab_borg" = {
-          keyFile = ../../secrets/id_ed25519_homelab_borg;
-          destDir = "/var/keys";
-          user = "root";
-          group = "root";
-        };
-        "tg3-rs.env" = {
-          keyFile = ../../secrets/tg3-rs.env;
-          destDir = "/var/keys";
-          user = "microvm";
-          group = "kvm";
-        };
-        "forgejo_runner_secret" = {
-          keyFile = ../../secrets/forgejo_runner_secret;
-          destDir = "/var/keys";
-          user = "microvm";
-          group = "kvm";
-        };
-        "forgejo_cloudflared_credentials.json" = {
-          keyFile = ../../secrets/cf/forgejo.json;
-          destDir = "/var/keys";
-          user = "microvm";
-          group = "kvm";
-        };
-        "tailscale_key" = {
-          keyFile = ../../secrets/tailscale_key;
-          destDir = "/var/keys";
-          user = "root";
-          group = "root";
-        };
+    keys = {
+      "homelab_borg.pass" = {
+        keyFile = ../../secrets/homelab_borg.pass;
+        destDir = "/var/keys";
+        user = "root";
+        group = "root";
       };
+      "id_ed25519_homelab_borg" = {
+        keyFile = ../../secrets/id_ed25519_homelab_borg;
+        destDir = "/var/keys";
+        user = "root";
+        group = "root";
+      };
+      "tg3-rs.env" = {
+        keyFile = ../../secrets/tg3-rs.env;
+        destDir = "/var/keys";
+        user = "microvm";
+        group = "kvm";
+      };
+      "forgejo_runner_secret" = {
+        keyFile = ../../secrets/forgejo_runner_secret;
+        destDir = "/var/keys";
+        user = "microvm";
+        group = "kvm";
+      };
+      "forgejo_cloudflared_credentials.json" = {
+        keyFile = ../../secrets/cf/forgejo.json;
+        destDir = "/var/keys";
+        user = "microvm";
+        group = "kvm";
+      };
+      "tailscale_key" = {
+        keyFile = ../../secrets/tailscale_key;
+        destDir = "/var/keys";
+        user = "root";
+        group = "root";
+      };
+      "qbittorrent_password_pbkdf2" = {
+        keyFile = ../../secrets/qbittorrent_password_pbkdf2;
+        destDir = "/var/keys";
+        user = "microvm";
+        group = "kvm";
+        permissions = "0400";
+      };
+    };
   };
 
   networking.hostName = "lightquantum-homelab";
@@ -80,13 +88,16 @@ in
 
   time.timeZone = "Etc/UTC";
 
-  nixpkgs.overlays = [ (final: prev: {
-    inherit (prev.lixPackageSets.stable)
-      nixpkgs-review
-      nix-eval-jobs
-      nix-fast-build
-      colmena;
-  }) ];
+  nixpkgs.overlays = [
+    (final: prev: {
+      inherit (prev.lixPackageSets.stable)
+        nixpkgs-review
+        nix-eval-jobs
+        nix-fast-build
+        colmena
+        ;
+    })
+  ];
   nixpkgs.config.allowUnfree = true;
   nix.package = pkgs.lixPackageSets.stable.lix;
   nix.settings = {
@@ -102,7 +113,10 @@ in
 
   users.users.lightquantum = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "systemd-journal-remote" ];
+    extraGroups = [
+      "wheel"
+      "systemd-journal-remote"
+    ];
     openssh.authorizedKeys.keys = [ (builtins.readFile ../../secrets/id_rsa.pub) ];
   };
 
@@ -135,8 +149,8 @@ in
       options = "--delete-older-than 14d";
     };
     extraOptions = ''
-      min-free = ${toString (1024*1024*1024)}
-      max-free = ${toString (1024*1024*1024*5)}
+      min-free = ${toString (1024 * 1024 * 1024)}
+      max-free = ${toString (1024 * 1024 * 1024 * 5)}
     '';
   };
 

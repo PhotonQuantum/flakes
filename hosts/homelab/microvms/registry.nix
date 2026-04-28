@@ -238,6 +238,15 @@ in
       mem = 2049;
       vcpu = 2;
 
+      keys = {
+        "/var/keys/qbittorrent-password-pbkdf2" = {
+          file = "/var/keys/qbittorrent_password_pbkdf2";
+          user = "media";
+          group = "media";
+          permissions = "0400";
+        };
+      };
+
       extraOptions = {
         shares = [
           {

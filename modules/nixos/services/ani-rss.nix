@@ -35,7 +35,7 @@ in
 
     package = lib.mkOption {
       type = lib.types.package;
-      defaultText = lib.literalExpression "withSystem pkgs.stdenv.hostPlatform.system ({ config, ... }: config.packages.\"ani-rss\")";
+      defaultText = lib.literalExpression "config.packages.\"ani-rss\"";
       description = "ani-rss package providing the ani-rss executable.";
     };
 

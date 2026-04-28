@@ -88,7 +88,7 @@ in
 
     package = lib.mkOption {
       type = lib.types.package;
-      defaultText = lib.literalExpression "withSystem pkgs.stdenv.hostPlatform.system ({ config, ... }: config.packages.emby)";
+      defaultText = lib.literalExpression "config.packages.emby";
       description = "Emby package providing the emby executable.";
     };
 

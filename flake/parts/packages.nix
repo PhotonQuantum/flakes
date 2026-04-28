@@ -1,14 +1,13 @@
 { inputs, ... }:
 {
   perSystem =
-    { inputs', system, ... }:
-    let
-      pkgs = import inputs.nixpkgs {
+    { inputs', pkgs, system, ... }:
+    {
+      _module.args.pkgs = import inputs.nixpkgs {
         inherit system;
         config.allowUnfree = true;
       };
-    in
-    {
+
       packages = import ../../pkgs { inherit inputs' pkgs; };
     };
 }

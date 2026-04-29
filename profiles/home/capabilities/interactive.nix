@@ -5,6 +5,7 @@ in
 {
   imports = [
     ../modules/cli/yazi.nix
+    ../modules/shell/zoxide.nix
     ../modules/vcs/gh.nix
     ../modules/vcs/lazygit.nix
   ];

@@ -4,11 +4,11 @@ let
   vmLib = import ./lib.nix { inherit lib; };
   registry = import ./registry.nix { inherit inputs; };
   volumePath = registry.volumePath or "/srv/microvms";
-  inherit (registry) backupDefaults bridgeGroups machines;
+  inherit (registry) backupDefaults certDefaults bridgeGroups machines;
 
   resolvedGroups = vmLib.resolveGroups bridgeGroups;
   resolvedMachines = vmLib.resolveMachines {
-    inherit backupDefaults machines volumePath;
+    inherit backupDefaults certDefaults machines volumePath;
     bridgeGroups = resolvedGroups;
   };
   vmTopology = vmLib.mkTopology resolvedMachines;
@@ -18,6 +18,14 @@ in
 {
   imports = [
     ./backup.nix
+    (import ./acme.nix {
+      inherit
+        lib
+        certDefaults
+        resolvedMachines
+        volumePath
+        ;
+    })
     (import ./network {
       inherit
         lib

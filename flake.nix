@@ -85,7 +85,6 @@
       ];
 
       imports = [
-        ./flake/parts/overlays.nix
         ./flake/parts/packages.nix
         ./flake/parts/lib.nix
         ./flake/parts/modules.nix

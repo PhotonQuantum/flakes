@@ -22,10 +22,6 @@
       "flakes"
     ];
   };
-  nixpkgs.config.permittedInsecurePackages = [
-    "openssl-1.1.1u"
-  ];
-
   networking.firewall.allowedTCPPorts = [
     20401
     20402

@@ -1,7 +1,6 @@
 {
   inputs,
   lib,
-  lqOverlays,
   withSystem,
   ...
 }:
@@ -11,7 +10,7 @@ let
   };
 
   hosts = import ../hosts/registry.nix {
-    inherit inputs lqOverlays;
+    inherit inputs;
     inherit (hostLib) mkHmConfigModule;
   };
 in

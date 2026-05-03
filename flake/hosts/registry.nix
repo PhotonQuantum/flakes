@@ -1,23 +1,28 @@
 {
   inputs,
-  lqOverlays,
   mkHmConfigModule,
 }:
 let
-  inherit (inputs) arion determinate disko home-manager microvm nixvim self;
+  inherit (inputs)
+    arion
+    determinate
+    disko
+    home-manager
+    microvm
+    nixvim
+    self
+    ;
 in
 {
   mbp = {
     system = "aarch64-darwin";
-    names =
-      [ "mbp" "lightquantum-mbp" ]
-      ++ builtins.map (n: "lightquantum-mbp-${toString n}") (builtins.genList (x: x + 1) 8);
+    names = [
+      "mbp"
+      "lightquantum-mbp"
+    ]
+    ++ builtins.map (n: "lightquantum-mbp-${toString n}") (builtins.genList (x: x + 1) 8);
     darwinModules = [
       determinate.darwinModules.default
-      lqOverlays.generated
-      lqOverlays.texFmt
-      lqOverlays.colmena
-      lqOverlays.aerospaceMark
       ../../hosts/mbp/system.nix
       home-manager.darwinModules.home-manager
       (mkHmConfigModule true "aarch64-darwin" {
@@ -74,7 +79,6 @@ in
       "orbstack-nixos"
     ];
     nixosModules = [
-      lqOverlays.generated
       home-manager.nixosModules.home-manager
       ../../hosts/orb/system.nix
       (mkHmConfigModule false "aarch64-linux" {
@@ -96,8 +100,6 @@ in
     ];
     homeModules = [
       determinate.homeManagerModules.default
-      lqOverlays.colmena
-      lqOverlays.generated
       nixvim.homeModules.nixvim
       ../../modules/home/package-restrictions/stage1.nix
       ../../hosts/arch/home.nix

@@ -185,6 +185,8 @@ in
         fsType = "ext4";
         label = "syncthing-data";
       };
+
+      cert.enable = true;
     };
 
     paperless = {
@@ -204,6 +206,8 @@ in
       backup = {
         repo = secrets.backupRepos.paperless;
       };
+
+      cert.enable = true;
     };
 
     emby = {
@@ -222,6 +226,8 @@ in
         fsType = "ext4";
         label = "emby-data";
       };
+
+      cert.enable = true;
 
       extraOptions = {
         shares = [
@@ -242,6 +248,8 @@ in
       module = ./vms/qbittorrent.nix;
       mem = 2049;
       vcpu = 2;
+
+      cert.enable = true;
 
       keys = {
         "/var/keys/qbittorrent-password-pbkdf2" = {
@@ -285,6 +293,8 @@ in
       ];
       mem = 1024;
       vcpu = 1;
+
+      cert.enable = true;
 
       keys = {
         "/var/keys/qbittorrent-password" = {

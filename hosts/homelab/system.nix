@@ -46,6 +46,13 @@ in
         user = "microvm";
         group = "kvm";
       };
+      "cloudflare-acme.env" = {
+        keyFile = ../../secrets/cf/acme.env;
+        destDir = "/var/keys";
+        user = "root";
+        group = "root";
+        permissions = "0400";
+      };
       "tailscale_key" = {
         keyFile = ../../secrets/tailscale_key;
         destDir = "/var/keys";

@@ -1,14 +1,16 @@
-{ vmSelf, ...}: {
+_:
+{
+  imports = [
+    (import ./caddy-proxy.nix { upstream = "http://127.0.0.1:8384"; })
+  ];
+
   services.syncthing = {
     enable = true;
     openDefaultPorts = true;
     dataDir = "/mnt/syncthing";
     overrideFolders = false;
-    guiAddress = "${vmSelf.ip}:8384";
-  };
-
-  networking.firewall = {
-    allowedTCPPorts = [ 8384 ];
+    guiAddress = "127.0.0.1:8384";
+    settings.gui.insecureSkipHostcheck = true;
   };
 
   systemd.tmpfiles.rules = [

@@ -1,5 +1,9 @@
+_:
+{
+  imports = [
+    (import ./caddy-proxy.nix { upstream = "http://127.0.0.1:28981"; })
+  ];
 
-{ ... }: {
   services.paperless = {
     enable = true;
     dataDir = "/mnt/paperless";
@@ -8,17 +12,7 @@
     port = 28981;
     settings = {
       PAPERLESS_ADMIN_USER = "lightquantum";
-      PAPERLESS_URL = "http://paperless.home.arpa";
-    };
-  };
-
-  services.nginx = {
-    enable = true;
-    virtualHosts."paperless.home.arpa" = {
-      locations."/" = {
-        proxyPass = "http://127.0.0.1:28981";
-        proxyWebsockets = true;
-      };
+      PAPERLESS_URL = "https://paperless.lqhome.me";
     };
   };
 
@@ -26,10 +20,6 @@
     enable = true;
     dataDir = "/mnt/postgresql";
     enableTCPIP = false;
-  };
-
-  networking.firewall = {
-    allowedTCPPorts = [ 80 ];
   };
 
   systemd.tmpfiles.rules = [

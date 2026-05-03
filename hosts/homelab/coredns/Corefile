@@ -23,3 +23,39 @@ home.arpa:53 {
         response clear ra
     }
 }
+
+lqhome.me:53 {
+    errors
+    log
+
+    bind 100.101.100.100
+
+    hosts {
+        100.101.100.100 ns1.lqhome.me
+        fallthrough
+    }
+
+    # Authoritative zone apex data is managed in a standard zonefile.
+    file /etc/coredns/db.lqhome.me lqhome.me {
+        fallthrough
+    }
+
+    # Keep the zone nameserver target local instead of rewriting it.
+    rewrite stop {
+        name exact ns1.lqhome.me. ns1.lqhome.me.
+    }
+
+    # Rewrite client queries from lqhome.me to local for upstream resolution.
+    rewrite stop {
+        name suffix .lqhome.me. .local. answer auto
+    }
+
+    # Forward rewritten queries to systemd-resolved stub resolver.
+    forward . 127.0.0.53:53
+
+    # Force Authoritative Answer bit on all responses.
+    header {
+        response set aa
+        response clear ra
+    }
+}

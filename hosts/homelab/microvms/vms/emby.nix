@@ -1,5 +1,13 @@
-_:
 {
+  lib,
+  vmCert,
+  ...
+}:
+{
+  imports = [
+    (import ./caddy-proxy.nix { upstream = "http://127.0.0.1:8096"; })
+  ];
+
   users = {
     users.media = {
       description = "media user";
@@ -8,10 +16,14 @@ _:
       group = "media";
       useDefaultShell = true;
     };
-    groups.media = {
-      name = "media";
-      gid = 955;
-      members = [ "media" ];
+    groups = {
+      media = {
+        name = "media";
+        gid = 955;
+        members = [ "media" ];
+      };
+    } // lib.optionalAttrs vmCert.enabled {
+      ${vmCert.group}.members = [ "media" ];
     };
   };
 
@@ -28,7 +40,7 @@ _:
     createGroup = false;
     dataDir = "/srv/media/emby";
     mediaDirs = [ "/srv/media/data" ];
-    port = 80;
-    openFirewall = true;
+    port = 8096;
+    openFirewall = false;
   };
 }

@@ -85,6 +85,9 @@ let
     targetPath:
     "K${lib.toUpper (lib.substring 0 24 (builtins.hashString "sha256" targetPath))}";
 
+  certGroup = "cert";
+  certGroupGid = 954;
+
   resolveBackupDefaults =
     backupDefaults:
     let
@@ -280,6 +283,59 @@ let
     assert ensureNoDuplicates "machines.${name}.keys credential names" credentialNames;
     resolvedKeys;
 
+  resolveCert =
+    {
+      name,
+      cert ? { },
+      certDefaults,
+    }:
+    let
+      enabled = cert.enable or false;
+      defaultDomain =
+        certDefaults.domain
+          or (throw "certDefaults.domain is required when machines.${name}.cert.enable = true");
+      domain = cert.domain or "${name}.${defaultDomain}";
+      hostSharePath = "/srv/microvms/certs/${name}";
+      mountPoint = "/run/homelab-certs";
+    in
+    if !enabled then
+      {
+        enabled = false;
+      }
+    else
+      assert ensure
+        (builtins.isAttrs cert)
+        "machines.${name}.cert must be an attribute set";
+      assert ensure
+        (builtins.isBool enabled)
+        "machines.${name}.cert.enable must be a boolean";
+      assert ensure
+        (builtins.isString domain && domain != "")
+        "machines.${name}.cert.domain must be a non-empty string";
+      assert ensure
+        (builtins.isString defaultDomain && defaultDomain != "")
+        "certDefaults.domain must be a non-empty string";
+      assert ensure
+        (!(cert ? user))
+        "machines.${name}.cert.user is no longer supported; cert files are owned by root:${certGroup}";
+      assert ensure
+        (!(cert ? group))
+        "machines.${name}.cert.group is no longer supported; cert files are owned by root:${certGroup}";
+      {
+        inherit
+          enabled
+          domain
+          hostSharePath
+          mountPoint
+          ;
+        group = certGroup;
+        gid = certGroupGid;
+        certPath = "${mountPoint}/fullchain.pem";
+        keyPath = "${mountPoint}/key.pem";
+        chainPath = "${mountPoint}/chain.pem";
+        certOnlyPath = "${mountPoint}/cert.pem";
+      };
+
   resolveGroups =
     bridgeGroups:
     let
@@ -372,6 +428,8 @@ let
       machine,
       bridgeGroups,
       backupDefaults,
+      certDefaults,
+      resolveCerts ? true,
       volumePath,
     }:
     let
@@ -414,6 +472,16 @@ let
         inherit name;
         keys = machine.keys or { };
       };
+      certResolved =
+        if resolveCerts then
+          resolveCert {
+            inherit name certDefaults;
+            cert = machine.cert or { };
+          }
+        else
+          {
+            enabled = false;
+          };
       vmIdHi = builtins.div vmId 256;
       vmIdLo = vmId - (vmIdHi * 256);
     in
@@ -450,6 +518,7 @@ let
         dataVolumeResolved
         backupResolved
         keysResolved
+        certResolved
         usesManagedSubnet
         usesDhcp
         ;
@@ -471,6 +540,8 @@ let
       machines,
       bridgeGroups,
       backupDefaults ? { },
+      certDefaults ? { },
+      resolveCerts ? certDefaults != { },
       volumePath ? "/srv/microvms",
     }:
     let
@@ -483,6 +554,7 @@ let
           value = resolveMachine {
             inherit name bridgeGroups;
             machine = machines.${name};
+            inherit certDefaults resolveCerts;
             backupDefaults = resolvedBackupDefaults;
             volumePath = resolvedVolumePath;
           };
@@ -511,6 +583,9 @@ let
       managedMachineIps = map
         (machine: machine.ip)
         (builtins.filter (machine: machine.ip != null) machineValues);
+      certDomains = map
+        (machine: machine.certResolved.domain)
+        (builtins.filter (machine: machine.certResolved.enabled) machineValues);
     in
     assert ensureNoDuplicates "machine names" (map (machine: machine.name) machineValues);
     assert builtins.all (check: check) groupVmIdChecks;
@@ -520,6 +595,7 @@ let
     assert ensureNoDuplicates "machine tap names" (map (machine: machine.tapName) machineValues);
     assert ensureNoDuplicates "machines.*.dataVolume.hostImagePath" dataVolumeHostImagePaths;
     assert ensureNoDuplicates "machines.*.backup.repo" backupRepos;
+    assert ensureNoDuplicates "machines.*.cert.domain" certDomains;
     resolved;
 
   mkVmRef = machine: {
@@ -588,6 +664,7 @@ let
       extraOptions ? { },
       dataVolumeResolved ? null,
       keysResolved ? [ ],
+      certResolved ? { enabled = false; },
       vmSelf ? null,
       vmTopology ? null,
       ...
@@ -609,6 +686,17 @@ let
               label = dataVolumeResolved.label;
             })
           ];
+      certShares =
+        lib.optionals certResolved.enabled [
+          {
+            source = certResolved.hostSharePath;
+            mountPoint = certResolved.mountPoint;
+            tag = "certs-${sanitizeName name}";
+            proto = "virtiofs";
+            readOnly = true;
+          }
+        ];
+      extraOptionShares = extraOptions.shares or [ ];
       credentialFiles = let 
         credentialFilesFromKeys = builtins.listToAttrs (map (key: {
           name = key.credentialName;
@@ -642,6 +730,7 @@ let
           }
         ];
         volumes = volumeFromDataVolume;
+        shares = certShares ++ extraOptionShares;
         vsock.cid = vsockCid;
         registerWithMachined = true;
         inherit vcpu mem;
@@ -654,6 +743,28 @@ let
 
       _module.args = {
         inherit vmSelf vmTopology;
+        vmCert =
+          if certResolved.enabled then
+            {
+              enabled = true;
+              inherit (certResolved)
+                domain
+                group
+                gid
+                certPath
+                keyPath
+                chainPath
+                certOnlyPath
+                ;
+            }
+          else
+            {
+              enabled = false;
+            };
+      };
+
+      users.groups.${certGroup} = lib.mkIf certResolved.enabled {
+        gid = certGroupGid;
       };
 
       services.journald.extraConfig = ''
@@ -737,7 +848,7 @@ let
       # a TCP listener from the guest network.
       boot.kernelParams = [ "systemd.ssh_listen=vsock::22" ];
 
-      microvm = generatedMicrovm // extraOptions;
+      microvm = generatedMicrovm // (builtins.removeAttrs extraOptions [ "shares" ]);
 
       system.stateVersion = "25.11";
     };
@@ -763,12 +874,15 @@ in
 {
   inherit
     sanitizeName
+    certGroup
+    certGroupGid
     hexByte
     mkTapNameAuto
     resolveBackupDefaults
     resolveSnapshotRoot
     resolveGroups
     resolveKeys
+    resolveCert
     resolveMachine
     resolveMachines
     mkTopology

@@ -11,6 +11,10 @@ let
   '';
 in
 {
+  imports = [
+    (import ./caddy-proxy.nix { upstream = "http://127.0.0.1:7789"; })
+  ];
+
   users = {
     users.media = {
       description = "media user";
@@ -38,8 +42,9 @@ in
     createUser = false;
     createGroup = false;
     configDir = "/config";
+    serverAddress = "127.0.0.1";
     port = 7789;
-    openFirewall = true;
+    openFirewall = false;
     extraEnvironment = {
       JAVA_TOOL_OPTIONS = "-Djava.net.preferIPv4Stack=true";
       TZ = "America/Toronto";

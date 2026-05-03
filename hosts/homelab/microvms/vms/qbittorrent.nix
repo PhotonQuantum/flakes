@@ -36,6 +36,10 @@ let
   '';
 in
 {
+  imports = [
+    (import ./caddy-proxy.nix { upstream = "http://127.0.0.1:8080"; })
+  ];
+
   users = {
     users.media = {
       description = "media user";

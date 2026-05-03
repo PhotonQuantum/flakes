@@ -15,8 +15,7 @@ let
 in
 rec {
   namesFor =
-    hostName: def:
-    if def ? names && builtins.length def.names > 0 then def.names else [ hostName ];
+    hostName: def: if def ? names && builtins.length def.names > 0 then def.names else [ hostName ];
 
   canonicalNameFor = hostName: def: builtins.head (namesFor hostName def);
 
@@ -39,22 +38,19 @@ rec {
   mkHmConfigModule =
     withMac: system: userPathMap:
     let
-      lqPkgs = withSystem system ({ config, ... }: config.packages);
-
       nur-modules = import nur {
         nurpkgs = nixpkgs.legacyPackages.${system};
       };
 
-      sharedModules =
-        [
-          nixvim.homeModules.nixvim
-        ]
-        ++ lib.optionals withMac [
-          ../../modules/home/darwin/power.nix
-          ../../modules/home/darwin/xcompose.nix
-          nur-modules.repos.lightquantum.modules.chsh
-          nur-modules.repos.lightquantum.modules.wallpaper
-        ];
+      sharedModules = [
+        nixvim.homeModules.nixvim
+      ]
+      ++ lib.optionals withMac [
+        ../../modules/home/darwin/power.nix
+        ../../modules/home/darwin/xcompose.nix
+        nur-modules.repos.lightquantum.modules.chsh
+        nur-modules.repos.lightquantum.modules.wallpaper
+      ];
     in
     {
       home-manager = {
@@ -65,7 +61,6 @@ rec {
         extraSpecialArgs = {
           inherit
             inputs
-            lqPkgs
             nixvim
             pyproject-nix
             system
@@ -77,19 +72,24 @@ rec {
   mkDarwinConfig =
     hostName: def:
     withSystem def.system (
-      { config, ... }:
+      { config, pkgs, ... }:
       let
         base = darwin.lib.darwinSystem {
           system = def.system;
-          specialArgs = {
-            lqPkgs = config.packages;
-          };
-          modules = def.darwinModules;
+          modules = [
+            { nixpkgs.pkgs = pkgs; }
+          ]
+          ++ def.darwinModules;
         };
       in
       if def ? darwinExtendFn then
         def.darwinExtendFn {
-          inherit config hostName inputs lib;
+          inherit
+            config
+            hostName
+            inputs
+            lib
+            ;
           hostDef = def;
           prev = base;
           system = def.system;
@@ -101,20 +101,27 @@ rec {
   mkNixosConfig =
     hostName: def:
     withSystem def.system (
-      { config, ... }:
+      { config, pkgs, ... }:
       let
         base = nixpkgs.lib.nixosSystem {
-          system = def.system;
           specialArgs = {
             inherit inputs;
-            lqPkgs = config.packages;
           };
-          modules = def.nixosModules;
+          modules = [
+            nixpkgs.nixosModules.readOnlyPkgs
+            { nixpkgs.pkgs = pkgs; }
+          ]
+          ++ def.nixosModules;
         };
       in
       if def ? nixosExtendFn then
         def.nixosExtendFn {
-          inherit config hostName inputs lib;
+          inherit
+            config
+            hostName
+            inputs
+            lib
+            ;
           hostDef = def;
           prev = base;
           system = def.system;
@@ -126,23 +133,24 @@ rec {
   mkHomeConfig =
     hostName: def:
     withSystem def.system (
-      { config, ... }:
+      { config, pkgs, ... }:
       let
         base = home-manager.lib.homeManagerConfiguration {
-          pkgs = import nixpkgs {
-            system = def.system;
-            config.allowUnfree = true;
-          };
+          inherit pkgs;
           modules = def.homeModules;
           extraSpecialArgs = {
             inherit nixvim pyproject-nix;
-            lqPkgs = config.packages;
           };
         };
       in
       if def ? homeExtendFn then
         def.homeExtendFn {
-          inherit config hostName inputs lib;
+          inherit
+            config
+            hostName
+            inputs
+            lib
+            ;
           hostDef = def;
           prev = base;
           system = def.system;
@@ -184,9 +192,7 @@ rec {
         hostName:
         let
           def = hosts.${hostName};
-          nodePkgs = import nixpkgs {
-            system = def.system;
-          };
+          nodePkgs = withSystem def.system ({ pkgs, ... }: pkgs);
         in
         builtins.map (nodeName: {
           name = nodeName;

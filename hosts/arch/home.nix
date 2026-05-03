@@ -1,7 +1,6 @@
 {
   pkgs,
   lib,
-  lqPkgs,
   ...
 }:
 
@@ -56,7 +55,7 @@
       nixfmt
       nil
       nvfetcher
-      lqPkgs.denix
+      denix
       sketchybar-app-font
       devenv
     ];

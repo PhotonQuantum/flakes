@@ -2,7 +2,6 @@
   config,
   lib,
   pkgs,
-  lqPkgs,
   pyproject-nix,
   ...
 }:
@@ -18,7 +17,7 @@ with lib;
   };
   config =
     let
-      gen-compose = lib.getExe lqPkgs."gen-compose";
+      gen-compose = lib.getExe pkgs."gen-compose";
       checkPrefixConflict =
         attrs:
         let

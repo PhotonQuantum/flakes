@@ -1,19 +1,18 @@
 {
   inputs,
   lq,
+  withSystem,
   ...
 }:
 let
-  inherit (inputs) nixpkgs colmena;
+  inherit (inputs) colmena;
   deployHosts = lq.hostLib.selectDeployHosts lq.hosts;
 in
 {
   flake.colmenaHive = colmena.lib.makeHive (
     {
       meta = {
-        nixpkgs = import nixpkgs {
-          system = "aarch64-darwin";
-        };
+        nixpkgs = withSystem "aarch64-darwin" ({ pkgs, ... }: pkgs);
         nodeNixpkgs = lq.hostLib.mkDeployNodeNixpkgs {
           hosts = deployHosts;
         };

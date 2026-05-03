@@ -1,4 +1,4 @@
-{ pkgs, lib, lqPkgs, ... }:
+{ pkgs, lib, ... }:
 
 {
   imports = [
@@ -114,7 +114,7 @@
       nixPackages = with pkgs; [
         cachix
         colmena
-        lqPkgs.denix
+        denix
         devenv
         nh
         nixd
@@ -122,7 +122,7 @@
         nix-tree
         nixfmt
         nixpkgs-fmt
-        lqPkgs."validate-cam-imports"
+        validate-cam-imports
       ];
     in
     with pkgs;
@@ -200,14 +200,7 @@
     };
     determinateNixd.garbageCollector.strategy = "automatic";
   };
-  nixpkgs.config = {
-    permittedInsecurePackages = [
-      "openssl-1.1.1u"
-    ];
-    allowUnfree = true;
-    allowUnfreePredicate = _: true;
-  };
-  ids.gids.nixbld = 30000;  # NOTE this only works for current installation
+  ids.gids.nixbld = 30000; # NOTE this only works for current installation
 
   programs.zsh.enable = true;
   programs.fish.enable = true;

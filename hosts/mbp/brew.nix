@@ -55,6 +55,7 @@ _: {
     "chatgpt"
     "cheatsheet"
     "clashx-pro"
+    "codex-app"
     "deepl"
     "discord"
     "dropbox"

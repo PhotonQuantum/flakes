@@ -11,6 +11,7 @@ in
     ./tailscale.nix
     ./microvms
     ./media.nix
+    ./norgb.nix
   ]
   ++ lib.optionals (builtins.pathExists hardwareConfig) [ hardwareConfig ];
 

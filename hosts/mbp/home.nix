@@ -25,7 +25,7 @@
     sessionPath = [
       "$HOME/.local/bin"
       "$HOME/opt/GNAT/2020/bin"
-      "$HOME/Library/pnpm"
+      "$HOME/Library/pnpm/bin"
     ];
     wallpapers = [
       ../../wallpaper/celeste.png

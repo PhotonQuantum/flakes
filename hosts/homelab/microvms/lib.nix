@@ -734,7 +734,7 @@ let
         vsock.cid = vsockCid;
         registerWithMachined = true;
         inherit vcpu mem;
-        storeDiskErofsFlags = ["-zlz4hc" "-Eztailpacking"]; # FIXME debug
+        # storeDiskErofsFlags = ["-zlz4hc" "-Eztailpacking"]; # FIXME this is a debug option for faster disk generation
         inherit credentialFiles;
       };
     in

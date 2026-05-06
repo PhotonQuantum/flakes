@@ -14,6 +14,7 @@
     ./hyprland.nix
     ./darkman.nix
     ./toshy.nix
+    ./udiskie.nix
     ../../secrets/ssh.nix
   ];
 

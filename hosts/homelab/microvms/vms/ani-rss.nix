@@ -50,10 +50,16 @@ in
       TZ = "America/Toronto";
     };
     settings = {
+      autoDisabled = true;
+      copyMasterToStandby = true;
       delete = true;
       downloadToolHost = "http://qbittorrent.local:8080";
       downloadToolType = "qBittorrent";
       downloadToolUsername = "admin";
+      offset = true;
+      procrastinating = true;
+      procrastinatingDay = 7;
+      standbyRss = true;
       tmdbId = true;
     };
   };

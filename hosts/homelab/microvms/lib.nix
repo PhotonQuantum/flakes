@@ -811,6 +811,18 @@ let
         5353 # mDNS
       ];
 
+      boot.blacklistedKernelModules = [
+        "esp4"
+        "esp6"
+        "rxrpc"
+      ];
+
+      boot.extraModprobeConfig = ''
+        install esp4 ${pkgs.coreutils}/bin/false
+        install esp6 ${pkgs.coreutils}/bin/false
+        install rxrpc ${pkgs.coreutils}/bin/false
+      '';
+
       systemd.services.microvm-install-keys = lib.mkIf hasKeys {
         description = "Install MicroVM key files from systemd credentials";
         before = [ "basic.target" ];

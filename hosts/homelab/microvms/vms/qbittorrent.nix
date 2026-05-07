@@ -34,6 +34,9 @@ let
   patchPassword = pkgs.writeShellScript "qbittorrent-patch-password" ''
     ${pkgs.replace-secret}/bin/replace-secret ${lib.escapeShellArg passwordPlaceholder} ${lib.escapeShellArg passwordFile} ${lib.escapeShellArg configFile}
   '';
+  removeStaleLock = pkgs.writeShellScript "qbittorrent-remove-stale-lock" ''
+    ${pkgs.coreutils}/bin/rm -f /config/qBittorrent/config/lockfile
+  '';
 in
 {
   imports = [
@@ -74,7 +77,10 @@ in
     inherit serverConfig;
   };
 
-  systemd.services.qbittorrent.serviceConfig.ExecStartPre = lib.mkAfter [ "${patchPassword}" ];
+  systemd.services.qbittorrent.serviceConfig.ExecStartPre = lib.mkAfter [
+    "${patchPassword}"
+    "${removeStaleLock}"
+  ];
 
   networking.firewall.allowedUDPPorts = [ 6881 ];
 }

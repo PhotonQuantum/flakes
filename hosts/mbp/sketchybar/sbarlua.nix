@@ -20,7 +20,9 @@ stdenv.mkDerivation {
 
   installPhase = ''
     mkdir -p $out/lib
+    mkdir -p $out/bin
     mv bin/sketchybar.so $out/lib/sketchybar.so
+    mv lua-*/src/lua $out/bin/lua
   '';
 
   meta = {

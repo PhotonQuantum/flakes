@@ -9,7 +9,7 @@
     "${pkgs.sketchybar-app-font}/lib/sketchybar-app-font/icon_map.lua";
   xdg.configFile."sketchybar/sketchybarrc" = {
     text = ''
-      #!/usr/bin/env ${lib.getExe pkgs.lua54Packages.lua}
+      #!/usr/bin/env ${pkgs.sbarlua}/bin/lua
 
       package.cpath = package.cpath .. ";${pkgs.sbarlua}/lib/?.so"
 

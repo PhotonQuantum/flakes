@@ -738,6 +738,7 @@ let
         inherit credentialFiles;
       };
     in
+    { pkgs, ... }:
     {
       imports = if builtins.isList extraConfig then extraConfig else [ extraConfig ];
 
@@ -847,6 +848,7 @@ let
       # Keep sshd available for systemd-ssh-generator without exposing
       # a TCP listener from the guest network.
       boot.kernelParams = [ "systemd.ssh_listen=vsock::22" ];
+      boot.kernelPackages = pkgs.linuxPackages_latest;
 
       microvm = generatedMicrovm // (builtins.removeAttrs extraOptions [ "shares" ]);
 

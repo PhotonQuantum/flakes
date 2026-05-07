@@ -14,6 +14,10 @@ let
     ;
 in
 rec {
+  latestLinuxKernelModule = { pkgs, ... }: {
+    boot.kernelPackages = pkgs.linuxPackages_latest;
+  };
+
   namesFor =
     hostName: def: if def ? names && builtins.length def.names > 0 then def.names else [ hostName ];
 
@@ -110,6 +114,7 @@ rec {
           modules = [
             nixpkgs.nixosModules.readOnlyPkgs
             { nixpkgs.pkgs = pkgs; }
+            latestLinuxKernelModule
           ]
           ++ def.nixosModules;
         };
@@ -212,7 +217,7 @@ rec {
           def = hosts.${hostName};
           nodeValue = {
             deployment = def.nixosDeploy;
-            imports = def.nixosModules;
+            imports = [ latestLinuxKernelModule ] ++ def.nixosModules;
           };
         in
         builtins.map (nodeName: {

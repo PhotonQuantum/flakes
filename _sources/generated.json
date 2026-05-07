@@ -8,11 +8,11 @@
         "pinned": false,
         "src": {
             "name": "ani-rss.jar",
-            "sha256": "sha256-sllzEUY1SetoEkPxdY5myP37Q6U4CgTJkKc+O6X8Tjk=",
+            "sha256": "sha256-dkfp9lsErPgG9d+sNUrmr6PBkjCqV6xaTPEJ6byLI+s=",
             "type": "url",
-            "url": "https://github.com/wushuo894/ani-rss/releases/download/v3.1.7/ani-rss.jar"
+            "url": "https://github.com/wushuo894/ani-rss/releases/download/v3.1.21/ani-rss.jar"
         },
-        "version": "v3.1.7"
+        "version": "v3.1.21"
     },
     "emby": {
         "cargoLock": null,
@@ -241,7 +241,7 @@
     },
     "sbarlua": {
         "cargoLock": null,
-        "date": "2024-08-12",
+        "date": "2026-03-06",
         "extract": null,
         "name": "sbarlua",
         "passthru": null,
@@ -253,16 +253,16 @@
             "name": null,
             "owner": "FelixKratz",
             "repo": "SbarLua",
-            "rev": "437bd2031da38ccda75827cb7548e7baa4aa9978",
-            "sha256": "sha256-F0UfNxHM389GhiPQ6/GFbeKQq5EvpiqQdvyf7ygzkPg=",
+            "rev": "dba9cc421b868c918d5c23c408544a28aadf2f2f",
+            "sha256": "sha256-lhLTrdufA3ALJ2S5HLdgNOr5seWIWEHkVhZNPObzbvI=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "437bd2031da38ccda75827cb7548e7baa4aa9978"
+        "version": "dba9cc421b868c918d5c23c408544a28aadf2f2f"
     },
     "vicinae_extensions": {
         "cargoLock": null,
-        "date": "2026-04-25",
+        "date": "2026-05-04",
         "extract": null,
         "name": "vicinae_extensions",
         "passthru": null,
@@ -274,12 +274,12 @@
             "name": null,
             "owner": "vicinaehq",
             "repo": "extensions",
-            "rev": "bedd4c9f180ca2c83bb73a4474fb41194bc23873",
-            "sha256": "sha256-NfO+rYviCA6Nr3B/qEHpjM+9KRal61PmLKyOtrJPP2g=",
+            "rev": "20d6a13d2a389e61619b8540b8af746705409322",
+            "sha256": "sha256-0hVf9yH+v+0YaCqmr0aX0nR4pfmXjW1XhJcJyblJqE0=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "bedd4c9f180ca2c83bb73a4474fb41194bc23873"
+        "version": "20d6a13d2a389e61619b8540b8af746705409322"
     },
     "yazi_flavors": {
         "cargoLock": null,
@@ -304,7 +304,7 @@
     },
     "zimfw_completion": {
         "cargoLock": null,
-        "date": "2026-01-05",
+        "date": "2026-03-27",
         "extract": null,
         "name": "zimfw_completion",
         "passthru": null,
@@ -316,12 +316,12 @@
             "name": null,
             "owner": "zimfw",
             "repo": "completion",
-            "rev": "af1a52e700d9c3c1e2eb9b7d540dedd2a0154270",
-            "sha256": "sha256-t56EEy19djSCaPxSi6w59qog7rxzD7bbFJkYD/PQ53E=",
+            "rev": "8d3e0f4e6272f4d3bad659eaa13929f9dd96f123",
+            "sha256": "sha256-xBurErM7KMMDObN3zPwTSOvKqXl9FDZxGfxugwlX/fk=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "af1a52e700d9c3c1e2eb9b7d540dedd2a0154270"
+        "version": "8d3e0f4e6272f4d3bad659eaa13929f9dd96f123"
     },
     "zimfw_git": {
         "cargoLock": null,
@@ -388,7 +388,7 @@
     },
     "zsh_completions": {
         "cargoLock": null,
-        "date": "2026-02-22",
+        "date": "2026-05-06",
         "extract": null,
         "name": "zsh_completions",
         "passthru": null,
@@ -400,11 +400,11 @@
             "name": null,
             "owner": "zsh-users",
             "repo": "zsh-completions",
-            "rev": "684021f2a1eb3ba1735d86268c07bce8b0ea0588",
-            "sha256": "sha256-Rb1Pp3AlVt0/ZZP+QKlssa0BmrYGRdB+r6Pv+Vt6OK8=",
+            "rev": "7a7ed4ea325ea8d7d28d821242a9869f43678d9b",
+            "sha256": "sha256-TxaLYktoWEcyhpx80qpKllKK5EWy7ot6IW45lQMnlKo=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "684021f2a1eb3ba1735d86268c07bce8b0ea0588"
+        "version": "7a7ed4ea325ea8d7d28d821242a9869f43678d9b"
     }
 }

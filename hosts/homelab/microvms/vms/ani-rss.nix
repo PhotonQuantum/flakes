@@ -50,6 +50,7 @@ in
       TZ = "America/Toronto";
     };
     settings = {
+      autoTrackersUpdate = true;
       autoDisabled = true;
       copyMasterToStandby = true;
       delete = true;

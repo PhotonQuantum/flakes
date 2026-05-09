@@ -1,19 +1,21 @@
-{ inputs, lib, pkgs, ... }:
+{
+  inputs,
+  lib,
+  pkgs,
+  ...
+}:
 let
   homelabSecrets = import ../../../secrets/homelab.nix;
-  vmLib = import ./lib.nix { inherit lib; };
-  registry = import ./registry.nix { inherit inputs; };
-  volumePath = registry.volumePath or "/srv/microvms";
-  inherit (registry) backupDefaults certDefaults bridgeGroups machines;
-
-  resolvedGroups = vmLib.resolveGroups bridgeGroups;
-  resolvedMachines = vmLib.resolveMachines {
-    inherit backupDefaults certDefaults machines volumePath;
-    bridgeGroups = resolvedGroups;
-  };
-  vmTopology = vmLib.mkTopology resolvedMachines;
-
-  allMachineConfigs = builtins.attrValues resolvedMachines;
+  inventory = import ./inventory.nix { inherit inputs lib; };
+  inherit (inventory)
+    vmLib
+    volumePath
+    certDefaults
+    resolvedGroups
+    resolvedMachines
+    vmTopology
+    allMachineConfigs
+    ;
 in
 {
   imports = [

@@ -13,9 +13,14 @@ let
     inherit inputs;
     inherit (hostLib) mkHmConfigModule;
   };
+  microvmInventory = import ../../hosts/homelab/microvms/inventory.nix { inherit inputs lib; };
 in
 {
   _module.args.lq = {
     inherit hostLib hosts;
+  };
+
+  flake.homelab.microvms = {
+    inherit (microvmInventory) tailscaleNodes;
   };
 }

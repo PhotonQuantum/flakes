@@ -8,11 +8,11 @@
 {
   ani-rss = {
     pname = "ani-rss";
-    version = "v3.1.21";
+    version = "v3.1.30";
     src = fetchurl {
-      url = "https://github.com/wushuo894/ani-rss/releases/download/v3.1.21/ani-rss.jar";
+      url = "https://github.com/wushuo894/ani-rss/releases/download/v3.1.30/ani-rss.jar";
       name = "ani-rss.jar";
-      sha256 = "sha256-dkfp9lsErPgG9d+sNUrmr6PBkjCqV6xaTPEJ6byLI+s=";
+      sha256 = "sha256-4MB2VMzLPBMeaF48FYKizNHpHSWgHNSmAlM6lEUy7+c=";
     };
   };
   emby = {
@@ -158,15 +158,15 @@
   };
   vicinae_extensions = {
     pname = "vicinae_extensions";
-    version = "20d6a13d2a389e61619b8540b8af746705409322";
+    version = "48123bc3361f5ed462cc931203dfb7434c3adaf6";
     src = fetchFromGitHub {
       owner = "vicinaehq";
       repo = "extensions";
-      rev = "20d6a13d2a389e61619b8540b8af746705409322";
+      rev = "48123bc3361f5ed462cc931203dfb7434c3adaf6";
       fetchSubmodules = false;
-      sha256 = "sha256-0hVf9yH+v+0YaCqmr0aX0nR4pfmXjW1XhJcJyblJqE0=";
+      sha256 = "sha256-p/zdh8pyPbwNQ0G4Swc+mFB8nvjQMwQ0NlLYaugI1pU=";
     };
-    date = "2026-05-04";
+    date = "2026-05-12";
   };
   yazi_flavors = {
     pname = "yazi_flavors";
@@ -230,14 +230,14 @@
   };
   zsh_completions = {
     pname = "zsh_completions";
-    version = "7a7ed4ea325ea8d7d28d821242a9869f43678d9b";
+    version = "64f802936cc368202957e1db42e9305eaaddda4d";
     src = fetchFromGitHub {
       owner = "zsh-users";
       repo = "zsh-completions";
-      rev = "7a7ed4ea325ea8d7d28d821242a9869f43678d9b";
+      rev = "64f802936cc368202957e1db42e9305eaaddda4d";
       fetchSubmodules = false;
-      sha256 = "sha256-TxaLYktoWEcyhpx80qpKllKK5EWy7ot6IW45lQMnlKo=";
+      sha256 = "sha256-nNvE1wfPl8aASxTGwbzNZDwiDnmeKQP5UVm9ekxlgMQ=";
     };
-    date = "2026-05-06";
+    date = "2026-05-11";
   };
 }

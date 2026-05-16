@@ -51,6 +51,7 @@ in
 
   wayland.windowManager.hyprland = {
     enable = true;
+    configType = "hyprlang";
     package = null;
     portalPackage = null;
 
@@ -159,7 +160,6 @@ in
 
       # See https://wiki.hypr.land/Configuring/Dwindle-Layout/ for more
       dwindle = {
-        pseudotile = true; # Master switch for pseudotiling. Enabling is bound to mainMod + P in the keybinds section below
         preserve_split = true; # You probably want this
       };
 
@@ -222,7 +222,7 @@ in
         "$mainMod, V, togglefloating,"
         "$mainMod, R, exec, $menu"
         "$mainMod, P, pseudo," # dwindle
-        "$mainMod, J, togglesplit," # dwindle
+        "$mainMod, J, layoutmsg, togglesplit" # dwindle
 
         # Move focus with mainMod + arrow keys
         "$mainMod, h, movefocus, l"

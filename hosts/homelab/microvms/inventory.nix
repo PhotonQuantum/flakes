@@ -28,7 +28,7 @@ let
     in
     {
       inherit (machine) name;
-      hostname = tailscale.hostname or machine.name;
+      hostname = "vm-${machine.name}";
       tags = tailscale.tags or [ ];
     };
 

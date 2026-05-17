@@ -251,6 +251,15 @@ in
 
       cert.enable = true;
 
+      tailscale = {
+        enable = true;
+        tags = [
+          "tag:homelab-vm"
+          "tag:media"
+          "tag:qbittorrent"
+        ];
+      };
+
       keys = {
         "/var/keys/qbittorrent-password-pbkdf2" = {
           file = "/var/keys/qbittorrent_password_pbkdf2";
@@ -295,6 +304,15 @@ in
       vcpu = 1;
 
       cert.enable = true;
+
+      tailscale = {
+        enable = true;
+        tags = [
+          "tag:homelab-vm"
+          "tag:media"
+          "tag:ani-rss"
+        ];
+      };
 
       keys = {
         "/var/keys/qbittorrent-password" = {

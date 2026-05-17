@@ -27,24 +27,13 @@ let
       tailscale = machine.tailscale or { };
     in
     {
+      inherit (machine) name;
       hostname = tailscale.hostname or machine.name;
       tags = tailscale.tags or [ ];
-      inherit (machine)
-        name
-        group
-        groupId
-        vmId
-        usesDhcp
-        usesManagedSubnet
-        bridgeName
-        ip
-        ipCidr
-        mac
-        ;
     };
 
   tailscaleNodes = lib.mapAttrs (_: mkTailscaleNode) (
-    lib.filterAttrs (_: machine: machine.tailscale.enable or true) resolvedMachines
+    lib.filterAttrs (_: machine: machine.tailscale.enable or false) resolvedMachines
   );
 in
 {

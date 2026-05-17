@@ -9,6 +9,7 @@ in
     ./disko.nix
     ./coredns.nix
     ./tailscale.nix
+    ./tailscale-auth-keys.nix
     ./microvms
     ./media.nix
     ./norgb.nix

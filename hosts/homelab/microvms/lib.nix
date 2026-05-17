@@ -451,15 +451,26 @@ let
         else
           null;
       tapName = machine.tapName or (mkTapNameAuto name vmId);
+      tailscaleEnabled = machine.tailscale.enable or false;
       moduleInput = machine.module or machine.extraConfig or null;
-      extraConfig =
+      machineExtraConfig =
         if moduleInput == null then
           [ ]
         else if builtins.isList moduleInput then
           moduleInput
         else
           [ moduleInput ];
+      extraConfig = machineExtraConfig ++ lib.optionals tailscaleEnabled [ ./vms/tailscale.nix ];
       extraOptions = machine.extraOptions or { };
+      machineKeys = machine.keys or { };
+      tailscaleKeys = lib.optionalAttrs tailscaleEnabled {
+        "/var/keys/tailscale-auth-key" = {
+          file = "/var/keys/tailscale_${name}_authkey";
+          user = "root";
+          group = "root";
+          permissions = "0400";
+        };
+      };
       dataVolumeResolved = resolveDataVolume {
         inherit name volumePath;
         dataVolume = machine.dataVolume or null;
@@ -470,7 +481,7 @@ let
       };
       keysResolved = resolveKeys {
         inherit name;
-        keys = machine.keys or { };
+        keys = machineKeys // tailscaleKeys;
       };
       certResolved =
         if resolveCerts then
@@ -504,6 +515,9 @@ let
     assert ensure
       (usesManagedSubnet || !(machine ? ipCidr))
       "machines.${name}.ipCidr is only supported when the group layout is `managed`";
+    assert ensure
+      (!tailscaleEnabled || !(builtins.hasAttr "/var/keys/tailscale-auth-key" machineKeys))
+      "machines.${name}.keys already defines `/var/keys/tailscale-auth-key`, which is reserved for tailscale.enable";
     machine
     // {
       inherit

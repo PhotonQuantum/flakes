@@ -19,5 +19,5 @@ in
         permissions = "0400";
       };
     }
-  ) microvmInventory.tailscaleNodes;
+  ) microvmInventory.tailscale.nodes;
 }

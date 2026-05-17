@@ -20,7 +20,5 @@ in
     inherit hostLib hosts;
   };
 
-  flake.homelab.microvms = {
-    inherit (microvmInventory) tailscaleNodes;
-  };
+  flake.homelab.tailscale = microvmInventory.tailscale;
 }

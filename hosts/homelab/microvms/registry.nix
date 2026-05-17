@@ -258,6 +258,14 @@ in
           "tag:media"
           "tag:qbittorrent"
         ];
+        services.qbittorrent = {
+          target = "http://127.0.0.1:8080";
+          serve = "https:443";
+          grants = [
+            "autogroup:member"
+            "tag:ani-rss"
+          ];
+        };
       };
 
       keys = {
@@ -312,6 +320,13 @@ in
           "tag:media"
           "tag:ani-rss"
         ];
+        services.ani-rss = {
+          target = "http://127.0.0.1:7789";
+          serve = "https:443";
+          grants = [
+            "autogroup:member"
+          ];
+        };
       };
 
       keys = {

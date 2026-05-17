@@ -10,7 +10,7 @@ usage() {
 Usage: tailscale-provision-auth-keys [--force] [--dry-run] [--flake REF]
 
 Creates one-off, pre-approved, tagged Tailscale auth keys for nodes listed in
-.#homelab.microvms.tailscaleNodes and writes them to the Colmena keyFile paths.
+.#homelab.tailscale.nodes and writes them to the Colmena keyFile paths.
 
 Required environment variables:
   TS_TAILNET
@@ -52,7 +52,7 @@ while [ "$#" -gt 0 ]; do
   shift
 done
 
-nodes_json="$(nix eval "$flake_ref#homelab.microvms.tailscaleNodes" --json)"
+nodes_json="$(nix eval "$flake_ref#homelab.tailscale.nodes" --json)"
 keys_json="$(nix eval "$flake_ref#colmenaHive.nodes.homelab.config.deployment.keys" --json)"
 
 node_count="$(jq 'length' <<<"$nodes_json")"

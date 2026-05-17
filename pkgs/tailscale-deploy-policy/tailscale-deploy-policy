@@ -1,0 +1,101 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+dry_run=false
+render_only=false
+flake_ref="."
+extra_policy="secrets/tailscale/policy-extra.hujson"
+
+usage() {
+  cat <<'EOF'
+Usage: tailscale-deploy-policy [--dry-run] [--render] [--flake REF] [--extra-policy PATH]
+
+Merges the generated Tailscale policy from .#homelab.tailscale.policy with a
+local extra HuJSON policy file, then validates or deploys it with gitops-pusher.
+
+Required environment variables unless --render is used:
+  TS_TAILNET
+  TS_API_KEY
+
+Options:
+  --dry-run            render policy and run gitops-pusher test
+  --render             print merged policy JSON without contacting Tailscale
+  --flake REF          flake reference to evaluate, defaults to "."
+  --extra-policy PATH  extra HuJSON policy file, defaults to secrets/tailscale/policy-extra.hujson
+EOF
+}
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --dry-run)
+      dry_run=true
+      ;;
+    --render)
+      render_only=true
+      ;;
+    --flake)
+      if [ "$#" -lt 2 ]; then
+        echo "--flake requires an argument" >&2
+        exit 2
+      fi
+      flake_ref="$2"
+      shift
+      ;;
+    --extra-policy)
+      if [ "$#" -lt 2 ]; then
+        echo "--extra-policy requires an argument" >&2
+        exit 2
+      fi
+      extra_policy="$2"
+      shift
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "unknown argument: $1" >&2
+      usage >&2
+      exit 2
+      ;;
+  esac
+  shift
+done
+
+if [ ! -f "$extra_policy" ]; then
+  echo "extra policy file does not exist: $extra_policy" >&2
+  exit 1
+fi
+
+generated_policy="$(nix eval "$flake_ref#homelab.tailscale.policy" --json)"
+extra_policy_json="$(hujsonfmt -s "$extra_policy")"
+
+merged_policy="$(
+  jq -n \
+    --argjson extra "$extra_policy_json" \
+    --argjson generated "$generated_policy" \
+    '
+      $extra
+      | .tagOwners = (($extra.tagOwners // {}) + ($generated.tagOwners // {}))
+      | .grants = (($extra.grants // []) + ($generated.grants // []))
+    '
+)"
+
+if [ "$render_only" = true ]; then
+  jq . <<<"$merged_policy"
+  exit 0
+fi
+
+: "${TS_TAILNET:?TS_TAILNET is required}"
+: "${TS_API_KEY:?TS_API_KEY is required}"
+
+tmp_dir="$(mktemp -d)"
+trap 'rm -rf "$tmp_dir"' EXIT
+policy_file="$tmp_dir/policy.hujson"
+jq . <<<"$merged_policy" > "$policy_file"
+
+if [ "$dry_run" = true ]; then
+  gitops-pusher -policy-file "$policy_file" test
+else
+  gitops-pusher -policy-file "$policy_file" apply
+fi

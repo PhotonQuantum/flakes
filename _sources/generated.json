@@ -283,7 +283,7 @@
     },
     "yazi_flavors": {
         "cargoLock": null,
-        "date": "2025-03-04",
+        "date": "2026-05-17",
         "extract": null,
         "name": "yazi_flavors",
         "passthru": null,
@@ -295,12 +295,12 @@
             "name": null,
             "owner": "PhotonQuantum",
             "repo": "flavors",
-            "rev": "614f2b5792ce0811b6527cb44cc5689876f71503",
-            "sha256": "sha256-Pe3HlBVvvwHRvUwDQMGI48c4BBmGB9RQJjA4kdpjl3U=",
+            "rev": "ea32808e301126e1b4cf909d84123eed71ff1f01",
+            "sha256": "sha256-MTVv6/zzLo9377GuFqDiJV4u4XaCe0vEhLIgcn/wmzI=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "614f2b5792ce0811b6527cb44cc5689876f71503"
+        "version": "ea32808e301126e1b4cf909d84123eed71ff1f01"
     },
     "zimfw_completion": {
         "cargoLock": null,

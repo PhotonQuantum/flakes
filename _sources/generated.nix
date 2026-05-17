@@ -170,15 +170,15 @@
   };
   yazi_flavors = {
     pname = "yazi_flavors";
-    version = "614f2b5792ce0811b6527cb44cc5689876f71503";
+    version = "ea32808e301126e1b4cf909d84123eed71ff1f01";
     src = fetchFromGitHub {
       owner = "PhotonQuantum";
       repo = "flavors";
-      rev = "614f2b5792ce0811b6527cb44cc5689876f71503";
+      rev = "ea32808e301126e1b4cf909d84123eed71ff1f01";
       fetchSubmodules = false;
-      sha256 = "sha256-Pe3HlBVvvwHRvUwDQMGI48c4BBmGB9RQJjA4kdpjl3U=";
+      sha256 = "sha256-MTVv6/zzLo9377GuFqDiJV4u4XaCe0vEhLIgcn/wmzI=";
     };
-    date = "2025-03-04";
+    date = "2026-05-17";
   };
   zimfw_completion = {
     pname = "zimfw_completion";

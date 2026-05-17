@@ -85,6 +85,21 @@ let
     targetPath:
     "K${lib.toUpper (lib.substring 0 24 (builtins.hashString "sha256" targetPath))}";
 
+  tailscaleServeToEndpoint =
+    serviceName: serve:
+    let
+      parts = lib.splitString ":" serve;
+      protocol = builtins.elemAt parts 0;
+      port = builtins.elemAt parts 1;
+    in
+    assert lib.assertMsg
+      (builtins.length parts == 2)
+      "tailscale service ${serviceName}.serve must be formatted as `<protocol>:<port>`";
+    if builtins.elem protocol [ "https" "http" ] then
+      "tcp:${port}"
+    else
+      "${protocol}:${port}";
+
   certGroup = "cert";
   certGroupGid = 954;
 
@@ -452,6 +467,15 @@ let
           null;
       tapName = machine.tapName or (mkTapNameAuto name vmId);
       tailscaleEnabled = machine.tailscale.enable or false;
+      tailscale = (machine.tailscale or { }) // {
+        services = lib.mapAttrs (
+          serviceName: service:
+          service
+          // {
+            endpoint = tailscaleServeToEndpoint serviceName service.serve;
+          }
+        ) (machine.tailscale.services or { });
+      };
       moduleInput = machine.module or machine.extraConfig or null;
       machineExtraConfig =
         if moduleInput == null then
@@ -533,6 +557,7 @@ let
         backupResolved
         keysResolved
         certResolved
+        tailscale
         usesManagedSubnet
         usesDhcp
         ;
@@ -679,6 +704,7 @@ let
       dataVolumeResolved ? null,
       keysResolved ? [ ],
       certResolved ? { enabled = false; },
+      tailscale ? { },
       vmSelf ? null,
       vmTopology ? null,
       ...
@@ -758,6 +784,7 @@ let
 
       _module.args = {
         inherit vmSelf vmTopology;
+        vmTailscale = tailscale;
         vmCert =
           if certResolved.enabled then
             {

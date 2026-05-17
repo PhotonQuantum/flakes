@@ -34,20 +34,6 @@ let
 
   tailscale =
     let
-      serveToIp =
-        serviceName: serve:
-        let
-          parts = lib.splitString ":" serve;
-          protocol = builtins.elemAt parts 0;
-          port = builtins.elemAt parts 1;
-        in
-        assert lib.assertMsg
-          (builtins.length parts == 2)
-          "tailscale service ${serviceName}.serve must be formatted as `<protocol>:<port>`";
-        if builtins.elem protocol [ "https" "http" ] then
-          "tcp:${port}"
-        else
-          "${protocol}:${port}";
       nodes = lib.mapAttrs (_: mkTailscaleNode) (
         lib.filterAttrs (_: machine: machine.tailscale.enable or false) resolvedMachines
       );
@@ -62,22 +48,18 @@ let
                 "machines.${machine.name}.tailscale.services.${serviceName} must not start with `vm-`";
               {
                 name = serviceName;
+                value = {
                 machine = machine.name;
                 inherit (service)
-                  target
-                  serve
                   grants
+                  endpoint
                   ;
+                };
               }
             ) (machine.tailscale.services or { })
           ) allMachineConfigs;
         in
-        builtins.listToAttrs (
-          map (service: {
-            name = service.name;
-            value = service;
-          }) machineServices
-        );
+        builtins.listToAttrs machineServices;
       policy = {
         tagOwners = builtins.listToAttrs (
           map (tag: {
@@ -85,11 +67,11 @@ let
             value = [ "autogroup:admin" ];
           }) (lib.unique (lib.concatMap (node: node.tags) (builtins.attrValues nodes)))
         );
-        grants = map (service: {
+        grants = lib.mapAttrsToList (serviceName: service: {
           src = service.grants;
-          dst = [ "svc:${service.name}" ];
-          ip = [ (serveToIp service.name service.serve) ];
-        }) (builtins.attrValues services);
+          dst = [ "svc:${serviceName}" ];
+          ip = [ service.endpoint ];
+        }) services;
       };
     in
     {

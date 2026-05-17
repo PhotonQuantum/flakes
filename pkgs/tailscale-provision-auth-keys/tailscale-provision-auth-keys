@@ -1,0 +1,128 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+force=false
+dry_run=false
+flake_ref="."
+
+usage() {
+  cat <<'EOF'
+Usage: tailscale-provision-auth-keys [--force] [--dry-run] [--flake REF]
+
+Creates one-off, pre-approved, tagged Tailscale auth keys for nodes listed in
+.#homelab.microvms.tailscaleNodes and writes them to the Colmena keyFile paths.
+
+Required environment variables:
+  TS_TAILNET
+  TS_API_KEY
+
+Options:
+  --force      overwrite existing auth key files
+  --dry-run    print planned writes without contacting Tailscale
+  --flake REF  flake reference to evaluate, defaults to "."
+EOF
+}
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --force)
+      force=true
+      ;;
+    --dry-run)
+      dry_run=true
+      ;;
+    --flake)
+      if [ "$#" -lt 2 ]; then
+        echo "--flake requires an argument" >&2
+        exit 2
+      fi
+      flake_ref="$2"
+      shift
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "unknown argument: $1" >&2
+      usage >&2
+      exit 2
+      ;;
+  esac
+  shift
+done
+
+nodes_json="$(nix eval "$flake_ref#homelab.microvms.tailscaleNodes" --json)"
+keys_json="$(nix eval "$flake_ref#colmenaHive.nodes.homelab.config.deployment.keys" --json)"
+
+node_count="$(jq 'length' <<<"$nodes_json")"
+if [ "$node_count" -eq 0 ]; then
+  echo "No Tailscale nodes are enabled."
+  exit 0
+fi
+
+if [ "$dry_run" = false ]; then
+  : "${TS_TAILNET:?TS_TAILNET is required}"
+  : "${TS_API_KEY:?TS_API_KEY is required}"
+fi
+
+jq -r 'to_entries[].key' <<<"$nodes_json" | while IFS= read -r node_attr; do
+  node_json="$(jq -c --arg node "$node_attr" '.[$node]' <<<"$nodes_json")"
+  name="$(jq -r '.name' <<<"$node_json")"
+  hostname="$(jq -r '.hostname' <<<"$node_json")"
+  key_name="tailscale_${name}_authkey"
+  key_file="$(jq -er --arg key "$key_name" '.[$key].keyFile' <<<"$keys_json")"
+  tags_csv="$(jq -r '.tags | join(",")' <<<"$node_json")"
+
+  if [ -z "$tags_csv" ]; then
+    echo "Node $name has no tags; refusing to create an untagged server auth key." >&2
+    exit 1
+  fi
+
+  if [ -e "$key_file" ] && [ "$force" = false ]; then
+    echo "Keeping existing $key_file for $name; use --force to replace it."
+    continue
+  fi
+
+  if [ "$dry_run" = true ]; then
+    echo "Would create one-off auth key for $name ($hostname, tags: $tags_csv) at $key_file"
+    continue
+  fi
+
+  mkdir -p "$(dirname "$key_file")"
+
+  payload="$(
+    jq -n \
+      --arg description "homelab microvm ${name}" \
+      --argjson tags "$(jq '.tags' <<<"$node_json")" \
+      '{
+        capabilities: {
+          devices: {
+            create: {
+              reusable: false,
+              ephemeral: false,
+              preauthorized: true,
+              tags: $tags
+            }
+          }
+        },
+        description: $description,
+        expirySeconds: 7776000
+      }'
+  )"
+
+  auth_key="$(
+    curl -fsS \
+      -u "$TS_API_KEY:" \
+      -H 'Content-Type: application/json' \
+      --data "$payload" \
+      "https://api.tailscale.com/api/v2/tailnet/${TS_TAILNET}/keys" \
+      | jq -er '.key'
+  )"
+
+  tmp_file="$(mktemp "${key_file}.tmp.XXXXXX")"
+  chmod 0600 "$tmp_file"
+  printf '%s\n' "$auth_key" > "$tmp_file"
+  mv "$tmp_file" "$key_file"
+  echo "Wrote one-off auth key for $name to $key_file"
+done

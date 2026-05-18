@@ -229,6 +229,22 @@ in
 
       cert.enable = true;
 
+      tailscale = {
+        enable = true;
+        tags = [
+          "tag:homelab-vm"
+          "tag:media"
+          "tag:emby"
+        ];
+        services.emby = {
+          target = "http://127.0.0.1:8096";
+          serve = "https:443";
+          grants = [
+            "autogroup:member"
+          ];
+        };
+      };
+
       extraOptions = {
         shares = [
           {

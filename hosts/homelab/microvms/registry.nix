@@ -187,6 +187,23 @@ in
       };
 
       cert.enable = true;
+
+      tailscale = {
+        enable = true;
+        tags = [
+          "tag:homelab-vm"
+          "tag:syncthing"
+        ];
+        grants = [
+          {
+            from = [ "autogroup:member" ];
+            ports = [
+              "tcp:80"
+              "tcp:443"
+            ];
+          }
+        ];
+      };
     };
 
     paperless = {
@@ -208,6 +225,23 @@ in
       };
 
       cert.enable = true;
+
+      tailscale = {
+        enable = true;
+        tags = [
+          "tag:homelab-vm"
+          "tag:paperless"
+        ];
+        grants = [
+          {
+            from = [ "autogroup:member" ];
+            ports = [
+              "tcp:80"
+              "tcp:443"
+            ];
+          }
+        ];
+      };
     };
 
     coredns = {

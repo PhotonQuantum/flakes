@@ -104,9 +104,21 @@ in
     preStart = lib.mkBefore ''
       install -d -o hermes -g hermes -m 2770 /var/lib/hermes/.hermes
       install -d -o hermes -g hermes -m 2770 /var/lib/hermes/.hermes/hindsight
+      install -d -o hermes -g hermes -m 2770 /var/lib/hermes/.hermes/plugins
       install -D -o hermes -g hermes -m 0640 ${hermesConfig} /var/lib/hermes/.hermes/config.yaml
       install -D -o hermes -g hermes -m 0640 ${hindsightConfig} /var/lib/hermes/.hermes/hindsight/config.json
       install -D -o hermes -g hermes -m 0640 /var/keys/hermes.SOUL.md /var/lib/hermes/.hermes/SOUL.md
+      find /var/lib/hermes/.hermes/plugins -maxdepth 1 -type l -name 'nix-managed-*' -delete 2>/dev/null || true
+      ${lib.concatStringsSep "\n" (
+        map (plugin: ''
+          if [ ! -f "${plugin}/plugin.yaml" ]; then
+            echo "ERROR: Hermes plugin '${plugin}' has no plugin.yaml" >&2
+            exit 1
+          fi
+          ln -sfn ${plugin} /var/lib/hermes/.hermes/plugins/nix-managed-${lib.getName plugin}
+          chown -h hermes:hermes /var/lib/hermes/.hermes/plugins/nix-managed-${lib.getName plugin}
+        '') config.services.hermes-agent.extraPlugins
+      )}
 
       install -o hermes -g hermes -m 0640 /dev/null /var/lib/hermes/.hermes/.env
       cat /var/keys/hermes.env > /var/lib/hermes/.hermes/.env

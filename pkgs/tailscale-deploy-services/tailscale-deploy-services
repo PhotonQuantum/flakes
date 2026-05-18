@@ -1,0 +1,107 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+dry_run=false
+render_only=false
+flake_ref="."
+
+usage() {
+  cat <<'EOF'
+Usage: tailscale-deploy-services [--dry-run] [--render] [--flake REF]
+
+Creates or updates Tailscale Service definitions from .#homelab.tailscale.services.
+This defines svc:<name> resources in the tailnet; VM-side tailscale serve config
+still advertises each host separately.
+
+Required environment variables unless --render or --dry-run is used:
+  TS_TAILNET
+  TS_API_KEY
+
+Options:
+  --dry-run    print planned API writes without contacting Tailscale
+  --render     print generated service definitions as JSON
+  --flake REF  flake reference to evaluate, defaults to "."
+EOF
+}
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --dry-run)
+      dry_run=true
+      ;;
+    --render)
+      render_only=true
+      ;;
+    --flake)
+      if [ "$#" -lt 2 ]; then
+        echo "--flake requires an argument" >&2
+        exit 2
+      fi
+      flake_ref="$2"
+      shift
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "unknown argument: $1" >&2
+      usage >&2
+      exit 2
+      ;;
+  esac
+  shift
+done
+
+services_json="$(nix eval "$flake_ref#homelab.tailscale.services" --json)"
+
+definitions="$(
+  jq '
+    to_entries
+    | map({
+        key,
+        serviceName: ("svc:" + .key),
+        body: {
+          name: ("svc:" + .key),
+          comment: ("Managed by flakes homelab inventory for " + .value.machine),
+          ports: [ .value.endpoint ]
+        }
+      })
+  ' <<<"$services_json"
+)"
+
+if [ "$render_only" = true ]; then
+  jq . <<<"$definitions"
+  exit 0
+fi
+
+service_count="$(jq 'length' <<<"$definitions")"
+if [ "$service_count" -eq 0 ]; then
+  echo "No Tailscale services are declared."
+  exit 0
+fi
+
+if [ "$dry_run" = false ]; then
+  : "${TS_TAILNET:?TS_TAILNET is required}"
+  : "${TS_API_KEY:?TS_API_KEY is required}"
+fi
+
+jq -c '.[]' <<<"$definitions" | while IFS= read -r definition; do
+  service_name="$(jq -r '.serviceName' <<<"$definition")"
+  service_path="$(jq -nr --arg name "$service_name" '$name | @uri')"
+  body="$(jq -c '.body' <<<"$definition")"
+
+  if [ "$dry_run" = true ]; then
+    echo "Would upsert $service_name:"
+    jq . <<<"$body"
+    continue
+  fi
+
+  curl -fsS \
+    -u "$TS_API_KEY:" \
+    -X PUT \
+    -H 'Content-Type: application/json' \
+    --data "$body" \
+    "https://api.tailscale.com/api/v2/tailnet/${TS_TAILNET}/services/${service_path}" \
+    | jq -c '{name, addrs, comment, ports, tags}'
+done

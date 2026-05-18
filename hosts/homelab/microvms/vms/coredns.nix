@@ -25,11 +25,6 @@ in
       "tailscaled-set.service"
     ];
     wants = [ "tailscaled.service" ];
-    serviceConfig = {
-      DynamicUser = lib.mkForce false;
-      User = "root";
-      Group = "root";
-    };
   };
 
   networking.firewall.interfaces.tailscale0 = {

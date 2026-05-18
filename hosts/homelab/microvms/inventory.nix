@@ -28,7 +28,7 @@ let
     in
     {
       inherit (machine) name;
-      hostname = "vm-${machine.name}";
+      hostname = machine.name;
       tags = tailscale.tags or [ ];
     };
 
@@ -37,29 +37,9 @@ let
       nodes = lib.mapAttrs (_: mkTailscaleNode) (
         lib.filterAttrs (_: machine: machine.tailscale.enable or false) resolvedMachines
       );
-      services =
-        let
-          machineServices = lib.concatMap (
-            machine:
-            lib.mapAttrsToList (
-              serviceName: service:
-              assert lib.assertMsg
-                (!lib.hasPrefix "vm-" serviceName)
-                "machines.${machine.name}.tailscale.services.${serviceName} must not start with `vm-`";
-              {
-                name = serviceName;
-                value = {
-                machine = machine.name;
-                inherit (service)
-                  grants
-                  endpoint
-                  ;
-                };
-              }
-            ) (machine.tailscale.services or { })
-          ) allMachineConfigs;
-        in
-        builtins.listToAttrs machineServices;
+      enabledMachines = builtins.attrValues (
+        lib.filterAttrs (_: machine: machine.tailscale.enable or false) resolvedMachines
+      );
       policy = {
         tagOwners = builtins.listToAttrs (
           map (tag: {
@@ -67,19 +47,18 @@ let
             value = [ "autogroup:admin" ];
           }) (lib.unique (lib.concatMap (node: node.tags) (builtins.attrValues nodes)))
         );
-        grants = lib.mapAttrsToList (serviceName: service: {
-          src = service.grants;
-          dst = [ "svc:${serviceName}" ];
-          ip = [ service.endpoint ];
-        }) services;
-        autoApprovers.services = lib.mapAttrs' (
-          serviceName: service:
-          lib.nameValuePair "svc:${serviceName}" [ "tag:${service.machine}" ]
-        ) services;
+        grants = lib.concatMap (
+          machine:
+          map (grant: {
+            src = grant.from;
+            dst = [ "tag:${machine.name}" ];
+            ip = grant.ports;
+          }) (machine.tailscale.grants or [ ])
+        ) enabledMachines;
       };
     in
     {
-      inherit nodes services policy;
+      inherit nodes policy;
     };
 in
 {

@@ -236,13 +236,15 @@ in
           "tag:media"
           "tag:emby"
         ];
-        services.emby = {
-          target = "http://127.0.0.1:8096";
-          serve = "https:443";
-          grants = [
-            "autogroup:member"
-          ];
-        };
+        grants = [
+          {
+            from = [ "autogroup:member" ];
+            ports = [
+              "tcp:80"
+              "tcp:443"
+            ];
+          }
+        ];
       };
 
       extraOptions = {
@@ -274,14 +276,18 @@ in
           "tag:media"
           "tag:qbittorrent"
         ];
-        services.qbittorrent = {
-          target = "http://127.0.0.1:8080";
-          serve = "https:443";
-          grants = [
-            "autogroup:member"
-            "tag:ani-rss"
-          ];
-        };
+        grants = [
+          {
+            from = [
+              "autogroup:member"
+              "tag:ani-rss"
+            ];
+            ports = [
+              "tcp:80"
+              "tcp:443"
+            ];
+          }
+        ];
       };
 
       keys = {
@@ -336,13 +342,15 @@ in
           "tag:media"
           "tag:ani-rss"
         ];
-        services.ani-rss = {
-          target = "http://127.0.0.1:7789";
-          serve = "https:443";
-          grants = [
-            "autogroup:member"
-          ];
-        };
+        grants = [
+          {
+            from = [ "autogroup:member" ];
+            ports = [
+              "tcp:80"
+              "tcp:443"
+            ];
+          }
+        ];
       };
 
       keys = {

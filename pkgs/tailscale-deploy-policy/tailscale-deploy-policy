@@ -79,7 +79,6 @@ merged_policy="$(
       | .tagOwners = (($extra.tagOwners // {}) + ($generated.tagOwners // {}))
       | .grants = (($extra.grants // []) + ($generated.grants // []))
       | .autoApprovers = (($extra.autoApprovers // {}) + ($generated.autoApprovers // {}))
-      | .autoApprovers.services = (($extra.autoApprovers.services // {}) + ($generated.autoApprovers.services // {}))
     '
 )"
 

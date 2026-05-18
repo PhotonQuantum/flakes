@@ -16,7 +16,6 @@ in
   "validate-cam-imports" = pkgs.callPackage ./validate-cam-imports { };
   "gen-compose" = pkgs.callPackage ./gen-compose { };
   "tailscale-deploy-policy" = pkgs.callPackage ./tailscale-deploy-policy { };
-  "tailscale-deploy-services" = pkgs.callPackage ./tailscale-deploy-services { };
   "tailscale-provision-auth-keys" = pkgs.callPackage ./tailscale-provision-auth-keys { };
   "ani-rss" = pkgs.callPackage ./ani-rss { inherit generated; };
   emby = pkgs.callPackage ./emby { inherit generated; };

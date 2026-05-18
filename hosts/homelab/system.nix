@@ -92,6 +92,13 @@ in
         group = "kvm";
         permissions = "0400";
       };
+      "hermes.env" = {
+        keyFile = ../../secrets/hermes.env;
+        destDir = "/var/keys";
+        user = "microvm";
+        group = "kvm";
+        permissions = "0400";
+      };
     };
   };
 

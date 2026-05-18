@@ -25,7 +25,7 @@ let
       };
       General.Locale = "en";
       WebUI = {
-        Address = "*";
+        Address = "127.0.0.1";
         Password_PBKDF2 = "@ByteArray(${passwordPlaceholder})";
         ServerDomains = "*";
       };
@@ -72,7 +72,7 @@ in
     profileDir = "/config";
     webuiPort = 8080;
     torrentingPort = 6881;
-    openFirewall = true;
+    openFirewall = false;
     extraArgs = [ "--confirm-legal-notice" ];
     inherit serverConfig;
   };
@@ -82,5 +82,8 @@ in
     "${removeStaleLock}"
   ];
 
-  networking.firewall.allowedUDPPorts = [ 6881 ];
+  networking.firewall = {
+    allowedTCPPorts = [ 6881 ];
+    allowedUDPPorts = [ 6881 ];
+  };
 }

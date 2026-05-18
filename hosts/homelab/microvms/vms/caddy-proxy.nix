@@ -29,10 +29,17 @@ in
         hostName = "https://${httpsHost}";
         extraConfig = ''
           tls ${vmCert.certPath} ${vmCert.keyPath}
-          reverse_proxy ${upstream}
+          reverse_proxy ${upstream} {
+            header_up Host {upstream_hostport}
+          }
         '';
       };
     };
+  };
+
+  systemd.services.caddy = {
+    after = [ "run-homelab\\x2dcerts.mount" ];
+    requires = [ "run-homelab\\x2dcerts.mount" ];
   };
 
   systemd.services.caddy-daily-reload = {

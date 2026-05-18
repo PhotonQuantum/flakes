@@ -87,8 +87,40 @@ $ colmena apply --on homelab --no-keys
 
 1. Setup cloudflare tunnel and add the tunnel ID and credentials to `secrets/cf`.
 2. Add borg repo to `secrets/homelab.nix` and add passphrase to `secrets/homelab_borg.pass`.
-3. Set `lanSubnet` in `secrets/homelab.nix` to the local LAN CIDR.
-4. Get forgejo action reg token from forgejo instance and add it to `secrets/homelab.nix`, then restart forgejo-runner microvm.
-5. Put tailscale preauth key to `secrets/tailscale_key`.
-6. Set homelab tailscale ip to 100.101.100.100 for dns to work.
-7. Configure syncthing.
+3. Get forgejo action reg token from forgejo instance and add it to `secrets/homelab.nix`, then restart forgejo-runner microvm.
+4. Put the homelab host Tailscale auth key in `secrets/tailscale_key`.
+5. Set Tailscale-related homelab settings in `secrets/homelab.nix`:
+
+```nix
+{
+  tailscaleAuthKeyDir = "/absolute/path/to/secrets/tailscale-authkeys";
+  tailscaleDns = {
+    domain = "lqhome.me";
+    resolverTag = "tag:dns";
+  };
+}
+```
+
+6. Generate API credentials at <https://login.tailscale.com/admin/settings/keys> and export them locally:
+
+```bash
+$ export TS_TAILNET='...'
+$ export TS_API_KEY='...'
+```
+
+7. Reconcile Tailscale policy, MicroVM auth keys, homelab keys, and the host:
+
+```bash
+$ nix run .#tailscale-deploy-policy
+$ nix run .#tailscale-provision-auth-keys
+$ colmena upload-keys --on homelab --nix-option lazy-trees false
+$ colmena apply --on homelab --no-keys
+```
+
+8. After the `coredns` MicroVM is online, configure split DNS for the homelab domain:
+
+```bash
+$ nix run .#tailscale-deploy-dns
+```
+
+9. Configure syncthing.

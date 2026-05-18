@@ -73,8 +73,8 @@ let
           ip = [ service.endpoint ];
         }) services;
         autoApprovers.services = lib.mapAttrs' (
-          serviceName: _:
-          lib.nameValuePair "svc:${serviceName}" [ "tag:${serviceName}" ]
+          serviceName: service:
+          lib.nameValuePair "svc:${serviceName}" [ "tag:${service.machine}" ]
         ) services;
       };
     in

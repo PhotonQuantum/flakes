@@ -53,6 +53,11 @@ in
     };
   };
 
+  systemd.services.caddy = {
+    after = [ "run-homelab\\x2dcerts.mount" ];
+    requires = [ "run-homelab\\x2dcerts.mount" ];
+  };
+
   systemd.services.caddy-daily-reload = {
     description = "Daily forced Caddy reload";
     after = [ "caddy.service" ];

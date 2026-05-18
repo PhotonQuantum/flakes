@@ -26,20 +26,6 @@ in
   };
 
   bridgeGroups = {
-    routed = {
-      # Optional; defaults to "managed".
-      layout = "managed";
-      groupId = 1;
-      bridgeName = "microvm";
-      ipv4Prefix = "10.200.0";
-      cidr = 24;
-      gatewayHost = 1;
-      networkPolicy = {
-        hostAccess = true;
-        lanAccess = true;
-        inBridgeInterconnect = true;
-      };
-    };
     isolated = {
       layout = "managed";
       groupId = 2;
@@ -70,19 +56,6 @@ in
       layout = "uplink-dhcp";
       groupId = 4;
       bridgeName = "microvm-lan";
-    };
-    paperless = {
-      layout = "managed";
-      groupId = 5;
-      bridgeName = "microvm-ppless";
-      ipv4Prefix = "10.203.0";
-      cidr = 24;
-      gatewayHost = 1;
-      networkPolicy = {
-        hostAccess = true;
-        lanAccess = true;
-        inBridgeInterconnect = true;
-      };
     };
   };
 
@@ -173,7 +146,7 @@ in
     };
 
     syncthing = {
-      group = "routed";
+      group = "lan";
       vmId = 10;
       module = ./vms/syncthing.nix;
       mem = 1024;
@@ -210,7 +183,7 @@ in
     };
 
     paperless = {
-      group = "paperless";
+      group = "isolated";
       vmId = 11;
       module = ./vms/paperless.nix;
       mem = 4096;
@@ -248,7 +221,7 @@ in
     };
 
     coredns = {
-      group = "routed";
+      group = "isolated";
       vmId = 15;
       module = ./vms/coredns.nix;
       mem = 512;
@@ -264,7 +237,7 @@ in
     };
 
     emby = {
-      group = "lan";
+      group = "isolated";
       vmId = 12;
       module = [
         inputs.self.nixosModules.emby
@@ -377,7 +350,7 @@ in
     };
 
     ani-rss = {
-      group = "lan";
+      group = "isolated";
       vmId = 14;
       module = [
         inputs.self.nixosModules.ani-rss

@@ -84,6 +84,11 @@ fi
 if [ "$dry_run" = false ]; then
   : "${TS_TAILNET:?TS_TAILNET is required}"
   : "${TS_API_KEY:?TS_API_KEY is required}"
+  current_services="$(
+    curl -fsS \
+      -u "$TS_API_KEY:" \
+      "https://api.tailscale.com/api/v2/tailnet/${TS_TAILNET}/services"
+  )"
 fi
 
 jq -c '.[]' <<<"$definitions" | while IFS= read -r definition; do
@@ -95,6 +100,15 @@ jq -c '.[]' <<<"$definitions" | while IFS= read -r definition; do
     echo "Would upsert $service_name:"
     jq . <<<"$body"
     continue
+  fi
+
+  existing_addrs="$(
+    jq -c --arg name "$service_name" '
+      first(.vipServices[]? | select(.name == $name) | .addrs) // empty
+    ' <<<"$current_services"
+  )"
+  if [ -n "$existing_addrs" ]; then
+    body="$(jq -c --argjson addrs "$existing_addrs" '. + { addrs: $addrs }' <<<"$body")"
   fi
 
   curl -fsS \

@@ -5,7 +5,7 @@
   ...
 }:
 let
-  auxModel = "google/gemini-flash-latest";
+  auxModel = "~google/gemini-flash-latest";
   extraDependencyGroups = [
     "firecrawl"
     "hindsight"
@@ -25,7 +25,7 @@ let
     model = {
       provider = "openrouter";
       base_url = "https://openrouter.ai/api/v1";
-      default = "google/gemini-pro-latest";
+      default = "~google/gemini-pro-latest";
     };
 
     auxiliary = {

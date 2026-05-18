@@ -21,6 +21,47 @@ let
     provider = "openrouter";
     model = auxModel;
   };
+  hermesSettings = {
+    model = {
+      provider = "openrouter";
+      base_url = "https://openrouter.ai/api/v1";
+      default = "google/gemini-pro-latest";
+    };
+
+    auxiliary = {
+      vision = mkAux;
+      web_extract = mkAux;
+      compression = mkAux;
+      curator = mkAux;
+      session_search = mkAux;
+      title_generation = mkAux;
+      approval = mkAux;
+      skills_hub = mkAux;
+      mcp = mkAux;
+      triage_specifier = mkAux;
+    };
+
+    memory = {
+      provider = "hindsight";
+      memory_enabled = true;
+      user_profile_enabled = true;
+    };
+
+    web = {
+      search_backend = "firecrawl";
+      extract_backend = "firecrawl";
+    };
+
+    plugins.enabled = [
+      "disk-cleanup"
+      "hermes-lcm"
+    ];
+
+    context.engine = "lcm";
+
+    security.allow_lazy_installs = true;
+  };
+  hermesConfig = pkgs.writeText "hermes-config.yaml" (builtins.toJSON hermesSettings);
   hindsightConfig = pkgs.writeText "hermes-hindsight-config.json" (
     builtins.toJSON {
       mode = "local_embedded";
@@ -46,51 +87,15 @@ in
     container = {
       enable = true;
       backend = "docker";
+      extraOptions = [ "--pid=host" ];
     };
     stateDir = "/var/lib/hermes";
     workingDirectory = "/var/lib/hermes/workspace";
     addToSystemPackages = true;
+    environmentFiles = [ "/var/keys/hermes.env" ];
     inherit extraDependencyGroups;
     extraPlugins = [ hermesLcmPlugin ];
-    settings = {
-      model = {
-        provider = "openrouter";
-        base_url = "https://openrouter.ai/api/v1";
-        default = "google/gemini-pro-latest";
-      };
-
-      auxiliary = {
-        vision = mkAux;
-        web_extract = mkAux;
-        compression = mkAux;
-        session_search = mkAux;
-        title_generation = mkAux;
-        approval = mkAux;
-        skills_hub = mkAux;
-        mcp = mkAux;
-        triage_specifier = mkAux;
-      };
-
-      memory = {
-        provider = "hindsight";
-        memory_enabled = true;
-        user_profile_enabled = true;
-      };
-
-      web = {
-        search_backend = "firecrawl";
-        extract_backend = "firecrawl";
-      };
-
-      plugins.enabled = [
-        "disk-cleanup"
-        "hermes-lcm"
-      ];
-
-      context.engine = "lcm";
-
-      security.allow_lazy_installs = true;
-    };
+    settings = hermesSettings;
   };
 
   systemd.services.hermes-agent = {
@@ -99,6 +104,7 @@ in
     preStart = lib.mkBefore ''
       install -d -o hermes -g hermes -m 2770 /var/lib/hermes/.hermes
       install -d -o hermes -g hermes -m 2770 /var/lib/hermes/.hermes/hindsight
+      install -D -o hermes -g hermes -m 0640 ${hermesConfig} /var/lib/hermes/.hermes/config.yaml
       install -D -o hermes -g hermes -m 0640 ${hindsightConfig} /var/lib/hermes/.hermes/hindsight/config.json
 
       install -o hermes -g hermes -m 0640 /dev/null /var/lib/hermes/.hermes/.env

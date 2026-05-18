@@ -18,13 +18,19 @@ let
   };
   hermesLcmPlugin = pkgs.generated.hermes_lcm.src;
   mkAux = {
-    provider = "openrouter";
+    provider = "openrouter-compat";
     model = auxModel;
   };
   hermesSettings = {
-    model = {
-      provider = "openrouter";
+    providers.openrouter-compat = {
+      name = "openrouter-compat";
       base_url = "https://openrouter.ai/api/v1";
+      key_env = "OPENROUTER_API_KEY";
+      api_mode = "chat_completions";
+    };
+
+    model = {
+      provider = "openrouter-compat";
       default = "~google/gemini-pro-latest";
     };
 

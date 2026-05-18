@@ -815,7 +815,7 @@ let
             networkConfig = {
               DHCP = "ipv4";
               IPv6AcceptRA = true;
-              MulticastDNS = true;
+              MulticastDNS = false;
             };
           }
         else
@@ -825,21 +825,17 @@ let
             routes = [ { Gateway = gateway; } ];
             networkConfig = {
               DNS = nameservers;
-              MulticastDNS = true;
+              MulticastDNS = false;
             };
           };
       services.resolved = {
         enable = true;
         settings.Resolve = {
-          MulticastDNS = true;
+          MulticastDNS = false;
           LLMNR = false;
         };
       };
       services.fstrim.enable = true;
-
-      networking.firewall.allowedUDPPorts = [
-        5353 # mDNS
-      ];
 
       boot.blacklistedKernelModules = [
         "esp4"

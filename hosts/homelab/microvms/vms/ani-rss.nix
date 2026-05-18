@@ -54,7 +54,7 @@ in
       autoDisabled = true;
       copyMasterToStandby = true;
       delete = true;
-      downloadToolHost = "http://qbittorrent.local:8080";
+      downloadToolHost = "https://qbittorrent.lqhome.me";
       downloadToolType = "qBittorrent";
       downloadToolUsername = "admin";
       offset = true;

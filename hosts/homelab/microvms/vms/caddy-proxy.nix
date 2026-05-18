@@ -9,7 +9,6 @@
 }:
 let
   httpsHost = "${vmSelf.name}.lqhome.me";
-  httpHost = "${vmSelf.name}.home.arpa";
 in
 {
   assertions = [
@@ -30,12 +29,6 @@ in
         hostName = "https://${httpsHost}";
         extraConfig = ''
           tls ${vmCert.certPath} ${vmCert.keyPath}
-          reverse_proxy ${upstream}
-        '';
-      };
-      "${httpHost}" = {
-        hostName = "http://${httpHost}";
-        extraConfig = ''
           reverse_proxy ${upstream}
         '';
       };

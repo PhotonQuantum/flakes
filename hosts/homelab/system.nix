@@ -7,7 +7,6 @@ in
   imports = [
     ../../profiles/system/capabilities/minimal.nix
     ./disko.nix
-    ./coredns.nix
     ./tailscale.nix
     ./tailscale-auth-keys.nix
     ./microvms

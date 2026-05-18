@@ -16,6 +16,17 @@ let
     vmTopology
     allMachineConfigs
     ;
+  volumeDirs = lib.unique (
+    lib.concatMap (
+      machine:
+      lib.optionals (machine.dataVolumeResolved != null) [
+        (builtins.dirOf machine.dataVolumeResolved.hostImagePath)
+      ]
+      ++ lib.optionals (machine.tailscale.enable or false) [
+        "${volumePath}/${machine.name}"
+      ]
+    ) allMachineConfigs
+  );
 in
 {
   imports = [
@@ -38,9 +49,7 @@ in
     })
   ];
 
-  systemd.tmpfiles.rules = map (
-    machine: "v ${builtins.dirOf machine.dataVolumeResolved.hostImagePath} 0770 microvm kvm - -"
-  ) (builtins.filter (machine: machine.dataVolumeResolved != null) allMachineConfigs);
+  systemd.tmpfiles.rules = map (dir: "v ${dir} 0770 microvm kvm - -") volumeDirs;
 
   services.journald.remote = {
     enable = true;

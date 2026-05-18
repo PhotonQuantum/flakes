@@ -553,6 +553,7 @@ let
         tapName
         extraConfig
         extraOptions
+        volumePath
         dataVolumeResolved
         backupResolved
         keysResolved
@@ -701,6 +702,7 @@ let
       ],
       extraConfig ? [ ],
       extraOptions ? { },
+      volumePath ? "/srv/microvms",
       dataVolumeResolved ? null,
       keysResolved ? [ ],
       certResolved ? { enabled = false; },
@@ -726,6 +728,16 @@ let
               label = dataVolumeResolved.label;
             })
           ];
+      volumeFromTailscaleState =
+        lib.optionals (tailscale.enable or false) [
+          {
+            image = "${volumePath}/${name}/tailscale-state.img";
+            mountPoint = "/var/lib/tailscale";
+            size = 8;
+            fsType = "ext4";
+            label = "tailscale";
+          }
+        ];
       certShares =
         lib.optionals certResolved.enabled [
           {
@@ -769,7 +781,7 @@ let
             inherit mac;
           }
         ];
-        volumes = volumeFromDataVolume;
+        volumes = volumeFromDataVolume ++ volumeFromTailscaleState;
         shares = certShares ++ extraOptionShares;
         vsock.cid = vsockCid;
         registerWithMachined = true;

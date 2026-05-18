@@ -279,6 +279,52 @@ in
       };
     };
 
+    hermes = {
+      group = "isolated";
+      vmId = 16;
+      module = [
+        inputs.hermes-agent.nixosModules.default
+        ./vms/hermes.nix
+      ];
+      mem = 8192;
+      vcpu = 4;
+
+      dataVolume = {
+        sizeMiB = 65536;
+        mountPoint = "/var/lib/hermes";
+        fsType = "ext4";
+        label = "hermes-data";
+      };
+
+      cert.enable = true;
+
+      tailscale = {
+        enable = true;
+        tags = [
+          "tag:homelab-vm"
+          "tag:hermes"
+        ];
+        grants = [
+          {
+            from = [ "autogroup:member" ];
+            ports = [
+              "tcp:80"
+              "tcp:443"
+            ];
+          }
+        ];
+      };
+
+      keys = {
+        "/var/keys/hermes.env" = {
+          file = "/var/keys/hermes.env";
+          user = "hermes";
+          group = "hermes";
+          permissions = "0400";
+        };
+      };
+    };
+
     emby = {
       group = "emby";
       vmId = 12;

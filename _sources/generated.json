@@ -239,6 +239,27 @@
         },
         "version": "1b3e34130de6a0b3bcdf4646d944d9da76dcd588"
     },
+    "hermes_lcm": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "hermes_lcm",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "stephenschoettler",
+            "repo": "hermes-lcm",
+            "rev": "v0.10.4",
+            "sha256": "sha256-14phNk0DJDKpPwYAjm8RaJCE4g0KiRNhjc7rAI4h9n4=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "v0.10.4"
+    },
     "sbarlua": {
         "cargoLock": null,
         "date": "2026-03-06",

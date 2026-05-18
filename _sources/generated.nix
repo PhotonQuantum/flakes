@@ -144,6 +144,17 @@
     };
     date = "2024-12-11";
   };
+  hermes_lcm = {
+    pname = "hermes_lcm";
+    version = "v0.10.4";
+    src = fetchFromGitHub {
+      owner = "stephenschoettler";
+      repo = "hermes-lcm";
+      rev = "v0.10.4";
+      fetchSubmodules = false;
+      sha256 = "sha256-14phNk0DJDKpPwYAjm8RaJCE4g0KiRNhjc7rAI4h9n4=";
+    };
+  };
   sbarlua = {
     pname = "sbarlua";
     version = "dba9cc421b868c918d5c23c408544a28aadf2f2f";

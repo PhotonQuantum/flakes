@@ -322,6 +322,12 @@ in
           group = "hermes";
           permissions = "0400";
         };
+        "/var/keys/hermes.SOUL.md" = {
+          file = "/var/keys/hermes.SOUL.md";
+          user = "hermes";
+          group = "hermes";
+          permissions = "0400";
+        };
       };
     };
 

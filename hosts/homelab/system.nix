@@ -81,6 +81,13 @@ in
         group = "kvm";
         permissions = "0400";
       };
+      "hermes.SOUL.md" = {
+        keyFile = ../../secrets/SOUL.md;
+        destDir = "/var/keys";
+        user = "microvm";
+        group = "kvm";
+        permissions = "0400";
+      };
     };
   };
 

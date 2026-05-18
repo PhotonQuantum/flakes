@@ -106,6 +106,7 @@ in
       install -d -o hermes -g hermes -m 2770 /var/lib/hermes/.hermes/hindsight
       install -D -o hermes -g hermes -m 0640 ${hermesConfig} /var/lib/hermes/.hermes/config.yaml
       install -D -o hermes -g hermes -m 0640 ${hindsightConfig} /var/lib/hermes/.hermes/hindsight/config.json
+      install -D -o hermes -g hermes -m 0640 /var/keys/hermes.SOUL.md /var/lib/hermes/.hermes/SOUL.md
 
       install -o hermes -g hermes -m 0640 /dev/null /var/lib/hermes/.hermes/.env
       cat /var/keys/hermes.env > /var/lib/hermes/.hermes/.env

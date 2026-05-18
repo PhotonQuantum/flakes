@@ -7,7 +7,7 @@
 let
   serveServices = lib.mapAttrs (_: service: {
     advertised = true;
-    endpoints.${service.endpoint} = service.target;
+    endpoints.${service.serve} = service.target;
   }) (vmTailscale.services or { });
 in
 {

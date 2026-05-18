@@ -15,6 +15,16 @@ in
   denix = pkgs.callPackage ./denix { };
   "validate-cam-imports" = pkgs.callPackage ./validate-cam-imports { };
   "gen-compose" = pkgs.callPackage ./gen-compose { };
+  "coredns-with-tailscale" = pkgs.coredns.override {
+    externalPlugins = [
+      {
+        name = "tailscale";
+        repo = "github.com/damomurf/coredns-tailscale";
+        version = "v0.4.0";
+      }
+    ];
+    vendorHash = "sha256-Cw7iwyK1S/4CLL0WKGADyfXiuPumno7cYWBv1RCKViA=";
+  };
   "tailscale-deploy-policy" = pkgs.callPackage ./tailscale-deploy-policy { };
   "tailscale-provision-auth-keys" = pkgs.callPackage ./tailscale-provision-auth-keys { };
   "ani-rss" = pkgs.callPackage ./ani-rss { inherit generated; };

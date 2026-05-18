@@ -210,6 +210,22 @@ in
       cert.enable = true;
     };
 
+    coredns = {
+      group = "routed";
+      vmId = 15;
+      module = ./vms/coredns.nix;
+      mem = 512;
+      vcpu = 1;
+
+      tailscale = {
+        enable = true;
+        tags = [
+          "tag:homelab-vm"
+          "tag:dns"
+        ];
+      };
+    };
+
     emby = {
       group = "lan";
       vmId = 12;

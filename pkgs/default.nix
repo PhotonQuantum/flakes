@@ -25,6 +25,7 @@ in
     ];
     vendorHash = "sha256-Cw7iwyK1S/4CLL0WKGADyfXiuPumno7cYWBv1RCKViA=";
   };
+  "tailscale-deploy-dns" = pkgs.callPackage ./tailscale-deploy-dns { };
   "tailscale-deploy-policy" = pkgs.callPackage ./tailscale-deploy-policy { };
   "tailscale-provision-auth-keys" = pkgs.callPackage ./tailscale-provision-auth-keys { };
   "ani-rss" = pkgs.callPackage ./ani-rss { inherit generated; };

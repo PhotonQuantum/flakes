@@ -1,0 +1,164 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+dry_run=false
+render_only=false
+config_file="secrets/homelab.nix"
+domain=""
+resolver_tag=""
+
+usage() {
+  cat <<'EOF'
+Usage: tailscale-deploy-dns [--dry-run] [--render] [--config PATH] [--domain DOMAIN] [--tag TAG]
+
+Finds exactly one online Tailscale device with the DNS resolver tag, reads its
+current Tailscale IPv4, and configures split DNS for the configured domain to
+use that device as the nameserver.
+
+Required environment variables:
+  TS_TAILNET
+  TS_API_KEY
+
+Options:
+  --dry-run       print planned change without updating Tailscale DNS
+  --render        print the split-DNS PATCH JSON without updating Tailscale DNS
+  --config PATH   Nix file with tailscaleDns.domain and tailscaleDns.resolverTag
+                  defaults to secrets/homelab.nix
+  --domain DOMAIN override tailscaleDns.domain
+  --tag TAG       override tailscaleDns.resolverTag, defaults from config
+EOF
+}
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --dry-run)
+      dry_run=true
+      ;;
+    --render)
+      render_only=true
+      ;;
+    --config)
+      if [ "$#" -lt 2 ]; then
+        echo "--config requires an argument" >&2
+        exit 2
+      fi
+      config_file="$2"
+      shift
+      ;;
+    --domain)
+      if [ "$#" -lt 2 ]; then
+        echo "--domain requires an argument" >&2
+        exit 2
+      fi
+      domain="$2"
+      shift
+      ;;
+    --tag)
+      if [ "$#" -lt 2 ]; then
+        echo "--tag requires an argument" >&2
+        exit 2
+      fi
+      resolver_tag="$2"
+      shift
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "unknown argument: $1" >&2
+      usage >&2
+      exit 2
+      ;;
+  esac
+  shift
+done
+
+if [ ! -f "$config_file" ]; then
+  echo "config file does not exist: $config_file" >&2
+  exit 1
+fi
+
+if [ -z "$domain" ]; then
+  domain="$(nix eval --raw --file "$config_file" tailscaleDns.domain)"
+fi
+
+if [ -z "$resolver_tag" ]; then
+  resolver_tag="$(nix eval --raw --file "$config_file" tailscaleDns.resolverTag)"
+fi
+
+if [ -z "$domain" ]; then
+  echo "tailscale DNS domain is empty" >&2
+  exit 1
+fi
+
+if [ -z "$resolver_tag" ]; then
+  echo "tailscale DNS resolver tag is empty" >&2
+  exit 1
+fi
+
+: "${TS_TAILNET:?TS_TAILNET is required}"
+: "${TS_API_KEY:?TS_API_KEY is required}"
+
+devices_json="$(
+  curl -fsS \
+    -u "$TS_API_KEY:" \
+    "https://api.tailscale.com/api/v2/tailnet/${TS_TAILNET}/devices?fields=all"
+)"
+
+matching_devices="$(
+  jq -c \
+    --arg tag "$resolver_tag" \
+    '
+      [.devices[]? | select((.tags // []) | index($tag)) | select(.connectedToControl == true)]
+    ' <<<"$devices_json"
+)"
+
+device_count="$(jq 'length' <<<"$matching_devices")"
+if [ "$device_count" -ne 1 ]; then
+  jq -r \
+    --arg tag "$resolver_tag" \
+    '
+      [.devices[]? | select((.tags // []) | index($tag))]
+      | if length == 0 then
+          "No devices found with " + $tag
+        else
+          "Devices with " + $tag + ":\n" + (map("- " + (.name // .hostname // .id) + " connected=" + ((.connectedToControl // false) | tostring) + " addresses=" + ((.addresses // []) | join(","))) | join("\n"))
+        end
+    ' <<<"$devices_json" >&2
+  echo "expected exactly one online Tailscale device with ${resolver_tag}; found ${device_count}" >&2
+  exit 1
+fi
+
+device_json="$(jq -c '.[0]' <<<"$matching_devices")"
+device_name="$(jq -r '.name // .hostname // .id' <<<"$device_json")"
+resolver_ip="$(
+  jq -er '
+    .addresses
+    | map(select((contains(":") | not) and startswith("100.")))
+    | .[0]
+  ' <<<"$device_json"
+)"
+
+patch_body="$(jq -n --arg domain "$domain" --arg resolver_ip "$resolver_ip" '{($domain): [$resolver_ip]}')"
+
+if [ "$render_only" = true ]; then
+  jq . <<<"$patch_body"
+  exit 0
+fi
+
+if [ "$dry_run" = true ]; then
+  echo "Would configure split DNS for ${domain} to ${resolver_ip} from ${device_name} (${resolver_tag})."
+  jq . <<<"$patch_body"
+  exit 0
+fi
+
+curl -fsS \
+  -u "$TS_API_KEY:" \
+  -X PATCH \
+  -H 'Content-Type: application/json' \
+  --data "$patch_body" \
+  "https://api.tailscale.com/api/v2/tailnet/${TS_TAILNET}/dns/split-dns" \
+  | jq .
+
+echo "Configured split DNS for ${domain} to ${resolver_ip} from ${device_name} (${resolver_tag})."

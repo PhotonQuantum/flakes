@@ -288,12 +288,17 @@ in
       ];
       mem = 8192;
       vcpu = 4;
+      beszel.agent.enable = true;
 
       dataVolume = {
         sizeMiB = 65536;
         mountPoint = "/var/lib/hermes";
         fsType = "ext4";
         label = "hermes-data";
+      };
+
+      backup = {
+        repo = secrets.backupRepos.hermes;
       };
 
       cert.enable = true;

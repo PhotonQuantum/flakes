@@ -253,6 +253,10 @@ in
         label = "hermes-data";
       };
 
+      backup = {
+        repo = secrets.backupRepos.hermes;
+      };
+
       cert.enable = true;
 
       tailscale = {

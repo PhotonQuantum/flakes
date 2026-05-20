@@ -21,4 +21,5 @@ in
   };
 
   flake.homelab.tailscale = microvmInventory.tailscale;
+  flake.homelab.beszel = microvmInventory.beszel;
 }

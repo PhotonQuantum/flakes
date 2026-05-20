@@ -28,6 +28,8 @@ in
   "tailscale-deploy-dns" = pkgs.callPackage ./tailscale-deploy-dns { };
   "tailscale-deploy-policy" = pkgs.callPackage ./tailscale-deploy-policy { };
   "tailscale-provision-auth-keys" = pkgs.callPackage ./tailscale-provision-auth-keys { };
+  "beszel-homelab" = pkgs.callPackage ./beszel-homelab { };
+  "beszel-provision" = pkgs.callPackage ./beszel-provision { };
   "ani-rss" = pkgs.callPackage ./ani-rss { inherit generated; };
   emby = pkgs.callPackage ./emby { inherit generated; };
 }

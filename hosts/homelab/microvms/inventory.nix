@@ -60,6 +60,13 @@ let
     {
       inherit nodes policy;
     };
+  beszel = {
+    agentMachines = lib.sort builtins.lessThan (
+      builtins.attrNames (
+        lib.filterAttrs (_: machine: machine.beszel.agent.enable or false) resolvedMachines
+      )
+    );
+  };
 in
 {
   inherit
@@ -75,5 +82,6 @@ in
     vmTopology
     allMachineConfigs
     tailscale
+    beszel
     ;
 }

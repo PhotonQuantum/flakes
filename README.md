@@ -89,7 +89,7 @@ $ colmena apply --on homelab --no-keys
 2. Add borg repo to `secrets/homelab.nix` and add passphrase to `secrets/homelab_borg.pass`.
 3. Get forgejo action reg token from forgejo instance and add it to `secrets/homelab.nix`, then restart forgejo-runner microvm.
 4. Put the homelab host Tailscale auth key in `secrets/tailscale_key`.
-5. Set Tailscale-related homelab settings in `secrets/homelab.nix`:
+5. Set homelab provisioning settings in `secrets/homelab.nix`:
 
 ```nix
 {
@@ -98,6 +98,7 @@ $ colmena apply --on homelab --no-keys
     domain = "lqhome.me";
     resolverTag = "tag:dns";
   };
+  beszel.secretDir = "/absolute/path/to/secrets/beszel";
 }
 ```
 
@@ -113,6 +114,7 @@ $ export TS_API_KEY='...'
 ```bash
 $ nix run .#tailscale-deploy-policy
 $ nix run .#tailscale-provision-auth-keys
+$ nix run .#beszel-provision
 $ colmena upload-keys --on homelab --nix-option lazy-trees false
 $ colmena apply --on homelab --no-keys
 ```

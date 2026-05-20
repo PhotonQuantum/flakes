@@ -1,4 +1,7 @@
-{ upstream }:
+{
+  upstream,
+  accessLog ? false,
+}:
 {
   lib,
   pkgs,
@@ -29,6 +32,19 @@ in
         hostName = "https://${httpsHost}";
         extraConfig = ''
           tls ${vmCert.certPath} ${vmCert.keyPath}
+          ${lib.optionalString accessLog ''
+            log {
+              output stdout
+              format filter {
+                wrap console
+                fields {
+                  request>headers>Authorization delete
+                  request>headers>Cookie delete
+                  request>headers>Set-Cookie delete
+                }
+              }
+            }
+          ''}
           reverse_proxy ${upstream} {
             header_up Host {upstream_hostport}
           }

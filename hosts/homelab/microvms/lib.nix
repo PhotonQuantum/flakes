@@ -453,6 +453,8 @@ let
       tapName = machine.tapName or (mkTapNameAuto name vmId);
       tailscaleEnabled = machine.tailscale.enable or false;
       tailscale = machine.tailscale or { };
+      beszel = machine.beszel or { };
+      beszelAgentEnabled = beszel.agent.enable or false;
       moduleInput = machine.module or machine.extraConfig or null;
       machineExtraConfig =
         if moduleInput == null then
@@ -461,12 +463,32 @@ let
           moduleInput
         else
           [ moduleInput ];
-      extraConfig = machineExtraConfig ++ lib.optionals tailscaleEnabled [ ./vms/tailscale.nix ];
+      extraConfig =
+        machineExtraConfig
+        ++ lib.optionals tailscaleEnabled [ ./vms/tailscale.nix ]
+        ++ lib.optionals beszelAgentEnabled [ ./vms/beszel-agent.nix ];
       extraOptions = machine.extraOptions or { };
+      extraOptionShares = extraOptions.shares or [ ];
+      beszelExtraFilesystems =
+        lib.optionals (dataVolumeResolved != null) [
+          "${dataVolumeResolved.mountPoint}__${dataVolumeResolved.label or "${name}-data"}"
+        ]
+        ++ map (
+          share: "${share.mountPoint}__${share.tag or (sanitizeName share.mountPoint)}"
+        ) extraOptionShares
+        ++ (beszel.agent.extraFilesystems or [ ]);
       machineKeys = machine.keys or { };
       tailscaleKeys = lib.optionalAttrs tailscaleEnabled {
         "/var/keys/tailscale-auth-key" = {
           file = "/var/keys/tailscale_${name}_authkey";
+          user = "root";
+          group = "root";
+          permissions = "0400";
+        };
+      };
+      beszelAgentKeys = lib.optionalAttrs beszelAgentEnabled {
+        "/var/keys/beszel-agent.env" = {
+          file = "/var/keys/beszel_agent_${name}.env";
           user = "root";
           group = "root";
           permissions = "0400";
@@ -482,7 +504,7 @@ let
       };
       keysResolved = resolveKeys {
         inherit name;
-        keys = machineKeys // tailscaleKeys;
+        keys = machineKeys // tailscaleKeys // beszelAgentKeys;
       };
       certResolved =
         if resolveCerts then
@@ -519,6 +541,12 @@ let
     assert ensure
       (!tailscaleEnabled || !(builtins.hasAttr "/var/keys/tailscale-auth-key" machineKeys))
       "machines.${name}.keys already defines `/var/keys/tailscale-auth-key`, which is reserved for tailscale.enable";
+    assert ensure
+      (!beszelAgentEnabled || tailscaleEnabled)
+      "machines.${name}.beszel.agent.enable requires machines.${name}.tailscale.enable";
+    assert ensure
+      (!beszelAgentEnabled || !(builtins.hasAttr "/var/keys/beszel-agent.env" machineKeys))
+      "machines.${name}.keys already defines `/var/keys/beszel-agent.env`, which is reserved for beszel.agent.enable";
     machine
     // {
       inherit
@@ -536,6 +564,8 @@ let
         keysResolved
         certResolved
         tailscale
+        beszel
+        beszelExtraFilesystems
         usesManagedSubnet
         usesDhcp
         ;
@@ -681,6 +711,7 @@ let
       extraOptions ? { },
       volumePath ? "/srv/microvms",
       dataVolumeResolved ? null,
+      beszelExtraFilesystems ? [ ],
       keysResolved ? [ ],
       certResolved ? { enabled = false; },
       tailscale ? { },
@@ -773,6 +804,7 @@ let
 
       _module.args = {
         inherit vmSelf vmTopology;
+        vmBeszelExtraFilesystems = beszelExtraFilesystems;
         vmTailscale = tailscale;
         vmCert =
           if certResolved.enabled then

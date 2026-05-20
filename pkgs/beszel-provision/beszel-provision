@@ -1,0 +1,225 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+dry_run=false
+force=false
+flake_ref="."
+secrets_file="secrets/homelab.nix"
+
+usage() {
+  cat <<'EOF'
+Usage: beszel-provision [--force] [--dry-run] [--flake REF] [--secrets-file PATH]
+
+Generates Beszel hub and agent secret files for homelab machines listed in
+.#homelab.beszel.agentMachines plus secrets.homelab.beszel.extraAgents.
+
+Options:
+  --force              overwrite existing generated files
+  --dry-run            print planned writes without changing files
+  --flake REF          flake reference to evaluate, defaults to "."
+  --secrets-file PATH  homelab secrets Nix file, defaults to secrets/homelab.nix
+EOF
+}
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --force)
+      force=true
+      ;;
+    --dry-run)
+      dry_run=true
+      ;;
+    --flake)
+      if [ "$#" -lt 2 ]; then
+        echo "--flake requires an argument" >&2
+        exit 2
+      fi
+      flake_ref="$2"
+      shift
+      ;;
+    --secrets-file)
+      if [ "$#" -lt 2 ]; then
+        echo "--secrets-file requires an argument" >&2
+        exit 2
+      fi
+      secrets_file="$2"
+      shift
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "unknown argument: $1" >&2
+      usage >&2
+      exit 2
+      ;;
+  esac
+  shift
+done
+
+agent_machines_json="$(nix eval "$flake_ref#homelab.beszel.agentMachines" --json)"
+keys_json="$(nix eval "$flake_ref#colmenaHive.nodes.homelab.config.deployment.keys" --json)"
+hub_url="$(nix eval --raw --file "$secrets_file" beszel.hubUrl)"
+auto_login_email="$(nix eval --raw --file "$secrets_file" beszel.autoLoginEmail)"
+extra_agents_json="$(nix eval --json --file "$secrets_file" beszel.extraAgents)"
+
+if [ -z "$hub_url" ]; then
+  echo "beszel.hubUrl must not be empty" >&2
+  exit 1
+fi
+
+if [ -z "$auto_login_email" ]; then
+  echo "beszel.autoLoginEmail must not be empty" >&2
+  exit 1
+fi
+
+all_agents_json="$(
+  jq -cn \
+    --argjson machines "$agent_machines_json" \
+    --argjson extra "$extra_agents_json" \
+    '$machines + $extra | unique | sort'
+)"
+
+agent_count="$(jq 'length' <<<"$all_agents_json")"
+if [ "$agent_count" -eq 0 ]; then
+  echo "No Beszel agents are enabled."
+  exit 0
+fi
+
+key_file() {
+  local key_name="$1"
+  jq -er --arg key "$key_name" '.[$key].keyFile' <<<"$keys_json"
+}
+
+write_secret() {
+  local file="$1"
+  local mode="$2"
+  local content="$3"
+
+  if [ -e "$file" ] && [ "$force" = false ]; then
+    return 1
+  fi
+
+  if [ "$dry_run" = true ]; then
+    if [ -e "$file" ] && [ "$force" = true ]; then
+      echo "Would overwrite $file"
+    else
+      echo "Would write $file"
+    fi
+    return 0
+  fi
+
+  mkdir -p "$(dirname "$file")"
+  local tmp_file
+  tmp_file="$(mktemp "${file}.tmp.XXXXXX")"
+  chmod "$mode" "$tmp_file"
+  printf '%s\n' "$content" > "$tmp_file"
+  mv "$tmp_file" "$file"
+  echo "Wrote $file"
+}
+
+shell_quote() {
+  local value="$1"
+  printf "'%s'" "${value//\'/\'\\\'\'}"
+}
+
+hub_key="$(key_file beszel_hub_id_ed25519)"
+hub_env="$(key_file beszel_hub.env)"
+hub_config="$(key_file beszel_hub_config.yml)"
+
+if [ -e "$hub_key" ] && [ "$force" = false ]; then
+  echo "Keeping existing $hub_key; use --force to replace it."
+else
+  if [ "$dry_run" = true ]; then
+    if [ -e "$hub_key" ]; then
+      echo "Would replace hub SSH keypair at $hub_key"
+    else
+      echo "Would generate hub SSH keypair at $hub_key"
+    fi
+  else
+    mkdir -p "$(dirname "$hub_key")"
+    rm -f "$hub_key" "$hub_key.pub"
+    ssh-keygen -q -t ed25519 -N "" -f "$hub_key" -C "beszel-hub"
+    chmod 0600 "$hub_key"
+    chmod 0644 "$hub_key.pub"
+    echo "Generated hub SSH keypair at $hub_key"
+  fi
+fi
+
+if [ -e "$hub_key.pub" ]; then
+  hub_public_key="$(<"$hub_key.pub")"
+else
+  hub_public_key="dry-run-placeholder-public-key"
+fi
+
+if [ -e "$hub_env" ] && [ "$force" = false ]; then
+  echo "Keeping existing $hub_env; use --force to replace it."
+else
+  hub_password="$(openssl rand -base64 32)"
+  hub_env_content="$(
+    printf 'USER_EMAIL=%s\n' "$(shell_quote "$auto_login_email")"
+    printf 'USER_PASSWORD=%s\n' "$(shell_quote "$hub_password")"
+    printf 'AUTO_LOGIN=%s\n' "$(shell_quote "$auto_login_email")"
+  )"
+  write_secret "$hub_env" 0600 "$hub_env_content" || true
+fi
+
+declare -A tokens
+
+while IFS= read -r agent; do
+  agent_env_key="beszel_agent_${agent}.env"
+  agent_env="$(key_file "$agent_env_key")"
+
+  existing_token=""
+  if [ -f "$agent_env" ]; then
+    existing_token="$(sed -n "s/^TOKEN='\\{0,1\\}\\([^']*\\)'\\{0,1\\}$/\\1/p" "$agent_env" | head -n1)"
+    if [ -z "$existing_token" ] && [ "$force" = false ]; then
+      echo "Existing $agent_env does not contain a parseable TOKEN; use --force to replace it." >&2
+      exit 1
+    fi
+  fi
+
+  if [ -n "$existing_token" ] && [ "$force" = false ]; then
+    token="$existing_token"
+    echo "Keeping existing $agent_env for $agent; use --force to replace it."
+  else
+    token="$(openssl rand -hex 32)"
+    agent_env_content="$(
+      printf 'HUB_URL=%s\n' "$(shell_quote "$hub_url")"
+      printf 'KEY=%s\n' "$(shell_quote "$hub_public_key")"
+      printf 'TOKEN=%s\n' "$(shell_quote "$token")"
+      printf 'SYSTEM_NAME=%s\n' "$(shell_quote "$agent")"
+      printf 'DISABLE_SSH=true\n'
+    )"
+    write_secret "$agent_env" 0600 "$agent_env_content" || true
+  fi
+
+  tokens["$agent"]="$token"
+done < <(jq -r '.[]' <<<"$all_agents_json")
+
+hub_config_tmp="$(
+  printf '# Generated by beszel-provision. Do not edit by hand.\n'
+  printf 'systems:\n'
+  while IFS= read -r agent; do
+    printf '  - name: "%s"\n' "$agent"
+    printf '    host: "%s"\n' "$agent"
+    printf '    token: "%s"\n' "${tokens[$agent]}"
+    printf '    users:\n'
+    printf '      - "%s"\n' "$auto_login_email"
+  done < <(jq -r '.[]' <<<"$all_agents_json")
+)"
+
+write_secret "$hub_config" 0600 "$hub_config_tmp" || {
+  if [ -e "$hub_config" ] && [ "$force" = false ]; then
+    if [ "$dry_run" = true ]; then
+      echo "Would update $hub_config from existing agent tokens"
+    else
+      tmp_file="$(mktemp "${hub_config}.tmp.XXXXXX")"
+      chmod 0600 "$tmp_file"
+      printf '%s\n' "$hub_config_tmp" > "$tmp_file"
+      mv "$tmp_file" "$hub_config"
+      echo "Updated $hub_config"
+    fi
+  fi
+}

@@ -1,4 +1,9 @@
-{ lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   hardwareConfig = ./hardware-configuration.nix;
   homelabSecrets = import ../../secrets/homelab.nix;
@@ -9,6 +14,19 @@ in
     ./disko.nix
     ./tailscale.nix
     ./tailscale-auth-keys.nix
+    ./beszel-keys.nix
+    (import ./beszel-agent.nix {
+      environmentFile = "/var/keys/beszel_agent_homelab.env";
+      extraFilesystems = [ "/srv__srv" ];
+      extraPath = [ config.hardware.nvidia.package.bin ];
+      smartmon = {
+        enable = true;
+        deviceAllow = [
+          "/dev/nvme0"
+          "/dev/nvme1"
+        ];
+      };
+    })
     ./microvms
     ./media.nix
     ./norgb.nix

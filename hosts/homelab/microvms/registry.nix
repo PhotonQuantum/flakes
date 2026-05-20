@@ -79,6 +79,7 @@ in
       module = ./vms/forgejo.nix;
       mem = 2049;
       vcpu = 4;
+      beszel.agent.enable = true;
 
       dataVolume = {
         sizeMiB = 65536;
@@ -89,6 +90,14 @@ in
 
       backup = {
         repo = secrets.backupRepos.forgejo;
+      };
+
+      tailscale = {
+        enable = true;
+        tags = [
+          "tag:homelab-vm"
+          "tag:forgejo"
+        ];
       };
 
       keys = {
@@ -111,12 +120,21 @@ in
       module = ./vms/forgejo-runner.nix;
       mem = 8192;
       vcpu = 4;
+      beszel.agent.enable = true;
 
       dataVolume = {
         sizeMiB = 65536;
         mountPoint = "/mnt";
         fsType = "ext4";
         label = "forgejo-r-data";
+      };
+
+      tailscale = {
+        enable = true;
+        tags = [
+          "tag:homelab-vm"
+          "tag:forgejo-runner"
+        ];
       };
 
       keys = {
@@ -137,6 +155,7 @@ in
       ];
       mem = 512;
       vcpu = 1;
+      beszel.agent.enable = true;
 
       dataVolume = {
         sizeMiB = 2048;
@@ -147,6 +166,14 @@ in
 
       backup = {
         repo = secrets.backupRepos.tg3-rs;
+      };
+
+      tailscale = {
+        enable = true;
+        tags = [
+          "tag:homelab-vm"
+          "tag:tg3-rs"
+        ];
       };
 
       keys = {
@@ -164,6 +191,7 @@ in
       module = ./vms/syncthing.nix;
       mem = 1024;
       vcpu = 2;
+      beszel.agent.enable = true;
 
       dataVolume = {
         sizeMiB = 32768;
@@ -201,6 +229,7 @@ in
       module = ./vms/paperless.nix;
       mem = 4096;
       vcpu = 4;
+      beszel.agent.enable = true;
 
       dataVolume = {
         sizeMiB = 32768;
@@ -239,6 +268,7 @@ in
       module = ./vms/coredns.nix;
       mem = 512;
       vcpu = 1;
+      beszel.agent.enable = true;
 
       tailscale = {
         enable = true;
@@ -258,6 +288,7 @@ in
       ];
       mem = 8192;
       vcpu = 4;
+      beszel.agent.enable = true;
 
       dataVolume = {
         sizeMiB = 65536;
@@ -314,6 +345,7 @@ in
       ];
       mem = 4096;
       vcpu = 4;
+      beszel.agent.enable = true;
 
       dataVolume = {
         sizeMiB = 16384;
@@ -361,6 +393,7 @@ in
       module = ./vms/qbittorrent.nix;
       mem = 2049;
       vcpu = 2;
+      beszel.agent.enable = true;
 
       cert.enable = true;
 
@@ -427,6 +460,7 @@ in
       ];
       mem = 1024;
       vcpu = 1;
+      beszel.agent.enable = true;
 
       cert.enable = true;
 
@@ -472,6 +506,69 @@ in
             proto = "virtiofs";
           }
         ];
+      };
+    };
+
+    beszel = {
+      group = "isolated";
+      vmId = 17;
+      module = ./vms/beszel.nix;
+      mem = 1024;
+      vcpu = 1;
+      beszel.agent.enable = true;
+
+      dataVolume = {
+        sizeMiB = 8192;
+        mountPoint = "/var/lib/beszel-hub";
+        fsType = "ext4";
+        label = "beszel-data";
+      };
+
+      backup = {
+        repo = secrets.backupRepos.beszel;
+      };
+
+      cert.enable = true;
+
+      tailscale = {
+        enable = true;
+        tags = [
+          "tag:homelab-vm"
+          "tag:beszel"
+        ];
+        grants = [
+          {
+            from = [
+              "autogroup:member"
+              "tag:homelab-vm"
+              "tag:homelab-host"
+            ];
+            ports = [
+              "tcp:443"
+            ];
+          }
+        ];
+      };
+
+      keys = {
+        "/var/keys/beszel-hub.env" = {
+          file = "/var/keys/beszel_hub.env";
+          user = "root";
+          group = "root";
+          permissions = "0400";
+        };
+        "/var/keys/beszel-hub-config.yml" = {
+          file = "/var/keys/beszel_hub_config.yml";
+          user = "root";
+          group = "root";
+          permissions = "0400";
+        };
+        "/var/keys/beszel-hub-id-ed25519" = {
+          file = "/var/keys/beszel_hub_id_ed25519";
+          user = "root";
+          group = "root";
+          permissions = "0400";
+        };
       };
     };
 

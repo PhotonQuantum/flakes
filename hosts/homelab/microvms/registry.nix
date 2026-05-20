@@ -52,6 +52,19 @@ in
         inBridgeInterconnect = true;
       };
     };
+    emby = {
+      layout = "managed";
+      groupId = 5;
+      bridgeName = "microvm-emby";
+      ipv4Prefix = "10.203.0";
+      cidr = 24;
+      gatewayHost = 1;
+      networkPolicy = {
+        hostAccess = false;
+        lanAccess = true;
+        inBridgeInterconnect = false;
+      };
+    };
     lan = {
       layout = "uplink-dhcp";
       groupId = 4;
@@ -293,7 +306,7 @@ in
     };
 
     emby = {
-      group = "isolated";
+      group = "emby";
       vmId = 12;
       module = [
         inputs.self.nixosModules.emby

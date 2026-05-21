@@ -25,8 +25,9 @@ in
   users.users.beszel-hub = {
     isSystemUser = true;
     group = "beszel-hub";
+    uid = 998;
   };
-  users.groups.beszel-hub = { };
+  users.groups.beszel-hub.gid = 998;
 
   services.beszel.hub = {
     enable = true;

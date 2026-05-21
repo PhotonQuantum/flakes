@@ -39,10 +39,12 @@ in
       group = runnerUser;
       useDefaultShell = true;
       home = runnerRoot;
+      uid = 998;
     };
     groups.${runnerUser} = {
       name = runnerUser;
       members = [ runnerUser ];
+      gid = 998;
     };
   };
 

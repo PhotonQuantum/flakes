@@ -94,6 +94,9 @@ in
     "d /mnt/postgresql 0700 postgres postgres - -"
   ];
 
+  users.users.forgejo.uid = 998;
+  users.groups.forgejo.gid = 998;
+
   networking.firewall.allowedTCPPorts = [
     3000 # Forgejo LAN
   ];

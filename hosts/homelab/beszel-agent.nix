@@ -4,6 +4,8 @@
   extraFilesystems ? [ ],
   extraPath ? [ ],
   smartmon ? { },
+  uid ? null,
+  gid ? null,
 }:
 { lib, pkgs, ... }:
 {
@@ -17,6 +19,13 @@
     environment = lib.optionalAttrs (extraFilesystems != [ ]) {
       EXTRA_FILESYSTEMS = lib.concatStringsSep "," extraFilesystems;
     };
+  };
+
+  users.users.beszel-agent = lib.optionalAttrs (uid != null) {
+    uid = uid;
+  };
+  users.groups.beszel-agent = lib.optionalAttrs (gid != null) {
+    gid = gid;
   };
 
   systemd.services.beszel-agent = {

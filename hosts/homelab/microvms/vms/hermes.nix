@@ -102,6 +102,9 @@ in
     (import ./caddy-proxy.nix { upstream = "http://127.0.0.1:9119"; })
   ];
 
+  users.users.hermes.uid = 998;
+  users.groups.hermes.gid = 998;
+
   services.hermes-agent = {
     enable = true;
     container = {

@@ -23,7 +23,7 @@ in
         version = "v0.4.0";
       }
     ];
-    vendorHash = "sha256-Cw7iwyK1S/4CLL0WKGADyfXiuPumno7cYWBv1RCKViA=";
+    vendorHash = "sha256-wLeRyjlEbHxfq7Hgn/Ea/8HEGo1zrR8DbbYxEphOg+o=";
   };
   "tailscale-deploy-dns" = pkgs.callPackage ./tailscale-deploy-dns { };
   "tailscale-deploy-policy" = pkgs.callPackage ./tailscale-deploy-policy { };

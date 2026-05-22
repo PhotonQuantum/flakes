@@ -8,11 +8,11 @@
         "pinned": false,
         "src": {
             "name": "ani-rss.jar",
-            "sha256": "sha256-4MB2VMzLPBMeaF48FYKizNHpHSWgHNSmAlM6lEUy7+c=",
+            "sha256": "sha256-W93LReLhD2KZBP2uXg+nyU69sgx4hh6ycuTEhlO+9NA=",
             "type": "url",
-            "url": "https://github.com/wushuo894/ani-rss/releases/download/v3.1.30/ani-rss.jar"
+            "url": "https://github.com/wushuo894/ani-rss/releases/download/v3.1.38/ani-rss.jar"
         },
-        "version": "v3.1.30"
+        "version": "v3.1.38"
     },
     "emby": {
         "cargoLock": null,
@@ -22,12 +22,12 @@
         "passthru": null,
         "pinned": false,
         "src": {
-            "name": "emby-server-deb_4.9.3.0_amd64.deb",
-            "sha256": "sha256-Tt+P6BnYm5efSuu6sF9Zi7q/RLh/Rg+zIi5pEqiwpzM=",
+            "name": "emby-server-deb_4.9.5.0_amd64.deb",
+            "sha256": "sha256-HXGP+gFpw5PePq/aZbGwV6PbTq2T/+tYg6vQFzXemEM=",
             "type": "url",
-            "url": "https://github.com/MediaBrowser/Emby.Releases/releases/download/4.9.3.0/emby-server-deb_4.9.3.0_amd64.deb"
+            "url": "https://github.com/MediaBrowser/Emby.Releases/releases/download/4.9.5.0/emby-server-deb_4.9.5.0_amd64.deb"
         },
-        "version": "4.9.3.0"
+        "version": "4.9.5.0"
     },
     "fish_abbreviation_tips": {
         "cargoLock": null,
@@ -262,7 +262,7 @@
     },
     "vicinae_extensions": {
         "cargoLock": null,
-        "date": "2026-05-12",
+        "date": "2026-05-19",
         "extract": null,
         "name": "vicinae_extensions",
         "passthru": null,
@@ -274,12 +274,12 @@
             "name": null,
             "owner": "vicinaehq",
             "repo": "extensions",
-            "rev": "48123bc3361f5ed462cc931203dfb7434c3adaf6",
-            "sha256": "sha256-p/zdh8pyPbwNQ0G4Swc+mFB8nvjQMwQ0NlLYaugI1pU=",
+            "rev": "5ef25b54b9db906b391ef7e6b85177f6ecd7f3d6",
+            "sha256": "sha256-V9ByOBzaUCMessP9T8LwXQTYl+eIQr+NeGceRprbsT8=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "48123bc3361f5ed462cc931203dfb7434c3adaf6"
+        "version": "5ef25b54b9db906b391ef7e6b85177f6ecd7f3d6"
     },
     "yazi_flavors": {
         "cargoLock": null,
@@ -388,7 +388,7 @@
     },
     "zsh_completions": {
         "cargoLock": null,
-        "date": "2026-05-11",
+        "date": "2026-05-22",
         "extract": null,
         "name": "zsh_completions",
         "passthru": null,
@@ -400,11 +400,11 @@
             "name": null,
             "owner": "zsh-users",
             "repo": "zsh-completions",
-            "rev": "64f802936cc368202957e1db42e9305eaaddda4d",
-            "sha256": "sha256-nNvE1wfPl8aASxTGwbzNZDwiDnmeKQP5UVm9ekxlgMQ=",
+            "rev": "6d21c2a1de9cb88479a0e67df492da3f3bbdb054",
+            "sha256": "sha256-j+uDt2Tocej+AuNFBjM8rVTyuj1fDaMJL7I9cFCaPgg=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "64f802936cc368202957e1db42e9305eaaddda4d"
+        "version": "6d21c2a1de9cb88479a0e67df492da3f3bbdb054"
     }
 }

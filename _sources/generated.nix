@@ -8,20 +8,20 @@
 {
   ani-rss = {
     pname = "ani-rss";
-    version = "v3.1.30";
+    version = "v3.1.38";
     src = fetchurl {
-      url = "https://github.com/wushuo894/ani-rss/releases/download/v3.1.30/ani-rss.jar";
+      url = "https://github.com/wushuo894/ani-rss/releases/download/v3.1.38/ani-rss.jar";
       name = "ani-rss.jar";
-      sha256 = "sha256-4MB2VMzLPBMeaF48FYKizNHpHSWgHNSmAlM6lEUy7+c=";
+      sha256 = "sha256-W93LReLhD2KZBP2uXg+nyU69sgx4hh6ycuTEhlO+9NA=";
     };
   };
   emby = {
     pname = "emby";
-    version = "4.9.3.0";
+    version = "4.9.5.0";
     src = fetchurl {
-      url = "https://github.com/MediaBrowser/Emby.Releases/releases/download/4.9.3.0/emby-server-deb_4.9.3.0_amd64.deb";
-      name = "emby-server-deb_4.9.3.0_amd64.deb";
-      sha256 = "sha256-Tt+P6BnYm5efSuu6sF9Zi7q/RLh/Rg+zIi5pEqiwpzM=";
+      url = "https://github.com/MediaBrowser/Emby.Releases/releases/download/4.9.5.0/emby-server-deb_4.9.5.0_amd64.deb";
+      name = "emby-server-deb_4.9.5.0_amd64.deb";
+      sha256 = "sha256-HXGP+gFpw5PePq/aZbGwV6PbTq2T/+tYg6vQFzXemEM=";
     };
   };
   fish_abbreviation_tips = {
@@ -158,15 +158,15 @@
   };
   vicinae_extensions = {
     pname = "vicinae_extensions";
-    version = "48123bc3361f5ed462cc931203dfb7434c3adaf6";
+    version = "5ef25b54b9db906b391ef7e6b85177f6ecd7f3d6";
     src = fetchFromGitHub {
       owner = "vicinaehq";
       repo = "extensions";
-      rev = "48123bc3361f5ed462cc931203dfb7434c3adaf6";
+      rev = "5ef25b54b9db906b391ef7e6b85177f6ecd7f3d6";
       fetchSubmodules = false;
-      sha256 = "sha256-p/zdh8pyPbwNQ0G4Swc+mFB8nvjQMwQ0NlLYaugI1pU=";
+      sha256 = "sha256-V9ByOBzaUCMessP9T8LwXQTYl+eIQr+NeGceRprbsT8=";
     };
-    date = "2026-05-12";
+    date = "2026-05-19";
   };
   yazi_flavors = {
     pname = "yazi_flavors";
@@ -230,14 +230,14 @@
   };
   zsh_completions = {
     pname = "zsh_completions";
-    version = "64f802936cc368202957e1db42e9305eaaddda4d";
+    version = "6d21c2a1de9cb88479a0e67df492da3f3bbdb054";
     src = fetchFromGitHub {
       owner = "zsh-users";
       repo = "zsh-completions";
-      rev = "64f802936cc368202957e1db42e9305eaaddda4d";
+      rev = "6d21c2a1de9cb88479a0e67df492da3f3bbdb054";
       fetchSubmodules = false;
-      sha256 = "sha256-nNvE1wfPl8aASxTGwbzNZDwiDnmeKQP5UVm9ekxlgMQ=";
+      sha256 = "sha256-j+uDt2Tocej+AuNFBjM8rVTyuj1fDaMJL7I9cFCaPgg=";
     };
-    date = "2026-05-11";
+    date = "2026-05-22";
   };
 }

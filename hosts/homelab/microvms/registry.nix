@@ -515,6 +515,45 @@ in
       };
     };
 
+    home-assistant = {
+      group = "lan";
+      vmId = 18;
+      module = ./vms/home-assistant.nix;
+      mem = 4096;
+      vcpu = 2;
+      beszel.agent.enable = true;
+
+      dataVolume = {
+        sizeMiB = 16384;
+        mountPoint = "/var/lib/home-assistant";
+        fsType = "ext4";
+        label = "ha-data";
+      };
+
+      backup = {
+        repo = secrets.backupRepos.home-assistant;
+      };
+
+      cert.enable = true;
+
+      tailscale = {
+        enable = true;
+        tags = [
+          "tag:homelab-vm"
+          "tag:home-assistant"
+        ];
+        grants = [
+          {
+            from = [ "autogroup:member" ];
+            ports = [
+              "tcp:80"
+              "tcp:443"
+            ];
+          }
+        ];
+      };
+    };
+
     # Example configuration only (documentation).
     # Uncomment and adapt when you need to run a MicroVM.
     # example-http = {

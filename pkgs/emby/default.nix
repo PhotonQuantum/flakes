@@ -1,7 +1,6 @@
 {
   lib,
   stdenvNoCC,
-  autoPatchelfHook,
   dpkg,
   makeWrapper,
   generated,
@@ -13,12 +12,9 @@ stdenvNoCC.mkDerivation rec {
   dontUnpack = true;
   dontStrip = true;
   nativeBuildInputs = [
-    autoPatchelfHook
     dpkg
     makeWrapper
   ];
-
-  autoPatchelfIgnoreMissingDeps = [ "liblttng-ust.so.0" ];
 
   installPhase = ''
     runHook preInstall
@@ -42,12 +38,6 @@ stdenvNoCC.mkDerivation rec {
       --chdir "$out/lib/emby"
 
     runHook postInstall
-  '';
-
-  preFixup = ''
-    addAutoPatchelfSearchPath "$out/lib/emby/lib"
-    addAutoPatchelfSearchPath "$out/lib/emby/extra/lib"
-    addAutoPatchelfSearchPath "$out/lib/emby/system"
   '';
 
   meta = {

@@ -8,11 +8,11 @@
         "pinned": false,
         "src": {
             "name": "ani-rss.jar",
-            "sha256": "sha256-W93LReLhD2KZBP2uXg+nyU69sgx4hh6ycuTEhlO+9NA=",
+            "sha256": "sha256-l77+fiews/l9l9pu2p3Tt2+rxPHaFSPfcf37dUgGFAw=",
             "type": "url",
-            "url": "https://github.com/wushuo894/ani-rss/releases/download/v3.1.38/ani-rss.jar"
+            "url": "https://github.com/wushuo894/ani-rss/releases/download/v3.1.50/ani-rss.jar"
         },
-        "version": "v3.1.38"
+        "version": "v3.1.50"
     },
     "emby": {
         "cargoLock": null,
@@ -115,7 +115,7 @@
     },
     "fish_done": {
         "cargoLock": null,
-        "date": "2025-12-15",
+        "date": "2026-06-15",
         "extract": null,
         "name": "fish_done",
         "passthru": null,
@@ -127,12 +127,12 @@
             "name": null,
             "owner": "franciscolourenco",
             "repo": "done",
-            "rev": "998ad4f5fc9cee36c09840a7e635b56428e554f9",
-            "sha256": "sha256-GZ1ZpcaEfbcex6XvxOFJDJqoD9C5out0W4bkkn768r0=",
+            "rev": "b86292a52a2b8f646ef8d25daa3cc01ccab60b62",
+            "sha256": "sha256-Tr22ktv2tQdtV153xm2vHnll8G26abSyXD5IokMjAj0=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "998ad4f5fc9cee36c09840a7e635b56428e554f9"
+        "version": "b86292a52a2b8f646ef8d25daa3cc01ccab60b62"
     },
     "fish_jump": {
         "cargoLock": null,
@@ -262,7 +262,7 @@
     },
     "vicinae_extensions": {
         "cargoLock": null,
-        "date": "2026-05-19",
+        "date": "2026-06-09",
         "extract": null,
         "name": "vicinae_extensions",
         "passthru": null,
@@ -274,12 +274,12 @@
             "name": null,
             "owner": "vicinaehq",
             "repo": "extensions",
-            "rev": "5ef25b54b9db906b391ef7e6b85177f6ecd7f3d6",
-            "sha256": "sha256-V9ByOBzaUCMessP9T8LwXQTYl+eIQr+NeGceRprbsT8=",
+            "rev": "b2169756872919f2bdeece9bce47247ba5d99b8a",
+            "sha256": "sha256-9D3/tZiIUUqNEVs0zdEgdTkY6qS70qbV87+KrXWiwV4=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "5ef25b54b9db906b391ef7e6b85177f6ecd7f3d6"
+        "version": "b2169756872919f2bdeece9bce47247ba5d99b8a"
     },
     "yazi_flavors": {
         "cargoLock": null,
@@ -346,7 +346,7 @@
     },
     "zimfw_input": {
         "cargoLock": null,
-        "date": "2026-01-05",
+        "date": "2026-06-08",
         "extract": null,
         "name": "zimfw_input",
         "passthru": null,
@@ -358,12 +358,12 @@
             "name": null,
             "owner": "zimfw",
             "repo": "input",
-            "rev": "0f7efb3f659e1d68743a6c2c06c962ba9e05ae66",
-            "sha256": "sha256-Ng4cVmzOrTk7uiW64QAGCXG2wmN+63mUlRv9x93g/90=",
+            "rev": "bdec2b372f8bd16a072d30ebc447a22dad52cfb4",
+            "sha256": "sha256-/tWks6oFH6/LK8u9SxsZIJ9uAonJ2T6l91BflDwog80=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "0f7efb3f659e1d68743a6c2c06c962ba9e05ae66"
+        "version": "bdec2b372f8bd16a072d30ebc447a22dad52cfb4"
     },
     "zimfw_utility": {
         "cargoLock": null,
@@ -388,7 +388,7 @@
     },
     "zsh_completions": {
         "cargoLock": null,
-        "date": "2026-05-22",
+        "date": "2026-06-15",
         "extract": null,
         "name": "zsh_completions",
         "passthru": null,
@@ -400,11 +400,11 @@
             "name": null,
             "owner": "zsh-users",
             "repo": "zsh-completions",
-            "rev": "6d21c2a1de9cb88479a0e67df492da3f3bbdb054",
-            "sha256": "sha256-j+uDt2Tocej+AuNFBjM8rVTyuj1fDaMJL7I9cFCaPgg=",
+            "rev": "4b23ecd62a9ad79ddf2ac03c0bd8a7b43266508c",
+            "sha256": "sha256-9ao6BPipJQwzFvwFK5skvIusfE7tEuuPuPbInOPyq3k=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "6d21c2a1de9cb88479a0e67df492da3f3bbdb054"
+        "version": "4b23ecd62a9ad79ddf2ac03c0bd8a7b43266508c"
     }
 }

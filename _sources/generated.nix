@@ -8,11 +8,11 @@
 {
   ani-rss = {
     pname = "ani-rss";
-    version = "v3.1.38";
+    version = "v3.1.50";
     src = fetchurl {
-      url = "https://github.com/wushuo894/ani-rss/releases/download/v3.1.38/ani-rss.jar";
+      url = "https://github.com/wushuo894/ani-rss/releases/download/v3.1.50/ani-rss.jar";
       name = "ani-rss.jar";
-      sha256 = "sha256-W93LReLhD2KZBP2uXg+nyU69sgx4hh6ycuTEhlO+9NA=";
+      sha256 = "sha256-l77+fiews/l9l9pu2p3Tt2+rxPHaFSPfcf37dUgGFAw=";
     };
   };
   emby = {
@@ -74,15 +74,15 @@
   };
   fish_done = {
     pname = "fish_done";
-    version = "998ad4f5fc9cee36c09840a7e635b56428e554f9";
+    version = "b86292a52a2b8f646ef8d25daa3cc01ccab60b62";
     src = fetchFromGitHub {
       owner = "franciscolourenco";
       repo = "done";
-      rev = "998ad4f5fc9cee36c09840a7e635b56428e554f9";
+      rev = "b86292a52a2b8f646ef8d25daa3cc01ccab60b62";
       fetchSubmodules = false;
-      sha256 = "sha256-GZ1ZpcaEfbcex6XvxOFJDJqoD9C5out0W4bkkn768r0=";
+      sha256 = "sha256-Tr22ktv2tQdtV153xm2vHnll8G26abSyXD5IokMjAj0=";
     };
-    date = "2025-12-15";
+    date = "2026-06-15";
   };
   fish_jump = {
     pname = "fish_jump";
@@ -158,15 +158,15 @@
   };
   vicinae_extensions = {
     pname = "vicinae_extensions";
-    version = "5ef25b54b9db906b391ef7e6b85177f6ecd7f3d6";
+    version = "b2169756872919f2bdeece9bce47247ba5d99b8a";
     src = fetchFromGitHub {
       owner = "vicinaehq";
       repo = "extensions";
-      rev = "5ef25b54b9db906b391ef7e6b85177f6ecd7f3d6";
+      rev = "b2169756872919f2bdeece9bce47247ba5d99b8a";
       fetchSubmodules = false;
-      sha256 = "sha256-V9ByOBzaUCMessP9T8LwXQTYl+eIQr+NeGceRprbsT8=";
+      sha256 = "sha256-9D3/tZiIUUqNEVs0zdEgdTkY6qS70qbV87+KrXWiwV4=";
     };
-    date = "2026-05-19";
+    date = "2026-06-09";
   };
   yazi_flavors = {
     pname = "yazi_flavors";
@@ -206,15 +206,15 @@
   };
   zimfw_input = {
     pname = "zimfw_input";
-    version = "0f7efb3f659e1d68743a6c2c06c962ba9e05ae66";
+    version = "bdec2b372f8bd16a072d30ebc447a22dad52cfb4";
     src = fetchFromGitHub {
       owner = "zimfw";
       repo = "input";
-      rev = "0f7efb3f659e1d68743a6c2c06c962ba9e05ae66";
+      rev = "bdec2b372f8bd16a072d30ebc447a22dad52cfb4";
       fetchSubmodules = false;
-      sha256 = "sha256-Ng4cVmzOrTk7uiW64QAGCXG2wmN+63mUlRv9x93g/90=";
+      sha256 = "sha256-/tWks6oFH6/LK8u9SxsZIJ9uAonJ2T6l91BflDwog80=";
     };
-    date = "2026-01-05";
+    date = "2026-06-08";
   };
   zimfw_utility = {
     pname = "zimfw_utility";
@@ -230,14 +230,14 @@
   };
   zsh_completions = {
     pname = "zsh_completions";
-    version = "6d21c2a1de9cb88479a0e67df492da3f3bbdb054";
+    version = "4b23ecd62a9ad79ddf2ac03c0bd8a7b43266508c";
     src = fetchFromGitHub {
       owner = "zsh-users";
       repo = "zsh-completions";
-      rev = "6d21c2a1de9cb88479a0e67df492da3f3bbdb054";
+      rev = "4b23ecd62a9ad79ddf2ac03c0bd8a7b43266508c";
       fetchSubmodules = false;
-      sha256 = "sha256-j+uDt2Tocej+AuNFBjM8rVTyuj1fDaMJL7I9cFCaPgg=";
+      sha256 = "sha256-9ao6BPipJQwzFvwFK5skvIusfE7tEuuPuPbInOPyq3k=";
     };
-    date = "2026-05-22";
+    date = "2026-06-15";
   };
 }

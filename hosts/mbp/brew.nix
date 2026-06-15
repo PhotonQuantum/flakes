@@ -5,12 +5,13 @@ _: {
     autoUpdate = true;
     upgrade = true;
     cleanup = "uninstall";
+    extraFlags = [ "--force-cleanup" ];
   };
   homebrew.taps = [
     "borgbackup/tap"
     "homebrew/cask"
     "homebrew/services"
-    "Kegworks-App/kegworks"
+    "sikarugir-app/sikarugir"
     "messense/macos-cross-toolchains"
     "minio/stable"
     "mongodb/brew"
@@ -69,7 +70,7 @@ _: {
     "iina"
     "jetbrains-toolbox"
     "karabiner-elements"
-    "Kegworks-App/kegworks/kegworks"
+    "sikarugir-app/sikarugir/sikarugir"
     "keka"
     "kekaexternalhelper"
     "keyboard-lock"

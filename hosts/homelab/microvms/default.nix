@@ -6,6 +6,7 @@
 }:
 let
   homelabSecrets = import ../../../secrets/homelab.nix;
+  homeAssistantThreadRadio = homelabSecrets.usbDevices.homeAssistantThreadRadio;
   inventory = import ./inventory.nix { inherit inputs lib; };
   inherit (inventory)
     vmLib
@@ -50,6 +51,10 @@ in
   ];
 
   systemd.tmpfiles.rules = map (dir: "v ${dir} 0770 microvm kvm - -") volumeDirs;
+
+  services.udev.extraRules = ''
+    SUBSYSTEM=="usb", ATTR{idVendor}=="${lib.removePrefix "0x" homeAssistantThreadRadio.vendorId}", ATTR{idProduct}=="${lib.removePrefix "0x" homeAssistantThreadRadio.productId}", GROUP="kvm", MODE="0660"
+  '';
 
   services.journald.remote = {
     enable = true;

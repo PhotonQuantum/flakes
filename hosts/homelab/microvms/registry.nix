@@ -536,6 +536,15 @@ in
 
       cert.enable = true;
 
+      extraOptions = {
+        devices = [
+          {
+            bus = "usb";
+            path = "vendorid=${secrets.usbDevices.homeAssistantThreadRadio.vendorId},productid=${secrets.usbDevices.homeAssistantThreadRadio.productId}";
+          }
+        ];
+      };
+
       tailscale = {
         enable = true;
         tags = [

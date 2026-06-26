@@ -1,7 +1,22 @@
-{ pkgs, ... }:
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}:
 let
+  homelabSecrets = import ../../../../secrets/homelab.nix;
+  threadRadio = homelabSecrets.usbDevices.homeAssistantThreadRadio;
   dataDir = "/var/lib/home-assistant";
   configDir = "${dataDir}/config";
+  matterDir = "${dataDir}/matter-server";
+  matterUser = "1000";
+  matterGroup = "1000";
+  threadDir = "${dataDir}/thread";
+  mkBoolParam = name: enabled: lib.optionalString enabled "&${name}";
+  threadRadioUrl =
+    "spinel+hdlc+uart://${threadRadio.byId}?uart-baudrate=${toString threadRadio.baudRate}"
+    + mkBoolParam "uart-flow-control" threadRadio.flowControl;
   initialConfig = pkgs.writeText "home-assistant-configuration.yaml" ''
     default_config:
 
@@ -27,17 +42,47 @@ in
 
   virtualisation.oci-containers = {
     backend = "docker";
-    containers.homeassistant = {
-      image = "ghcr.io/home-assistant/home-assistant:stable";
-      autoStart = true;
-      privileged = true;
-      volumes = [
-        "${configDir}:/config"
-        "/etc/localtime:/etc/localtime:ro"
-      ];
-      extraOptions = [
-        "--network=host"
-      ];
+    containers = {
+      matter-server = {
+        image = "ghcr.io/matter-js/matterjs-server:stable";
+        autoStart = true;
+        volumes = [
+          "${matterDir}:/data"
+        ];
+        environment = {
+          STORAGE_PATH = "/data";
+          OTA_PROVIDER_DIR = "/data/updates";
+          PRIMARY_INTERFACE = "wpan0";
+          LOG_LEVEL = "info";
+        };
+        extraOptions = [
+          "--network=host"
+        ];
+      };
+
+      homeassistant = {
+        image = "ghcr.io/home-assistant/home-assistant:stable";
+        autoStart = true;
+        privileged = true;
+        volumes = [
+          "${configDir}:/config"
+          "/etc/localtime:/etc/localtime:ro"
+        ];
+        extraOptions = [
+          "--network=host"
+        ];
+      };
+    };
+  };
+
+  services.openthread-border-router = {
+    enable = true;
+    backboneInterfaces = [ "enp0s6" ];
+    logLevel = "notice";
+    radio.url = threadRadioUrl;
+    rest = {
+      listenAddress = "127.0.0.1";
+      listenPort = 8081;
     };
   };
 
@@ -45,7 +90,72 @@ in
     "d ${dataDir} 0750 root root - -"
     "d ${configDir} 0750 root root - -"
     "d ${dataDir}/docker 0710 root root - -"
+    "d ${matterDir} 0750 ${matterUser} ${matterGroup} - -"
+    "d ${matterDir}/credentials 0750 ${matterUser} ${matterGroup} - -"
+    "d ${matterDir}/updates 0750 ${matterUser} ${matterGroup} - -"
+    "d ${threadDir} 0700 root root - -"
   ];
+
+  systemd.services = {
+    otbr-agent.serviceConfig.BindPaths = [ "${threadDir}:/var/lib/thread" ];
+
+    otbr-backbone-onlink-routes = {
+      description = "Install OTBR backbone on-link IPv6 routes";
+      after = [
+        "otbr-agent.service"
+        "systemd-networkd.service"
+      ];
+      requires = [ "otbr-agent.service" ];
+      wantedBy = [ "multi-user.target" ];
+      path = [
+        config.services.openthread-border-router.package
+        pkgs.coreutils
+        pkgs.gnused
+        pkgs.iproute2
+      ];
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+      };
+      script = ''
+        set -eu
+
+        for _ in $(seq 1 30); do
+          output="$(ot-ctl br onlinkprefix 2>/dev/null || true)"
+          prefixes="$(
+            printf '%s\n' "$output" \
+              | sed -n 's/^\(Local\|Favored\): \([^ ]*\).*/\2/p' \
+              | sort -u
+          )"
+
+          if [ -n "$prefixes" ]; then
+            for prefix in $prefixes; do
+              ip -6 route replace "$prefix" dev enp0s6 metric 100
+            done
+            exit 0
+          fi
+
+          sleep 1
+        done
+
+        echo "failed to discover OTBR backbone on-link prefixes" >&2
+        exit 1
+      '';
+    };
+
+    docker-homeassistant = {
+      after = [
+        "docker-matter-server.service"
+        "otbr-backbone-onlink-routes.service"
+        "otbr-agent.service"
+      ];
+      wants = [
+        "docker-matter-server.service"
+        "otbr-backbone-onlink-routes.service"
+        "otbr-agent.service"
+      ];
+    };
+  };
 
   systemd.services.home-assistant-config = {
     description = "Install initial Home Assistant configuration";
@@ -70,6 +180,8 @@ in
   };
 
   networking.firewall = {
+    trustedInterfaces = [ "wpan0" ];
+    allowedTCPPorts = [ 8123 ];
     allowedTCPPortRanges = [
       {
         from = 21063;

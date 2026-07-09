@@ -53,7 +53,6 @@ in
 
   services.journald.remote = {
     enable = true;
-    listen = "http";
     settings.Remote = {
       SplitMode = "host";
       MaxUse = "5G";

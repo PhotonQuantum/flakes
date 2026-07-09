@@ -5,17 +5,34 @@ _: {
     autoUpdate = true;
     upgrade = true;
     cleanup = "uninstall";
-    extraFlags = [ "--force-cleanup" ];
   };
   homebrew.taps = [
-    "borgbackup/tap"
+    {
+      name = "borgbackup/tap";
+      trusted = true;
+    }
     "homebrew/cask"
     "homebrew/services"
-    "sikarugir-app/sikarugir"
-    "messense/macos-cross-toolchains"
-    "minio/stable"
-    "mongodb/brew"
-    "photonquantum/tap"
+    {
+      name = "sikarugir-app/sikarugir";
+      trusted = true;
+    }
+    {
+      name = "messense/macos-cross-toolchains";
+      trusted = true;
+    }
+    {
+      name = "minio/stable";
+      trusted = true;
+    }
+    {
+      name = "mongodb/brew";
+      trusted = true;
+    }
+    {
+      name = "photonquantum/tap";
+      trusted = true;
+    }
   ];
   homebrew.brews = [
     "act"

@@ -146,13 +146,13 @@
   };
   hermes_lcm = {
     pname = "hermes_lcm";
-    version = "v0.10.4";
+    version = "v0.19.0";
     src = fetchFromGitHub {
       owner = "stephenschoettler";
       repo = "hermes-lcm";
-      rev = "v0.10.4";
+      rev = "v0.19.0";
       fetchSubmodules = false;
-      sha256 = "sha256-14phNk0DJDKpPwYAjm8RaJCE4g0KiRNhjc7rAI4h9n4=";
+      sha256 = "sha256-B80HCn3BT+M1B8THMm3Ph5tpimTB68yIVkBfPaV4X40=";
     };
   };
   sbarlua = {

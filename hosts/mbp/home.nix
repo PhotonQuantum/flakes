@@ -35,7 +35,6 @@
     ];
     defaultShell = pkgs.fish;
     shell.enableShellIntegration = true;
-    disableMacPowerButton = true;
   };
 
   home.Xcompose = import ./Xcompose.nix;

@@ -106,6 +106,13 @@ in
         group = "kvm";
         permissions = "0400";
       };
+      "hindsight.env" = {
+        keyFile = ../../secrets/hindsight.env;
+        destDir = "/var/keys";
+        user = "microvm";
+        group = "kvm";
+        permissions = "0400";
+      };
     };
   };
 

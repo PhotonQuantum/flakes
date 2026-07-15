@@ -144,6 +144,19 @@
     };
     date = "2024-12-11";
   };
+  hermes_agent_image = {
+    pname = "hermes_agent_image";
+    version = "v2026.7.7.2";
+    src = dockerTools.pullImage {
+      imageName = "nousresearch/hermes-agent";
+      imageDigest = "sha256:9c841866021c54c4596849f6135717e8a4d52ba510b7f52c50aef1de1a283973";
+      sha256 = "sha256-O7TTqI6itLY0HzsyY88ZNYVQ/sjxnRzHGvBvBUrRFfA=";
+      finalImageTag = "v2026.7.7.2";
+      os = "linux";
+      arch = "amd64";
+      finalImageName = "nousresearch/hermes-agent";
+    };
+  };
   hermes_lcm = {
     pname = "hermes_lcm";
     version = "v0.19.0";
@@ -153,6 +166,19 @@
       rev = "v0.19.0";
       fetchSubmodules = false;
       sha256 = "sha256-B80HCn3BT+M1B8THMm3Ph5tpimTB68yIVkBfPaV4X40=";
+    };
+  };
+  hindsight_image = {
+    pname = "hindsight_image";
+    version = "0.8.4";
+    src = dockerTools.pullImage {
+      imageName = "ghcr.io/vectorize-io/hindsight";
+      imageDigest = "sha256:2c60f233eaba8f51db31adb920a560735aaf6f314e4b63c36c73159742dfa1a7";
+      sha256 = "sha256-1qzTnBCS8cEZPQufJwap4cAz86YxMlg6ILNmlczfoGg=";
+      finalImageTag = "0.8.4";
+      os = "linux";
+      arch = "amd64";
+      finalImageName = "ghcr.io/vectorize-io/hindsight";
     };
   };
   sbarlua = {

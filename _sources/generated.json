@@ -239,6 +239,26 @@
         },
         "version": "1b3e34130de6a0b3bcdf4646d944d9da76dcd588"
     },
+    "hermes_agent_image": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "hermes_agent_image",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "arch": "amd64",
+            "finalImageName": "nousresearch/hermes-agent",
+            "finalImageTag": null,
+            "imageDigest": "sha256:9c841866021c54c4596849f6135717e8a4d52ba510b7f52c50aef1de1a283973",
+            "imageName": "nousresearch/hermes-agent",
+            "imageTag": "v2026.7.7.2",
+            "os": "linux",
+            "sha256": "sha256-O7TTqI6itLY0HzsyY88ZNYVQ/sjxnRzHGvBvBUrRFfA=",
+            "tlsVerify": null
+        },
+        "version": "v2026.7.7.2"
+    },
     "hermes_lcm": {
         "cargoLock": null,
         "date": null,
@@ -259,6 +279,26 @@
             "type": "github"
         },
         "version": "v0.19.0"
+    },
+    "hindsight_image": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "hindsight_image",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "arch": "amd64",
+            "finalImageName": "ghcr.io/vectorize-io/hindsight",
+            "finalImageTag": null,
+            "imageDigest": "sha256:2c60f233eaba8f51db31adb920a560735aaf6f314e4b63c36c73159742dfa1a7",
+            "imageName": "ghcr.io/vectorize-io/hindsight",
+            "imageTag": "0.8.4",
+            "os": "linux",
+            "sha256": "sha256-1qzTnBCS8cEZPQufJwap4cAz86YxMlg6ILNmlczfoGg=",
+            "tlsVerify": null
+        },
+        "version": "0.8.4"
     },
     "sbarlua": {
         "cargoLock": null,

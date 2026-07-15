@@ -60,6 +60,7 @@ in
       monitor = [
         "desc:Dell Inc. DELL U2718Q, preferred, auto, 2"
         "desc:LG Electronics LG ULTRAFINE 105NTMXHK739, preferred, auto, 2"
+        "desc:LG Electronics LG ULTRAFINE 312NTYT07842, preferred, auto, 2"
         ", preferred, auto, 1"
       ];
 

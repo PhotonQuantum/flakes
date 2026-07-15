@@ -800,7 +800,9 @@ let
     in
     { config, pkgs, ... }:
     {
-      imports = if builtins.isList extraConfig then extraConfig else [ extraConfig ];
+      imports =
+        [ ./guest-agent.nix ]
+        ++ (if builtins.isList extraConfig then extraConfig else [ extraConfig ]);
 
       _module.args = {
         inherit vmSelf vmTopology;

@@ -24,6 +24,13 @@ let
   snapshotParent = name: "${snapshotRoot}/${name}";
   snapshotCurrent = name: "${snapshotParent name}/current";
 
+  qgaClient = pkgs.writers.writePython3Bin "microvm-qga" {
+    flakeIgnore = [
+      "E501"
+      "E265"
+    ];
+  } (builtins.readFile ./qga_client.py);
+
   borgJobs = lib.mapAttrs' (
     name: machine:
     let
@@ -31,6 +38,7 @@ let
       vmSubvolumePath = subvolumePath name;
       vmSnapshotParent = snapshotParent name;
       vmSnapshotCurrent = snapshotCurrent name;
+      vmQgaSocket = "/var/lib/microvms/${name}/qga.sock";
     in
     {
       name = "microvm-${name}";
@@ -68,9 +76,10 @@ let
             fi
           fi
 
-          ${pkgs.btrfs-progs}/bin/btrfs subvolume snapshot -r \
-            '${vmSubvolumePath}' \
-            '${vmSnapshotCurrent}'
+          ${qgaClient}/bin/microvm-qga freeze-exec '${vmQgaSocket}' -- \
+            ${pkgs.btrfs-progs}/bin/btrfs subvolume snapshot -r \
+              '${vmSubvolumePath}' \
+              '${vmSnapshotCurrent}'
         '';
         postHook = ''
           set +e
@@ -147,5 +156,8 @@ in
   services.borgbackup.jobs = borgJobs;
 
   environment.etc."microvm-backup/manifest.json".text = builtins.toJSON backupManifest;
-  environment.systemPackages = [ backupCli ];
+  environment.systemPackages = [
+    backupCli
+    qgaClient
+  ];
 }

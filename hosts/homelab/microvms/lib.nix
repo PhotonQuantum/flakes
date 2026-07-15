@@ -798,7 +798,7 @@ let
         inherit credentialFiles;
       };
     in
-    { pkgs, ... }:
+    { config, pkgs, ... }:
     {
       imports = if builtins.isList extraConfig then extraConfig else [ extraConfig ];
 
@@ -920,7 +920,38 @@ let
       boot.kernelParams = [ "systemd.ssh_listen=vsock::22" ];
       boot.kernelPackages = pkgs.linuxPackages_latest;
 
-      microvm = generatedMicrovm // (builtins.removeAttrs extraOptions [ "shares" ]);
+      microvm =
+        generatedMicrovm
+        // (builtins.removeAttrs extraOptions [ "shares" ])
+        // {
+          # NOTE This is a fix for known kernel bug
+          # https://kernel.googlesource.com/pub/scm/linux/kernel/git/kdave/linux/+/31b706da2cfd8ee3352391181ccf9696bed3d25d
+          # https://www.spinics.net/lists/linux-btrfs/msg165798.html
+          # "fix false IO failures after direct IO falls back to buffered write in some cases"
+          # 
+          # This bug corrupted the forgejo data volume.
+          # 
+          # The fix will be included in Linux 7.2. For now, we disable O_DIRECT for all microvm volumes.
+
+          # microvm.nix currently emits cache=none whenever the `direct`
+          # option is non-null. Since `direct` is a boolean with a default of
+          # false, this unintentionally enables O_DIRECT for every volume.
+          # Patch the generated QEMU runner until the upstream condition uses
+          # the boolean value instead. QEMU's writeback mode keeps flushes
+          # enabled while using the host page cache.
+          declaredRunner = lib.mkForce (
+            config.microvm.runner.qemu.overrideAttrs (old: {
+              buildCommand = old.buildCommand + ''
+                runner="$out/bin/microvm-run"
+                runnerTarget="$(${pkgs.coreutils}/bin/readlink -f "$runner")"
+                rm "$runner"
+                ${pkgs.gnused}/bin/sed 's/,cache=none/,cache=writeback/g' \
+                  "$runnerTarget" > "$runner"
+                chmod +x "$runner"
+              '';
+            })
+          );
+        };
 
       system.stateVersion = "25.11";
     };

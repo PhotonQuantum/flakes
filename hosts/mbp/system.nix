@@ -13,7 +13,7 @@
   users.users.lightquantum = {
     home = "/Users/lightquantum";
     shell = pkgs.fish;
-    openssh.authorizedKeys.keys = [ (builtins.readFile ../../secrets/id_ed25519_litter.pub) ];
+    openssh.authorizedKeys.keys = [ (builtins.readFile ../../secrets/id_ed25519_codex.pub) ];
   };
   users.users.root = {
     home = "/var/root";

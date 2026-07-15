@@ -1,6 +1,7 @@
 {
   upstream,
   accessLog ? false,
+  rewriteOrigin ? false,
 }:
 {
   lib,
@@ -47,6 +48,7 @@ in
           ''}
           reverse_proxy ${upstream} {
             header_up Host {upstream_hostport}
+            ${lib.optionalString rewriteOrigin "header_up Origin ${upstream}"}
           }
         '';
       };

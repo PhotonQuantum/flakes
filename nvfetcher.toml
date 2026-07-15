@@ -75,6 +75,22 @@ fetch.github = "vicinaehq/extensions"
 src.github = "stephenschoettler/hermes-lcm"
 fetch.github = "stephenschoettler/hermes-lcm"
 
+[hermes_agent_image]
+src.container = "nousresearch/hermes-agent"
+src.include_regex = "^v[0-9]+\\.[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
+fetch.docker = "nousresearch/hermes-agent"
+docker.arch = "amd64"
+docker.os = "linux"
+docker.finalImageName = "nousresearch/hermes-agent"
+
+[hindsight_image]
+src.github = "vectorize-io/hindsight"
+src.prefix = "v"
+fetch.docker = "ghcr.io/vectorize-io/hindsight"
+docker.arch = "amd64"
+docker.os = "linux"
+docker.finalImageName = "ghcr.io/vectorize-io/hindsight"
+
 [ani-rss]
 src.github = "wushuo894/ani-rss"
 fetch.url = "https://github.com/wushuo894/ani-rss/releases/download/$ver/ani-rss.jar"

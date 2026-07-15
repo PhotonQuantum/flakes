@@ -282,10 +282,7 @@ in
     hermes = {
       group = "isolated";
       vmId = 16;
-      module = [
-        inputs.hermes-agent.nixosModules.default
-        ./vms/hermes.nix
-      ];
+      module = ./vms/hermes.nix;
       mem = 8192;
       vcpu = 4;
       beszel.agent.enable = true;
@@ -332,6 +329,12 @@ in
           user = "hermes";
           group = "hermes";
           permissions = "0400";
+        };
+        "/var/keys/hindsight.env" = {
+          file = "/var/keys/hindsight.env";
+          user = "root";
+          group = "hindsight";
+          permissions = "0440";
         };
       };
     };

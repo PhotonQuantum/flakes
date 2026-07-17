@@ -83,6 +83,22 @@ docker.arch = "amd64"
 docker.os = "linux"
 docker.finalImageName = "nousresearch/hermes-agent"
 
+[home_assistant_image]
+src.github = "home-assistant/core"
+src.include_regex = "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+fetch.docker = "ghcr.io/home-assistant/home-assistant"
+docker.arch = "amd64"
+docker.os = "linux"
+docker.finalImageName = "ghcr.io/home-assistant/home-assistant"
+
+[matter_server_image]
+src.github = "matter-js/matterjs-server"
+src.prefix = "v"
+fetch.docker = "ghcr.io/matter-js/matterjs-server"
+docker.arch = "amd64"
+docker.os = "linux"
+docker.finalImageName = "ghcr.io/matter-js/matterjs-server"
+
 [hindsight_image]
 src.github = "vectorize-io/hindsight"
 src.prefix = "v"

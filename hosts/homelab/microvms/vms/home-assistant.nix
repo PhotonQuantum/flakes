@@ -14,6 +14,8 @@ let
   matterUser = "1000";
   matterGroup = "1000";
   threadDir = "${dataDir}/thread";
+  homeAssistantImage = pkgs.generated.home_assistant_image;
+  matterServerImage = pkgs.generated.matter_server_image;
   mkBoolParam = name: enabled: lib.optionalString enabled "&${name}";
   threadRadioUrl =
     "spinel+hdlc+uart://${threadRadio.byId}?uart-baudrate=${toString threadRadio.baudRate}"
@@ -46,7 +48,8 @@ in
     backend = "docker";
     containers = {
       matter-server = {
-        image = "ghcr.io/matter-js/matterjs-server:stable";
+        image = "ghcr.io/matter-js/matterjs-server:${matterServerImage.version}";
+        imageFile = matterServerImage.src;
         autoStart = true;
         volumes = [
           "${matterDir}:/data"
@@ -65,7 +68,8 @@ in
       };
 
       homeassistant = {
-        image = "ghcr.io/home-assistant/home-assistant:stable";
+        image = "ghcr.io/home-assistant/home-assistant:${homeAssistantImage.version}";
+        imageFile = homeAssistantImage.src;
         autoStart = true;
         privileged = true;
         volumes = [

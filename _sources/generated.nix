@@ -181,6 +181,32 @@
       finalImageName = "ghcr.io/vectorize-io/hindsight";
     };
   };
+  home_assistant_image = {
+    pname = "home_assistant_image";
+    version = "2026.7.2";
+    src = dockerTools.pullImage {
+      imageName = "ghcr.io/home-assistant/home-assistant";
+      imageDigest = "sha256:1476924357b46e80735c13e94232ba5c853cac052e9df4bb28d50fa56348097b";
+      sha256 = "sha256-3H3sFHISGDkdIXkIFCppzdme/0vHJ7lRasoqUVnOQmk=";
+      finalImageTag = "2026.7.2";
+      os = "linux";
+      arch = "amd64";
+      finalImageName = "ghcr.io/home-assistant/home-assistant";
+    };
+  };
+  matter_server_image = {
+    pname = "matter_server_image";
+    version = "1.2.7";
+    src = dockerTools.pullImage {
+      imageName = "ghcr.io/matter-js/matterjs-server";
+      imageDigest = "sha256:3f2b19c26fa21f9a855fd1e31cc8e1b174e8fcece881ab4ac7f56b5d828446a6";
+      sha256 = "sha256-1vdqdjnwqf/fylX56GgxhtKs6KXGocoCRN3q1S93YKs=";
+      finalImageTag = "1.2.7";
+      os = "linux";
+      arch = "amd64";
+      finalImageName = "ghcr.io/matter-js/matterjs-server";
+    };
+  };
   sbarlua = {
     pname = "sbarlua";
     version = "dba9cc421b868c918d5c23c408544a28aadf2f2f";

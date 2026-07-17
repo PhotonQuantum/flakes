@@ -117,7 +117,13 @@ in
   users.groups.hermes.gid = ids.hermes;
   users.groups.hindsight.gid = ids.hindsight;
 
-  virtualisation.docker.daemon.settings.data-root = paths.docker;
+  virtualisation.docker = {
+    autoPrune = {
+      enable = true;
+      flags = [ "--all" ];
+    };
+    daemon.settings.data-root = paths.docker;
+  };
 
   virtualisation.oci-containers = {
     backend = "docker";

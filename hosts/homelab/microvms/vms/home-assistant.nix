@@ -40,8 +40,14 @@ in
     (import ./caddy-proxy.nix { upstream = "http://127.0.0.1:8123"; })
   ];
 
-  virtualisation.docker.daemon.settings = {
-    data-root = "${dataDir}/docker";
+  virtualisation.docker = {
+    autoPrune = {
+      enable = true;
+      flags = [ "--all" ];
+    };
+    daemon.settings = {
+      data-root = "${dataDir}/docker";
+    };
   };
 
   virtualisation.oci-containers = {

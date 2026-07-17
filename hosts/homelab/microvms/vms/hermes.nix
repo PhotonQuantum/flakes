@@ -49,6 +49,57 @@ let
     set +a
     exec /app/start-all.sh
   '';
+  mergeHermesEnv = pkgs.writeText "merge-hermes-env.py" ''
+    import os
+    import re
+    from pathlib import Path
+
+    data = Path(${builtins.toJSON paths.data})
+    env_source = Path("/var/keys/hermes.env")
+    env_target = data / ".env"
+    assignment = re.compile(r"^([A-Za-z_][A-Za-z0-9_]*)=(.*)$")
+
+    def atomic_write(path: Path, content: str, mode: int, uid: int, gid: int) -> None:
+        temporary = path.with_name(f".{path.name}.nix-new")
+        with temporary.open("w", encoding="utf-8") as handle:
+            handle.write(content)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.chmod(temporary, mode)
+        os.chown(temporary, uid, gid)
+        os.replace(temporary, path)
+
+    declared = {}
+    for line in env_source.read_text(encoding="utf-8").splitlines():
+        match = assignment.match(line)
+        if match:
+            declared[match.group(1)] = match.group(2)
+
+    runtime_lines = []
+    if env_target.exists():
+        runtime_lines = env_target.read_text(encoding="utf-8").splitlines()
+
+    reconciled = []
+    emitted = set()
+    for line in runtime_lines:
+        match = assignment.match(line)
+        if not match:
+            reconciled.append(line)
+            continue
+        key = match.group(1)
+        if key in declared:
+            if key not in emitted:
+                reconciled.append(f"{key}={declared[key]}")
+                emitted.add(key)
+        else:
+            reconciled.append(line)
+
+    for key, value in declared.items():
+        if key not in emitted:
+            reconciled.append(f"{key}={value}")
+
+    atomic_write(env_target, "\n".join(reconciled) + "\n", 0o600, ${toString ids.hermes}, ${toString ids.hermes})
+  '';
 in
 {
   imports = [
@@ -121,7 +172,6 @@ in
         };
         volumes = [
           "${paths.data}:/opt/data"
-          "/var/keys/hermes.env:/opt/data/.env:ro"
         ];
         extraOptions = [ "--network=host" ];
       };
@@ -172,10 +222,7 @@ in
           install -o ${toString ids.hermes} -g ${toString ids.hermes} -m 0640 \
             /var/keys/hermes.SOUL.md ${paths.data}/SOUL.md
         fi
-        if [ ! -e ${paths.data}/.env ]; then
-          install -o ${toString ids.hermes} -g ${toString ids.hermes} -m 0600 \
-            /dev/null ${paths.data}/.env
-        fi
+        ${pkgs.python3}/bin/python ${mergeHermesEnv}
 
         while IFS= read -r plugin_dir; do
           plugin_name="$(${pkgs.coreutils}/bin/basename "$plugin_dir")"
@@ -225,27 +272,5 @@ in
       unitConfig.RequiresMountsFor = paths.root;
     };
 
-    hermes-scrub-secret-backups = {
-      description = "Remove Hermes dotenv migration backups";
-      wantedBy = [ "docker-hermes.service" ];
-      after = [ "docker-hermes.service" ];
-      requires = [ "docker-hermes.service" ];
-      unitConfig.RequiresMountsFor = paths.root;
-      serviceConfig.Type = "oneshot";
-      script = ''
-        set -eu
-        for attempt in $(${pkgs.coreutils}/bin/seq 1 120); do
-          if ${pkgs.curl}/bin/curl --fail --silent --max-time 2 \
-            http://127.0.0.1:9119/ >/dev/null; then
-            ${pkgs.findutils}/bin/find ${paths.data} -maxdepth 1 \
-              -type f -name '.env.bak-*' -delete
-            exit 0
-          fi
-          ${pkgs.coreutils}/bin/sleep 1
-        done
-        echo "Hermes dashboard did not become ready before dotenv backup cleanup" >&2
-        exit 1
-      '';
-    };
   };
 }

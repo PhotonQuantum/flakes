@@ -81,9 +81,9 @@ in
           "/run/hindsight-start"
         ];
         environment = {
-          HINDSIGHT_API_LLM_PROVIDER = "openrouter";
-          HINDSIGHT_API_LLM_MODEL = "~google/gemini-flash-latest";
-          HINDSIGHT_API_LLM_BASE_URL = "https://openrouter.ai/api/v1";
+          HINDSIGHT_API_LLM_PROVIDER = "deepseek";
+          HINDSIGHT_API_LLM_MODEL = "deepseek-v4-flash";
+          HINDSIGHT_API_LLM_BASE_URL = "https://api.deepseek.com";
           HINDSIGHT_API_EMBEDDINGS_PROVIDER = "local";
           HINDSIGHT_API_RERANKER_PROVIDER = "rrf";
           HINDSIGHT_API_WORKER_ID = "hermes-hindsight";

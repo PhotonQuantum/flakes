@@ -1,5 +1,9 @@
 let
-  flashModel = {
+  deepseekFlash = {
+    provider = "deepseek";
+    model = "deepseek-v4-flash";
+  };
+  visionModel = {
     provider = "openrouter-compat";
     model = "~google/gemini-flash-latest";
   };
@@ -14,21 +18,21 @@ in
     };
 
     model = {
-      provider = "openrouter-compat";
-      default = "~google/gemini-pro-latest";
+      provider = "deepseek";
+      default = "deepseek-v4-pro";
     };
 
     auxiliary = {
-      approval = flashModel;
-      compression = flashModel;
-      curator = flashModel;
-      mcp = flashModel;
-      session_search = flashModel;
-      skills_hub = flashModel;
-      title_generation = flashModel;
-      triage_specifier = flashModel;
-      vision = flashModel;
-      web_extract = flashModel;
+      approval = deepseekFlash;
+      compression = deepseekFlash;
+      curator = deepseekFlash;
+      mcp = deepseekFlash;
+      session_search = deepseekFlash;
+      skills_hub = deepseekFlash;
+      title_generation = deepseekFlash;
+      triage_specifier = deepseekFlash;
+      vision = visionModel;
+      web_extract = deepseekFlash;
     };
 
     memory = {

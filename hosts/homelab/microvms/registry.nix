@@ -594,7 +594,17 @@ in
         repo = secrets.backupRepos.home-assistant;
       };
 
-      cert.enable = true;
+      cert = {
+        enable = true;
+        extraDomainNames = [ "matter.lqhome.me" ];
+      };
+
+      keys."/var/keys/matter-webui-auth.env" = {
+        file = "/var/keys/matter-webui-auth.env";
+        user = "root";
+        group = "root";
+        permissions = "0400";
+      };
 
       extraOptions = {
         devices = [
@@ -610,6 +620,7 @@ in
         tags = [
           "tag:homelab-vm"
           "tag:home-assistant"
+          "tag:cname-matter"
         ];
         grants = [
           {

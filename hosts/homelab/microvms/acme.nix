@@ -7,8 +7,7 @@
 let
   vmLib = import ./lib.nix { inherit lib; };
   acmeEmail =
-    certDefaults.email
-      or (throw "certDefaults.email is required for host ACME provisioning");
+    certDefaults.email or (throw "certDefaults.email is required for host ACME provisioning");
   allMachineConfigs = builtins.attrValues resolvedMachines;
   certMachineConfigs = builtins.filter (machine: machine.certResolved.enabled) allMachineConfigs;
   certShareRoot = "${volumePath}/certs";
@@ -49,6 +48,7 @@ let
         name = cert.domain;
         value = {
           domain = cert.domain;
+          extraDomainNames = cert.extraDomainNames;
           group = vmLib.certGroup;
           postRun = mkCertPostRun machine;
         };
@@ -57,11 +57,12 @@ let
   );
 in
 {
-  systemd.tmpfiles.rules =
-    [ "d ${certShareRoot} 0755 root root - -" ]
-    ++ (map (
-      machine: "d ${machine.certResolved.hostSharePath} 0750 root ${vmLib.certGroup} - -"
-    ) certMachineConfigs);
+  systemd.tmpfiles.rules = [
+    "d ${certShareRoot} 0755 root root - -"
+  ]
+  ++ (map (
+    machine: "d ${machine.certResolved.hostSharePath} 0750 root ${vmLib.certGroup} - -"
+  ) certMachineConfigs);
 
   users.groups.${vmLib.certGroup} = lib.mkIf (certMachineConfigs != [ ]) {
     gid = vmLib.certGroupGid;

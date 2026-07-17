@@ -2,6 +2,7 @@
   lib,
   pkgs,
   config,
+  vmCert,
   ...
 }:
 let
@@ -30,6 +31,7 @@ let
     script: !include scripts.yml
     scene: !include scenes.yml
   '';
+  matterHost = "matter.lqhome.me";
 in
 {
   imports = [
@@ -54,6 +56,8 @@ in
           OTA_PROVIDER_DIR = "/data/updates";
           PRIMARY_INTERFACE = "wpan0";
           LOG_LEVEL = "info";
+          LISTEN_ADDRESS = "127.0.0.1";
+          PRODUCTION_MODE = "true";
         };
         extraOptions = [
           "--network=host"
@@ -86,6 +90,17 @@ in
     };
   };
 
+  services.caddy.virtualHosts.${matterHost} = {
+    hostName = "https://${matterHost}";
+    extraConfig = ''
+      tls ${vmCert.certPath} ${vmCert.keyPath}
+      basic_auth {
+        {$MATTER_WEBUI_USERNAME} {$MATTER_WEBUI_PASSWORD_HASH}
+      }
+      reverse_proxy http://127.0.0.1:5580
+    '';
+  };
+
   systemd.tmpfiles.rules = [
     "d ${dataDir} 0750 root root - -"
     "d ${configDir} 0750 root root - -"
@@ -97,6 +112,8 @@ in
   ];
 
   systemd.services = {
+    caddy.serviceConfig.EnvironmentFile = "/var/keys/matter-webui-auth.env";
+
     otbr-agent.serviceConfig.BindPaths = [ "${threadDir}:/var/lib/thread" ];
 
     otbr-backbone-onlink-routes = {

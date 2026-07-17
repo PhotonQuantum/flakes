@@ -102,6 +102,8 @@ $ colmena apply --on homelab --no-keys
 }
 ```
 
+> Note: when deploying the module from another machine, one must update `tailscaleAuthKeyDir` and `beszel.secretDir` accordingly.
+
 6. Generate API credentials at <https://login.tailscale.com/admin/settings/keys> and export them locally:
 
 ```bash

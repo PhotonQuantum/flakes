@@ -72,6 +72,13 @@ in
         group = "root";
         permissions = "0400";
       };
+      "matter-webui-auth.env" = {
+        keyFile = ../../secrets/matter-webui-auth.env;
+        destDir = "/var/keys";
+        user = "microvm";
+        group = "kvm";
+        permissions = "0400";
+      };
       "tailscale_key" = {
         keyFile = ../../secrets/tailscale_key;
         destDir = "/var/keys";

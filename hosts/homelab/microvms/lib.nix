@@ -295,6 +295,7 @@ let
         certDefaults.domain
           or (throw "certDefaults.domain is required when machines.${name}.cert.enable = true");
       domain = cert.domain or "${name}.${defaultDomain}";
+      extraDomainNames = cert.extraDomainNames or [ ];
       hostSharePath = "/srv/microvms/certs/${name}";
       mountPoint = "/run/homelab-certs";
     in
@@ -313,6 +314,15 @@ let
         (builtins.isString domain && domain != "")
         "machines.${name}.cert.domain must be a non-empty string";
       assert ensure
+        (builtins.isList extraDomainNames)
+        "machines.${name}.cert.extraDomainNames must be a list";
+      assert ensure
+        (builtins.all (
+          extraDomain: builtins.isString extraDomain && extraDomain != ""
+        ) extraDomainNames)
+        "machines.${name}.cert.extraDomainNames must contain only non-empty strings";
+      assert ensureNoDuplicates "machines.${name}.cert domain names" ([ domain ] ++ extraDomainNames);
+      assert ensure
         (builtins.isString defaultDomain && defaultDomain != "")
         "certDefaults.domain must be a non-empty string";
       assert ensure
@@ -325,6 +335,7 @@ let
         inherit
           enabled
           domain
+          extraDomainNames
           hostSharePath
           mountPoint
           ;
@@ -630,9 +641,9 @@ let
       managedMachineIps = map
         (machine: machine.ip)
         (builtins.filter (machine: machine.ip != null) machineValues);
-      certDomains = map
-        (machine: machine.certResolved.domain)
-        (builtins.filter (machine: machine.certResolved.enabled) machineValues);
+      certDomains = lib.concatMap (
+        machine: [ machine.certResolved.domain ] ++ machine.certResolved.extraDomainNames
+      ) (builtins.filter (machine: machine.certResolved.enabled) machineValues);
     in
     assert ensureNoDuplicates "machine names" (map (machine: machine.name) machineValues);
     assert builtins.all (check: check) groupVmIdChecks;
@@ -642,7 +653,7 @@ let
     assert ensureNoDuplicates "machine tap names" (map (machine: machine.tapName) machineValues);
     assert ensureNoDuplicates "machines.*.dataVolume.hostImagePath" dataVolumeHostImagePaths;
     assert ensureNoDuplicates "machines.*.backup.repo" backupRepos;
-    assert ensureNoDuplicates "machines.*.cert.domain" certDomains;
+    assert ensureNoDuplicates "machines.* certificate domain names" certDomains;
     resolved;
 
   mkVmRef = machine: {
@@ -814,6 +825,7 @@ let
               enabled = true;
               inherit (certResolved)
                 domain
+                extraDomainNames
                 group
                 gid
                 certPath

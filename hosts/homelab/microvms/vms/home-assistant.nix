@@ -151,6 +151,7 @@ in
           output="$(ot-ctl br onlinkprefix 2>/dev/null || true)"
           prefixes="$(
             printf '%s\n' "$output" \
+              | tr -d '\r' \
               | sed -n 's/^\(Local\|Favored\): \([^ ]*\).*/\2/p' \
               | sort -u
           )"

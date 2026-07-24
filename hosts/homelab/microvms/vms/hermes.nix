@@ -105,7 +105,7 @@ in
   imports = [
     (import ./caddy-proxy.nix {
       upstream = "http://127.0.0.1:9119";
-      rewriteOrigin = true;
+      rewriteToUpstream = true;
     })
   ];
 

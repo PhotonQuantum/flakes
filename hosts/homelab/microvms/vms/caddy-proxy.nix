@@ -1,7 +1,7 @@
 {
   upstream,
   accessLog ? false,
-  rewriteOrigin ? false,
+  rewriteToUpstream ? false,
 }:
 {
   lib,
@@ -46,9 +46,16 @@ in
               }
             }
           ''}
-          reverse_proxy ${upstream} {
-            header_up Host {upstream_hostport}
-            ${lib.optionalString rewriteOrigin "header_up Origin ${upstream}"}
+          ${
+            if rewriteToUpstream then
+              ''
+                reverse_proxy ${upstream} {
+                  header_up Host {upstream_hostport}
+                  header_up Origin ${upstream}
+                }
+              ''
+            else
+              "reverse_proxy ${upstream}"
           }
         '';
       };
@@ -58,6 +65,29 @@ in
   systemd.services.caddy = {
     after = [ "run-homelab\\x2dcerts.mount" ];
     requires = [ "run-homelab\\x2dcerts.mount" ];
+  };
+
+  systemd.services.caddy-cert-ready = {
+    description = "Start Caddy after the host-provisioned certificate is ready";
+    after = [ "run-homelab\\x2dcerts.mount" ];
+    serviceConfig.Type = "oneshot";
+    script = ''
+      if [[ -r ${vmCert.certPath} && -r ${vmCert.keyPath} ]]; then
+        ${pkgs.systemd}/bin/systemctl stop caddy-cert-ready.timer
+        ${pkgs.systemd}/bin/systemctl reset-failed caddy.service
+        ${pkgs.systemd}/bin/systemctl start caddy.service
+      fi
+    '';
+  };
+
+  systemd.timers.caddy-cert-ready = {
+    description = "Poll for the host-provisioned Caddy certificate";
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnBootSec = "5s";
+      OnUnitActiveSec = "5s";
+      AccuracySec = "1s";
+    };
   };
 
   systemd.services.caddy-daily-reload = {

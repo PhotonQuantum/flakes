@@ -372,6 +372,24 @@
         "type": "github"
       }
     },
+    "flake-utils_5": {
+      "inputs": {
+        "systems": "systems_7"
+      },
+      "locked": {
+        "lastModified": 1731533236,
+        "narHash": "sha256-l0KFg5HjrsfsO/JpG+r7fRrqm12kzFHyUHqHCVpMMbI=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "11707dc2f618dd54ca8739b309ec4fc024de578b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
     "git-hooks-nix": {
       "inputs": {
         "flake-compat": "flake-compat_2",
@@ -610,6 +628,22 @@
         "url": "https://github.com/NixOS/nixpkgs"
       }
     },
+    "nixpkgs_4": {
+      "locked": {
+        "lastModified": 1781577229,
+        "narHash": "sha256-lrp67w8AulE9Ks53n27I45ADSzbOCn4H+CNW1Ck8B+8=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "567a49d1913ce81ac6e9582e3553dd90a955875f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixvim": {
       "inputs": {
         "flake-parts": "flake-parts_4",
@@ -710,8 +744,29 @@
         "nur": "nur",
         "pyproject-nix": "pyproject-nix",
         "qbittorrent-password": "qbittorrent-password",
+        "sparkyfitness": "sparkyfitness",
         "tex-fmt": "tex-fmt",
         "tg3-rs": "tg3-rs"
+      }
+    },
+    "sparkyfitness": {
+      "inputs": {
+        "flake-utils": "flake-utils_3",
+        "nixpkgs": "nixpkgs_4"
+      },
+      "locked": {
+        "lastModified": 1783349640,
+        "narHash": "sha256-kGijQPFG4FPU/MdEdMuN+djsDyCOA1XcblbMTAXt2Y8=",
+        "owner": "CodeWithCJ",
+        "repo": "SparkyFitness",
+        "rev": "2a7e0d8f317fff14fc6596d573df0c2ae6ba6f9d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "CodeWithCJ",
+        "ref": "v0.17.3",
+        "repo": "SparkyFitness",
+        "type": "github"
       }
     },
     "spectrum": {
@@ -820,9 +875,24 @@
         "type": "github"
       }
     },
+    "systems_7": {
+      "locked": {
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default",
+        "type": "github"
+      }
+    },
     "tex-fmt": {
       "inputs": {
-        "flake-utils": "flake-utils_3",
+        "flake-utils": "flake-utils_4",
         "nixpkgs": [
           "nixpkgs"
         ]
@@ -843,7 +913,7 @@
     },
     "tg3-rs": {
       "inputs": {
-        "flake-utils": "flake-utils_4",
+        "flake-utils": "flake-utils_5",
         "nix-gitignore": "nix-gitignore",
         "nixpkgs": [
           "nixpkgs"

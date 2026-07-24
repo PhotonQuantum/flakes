@@ -73,6 +73,8 @@
       url = "git+https://codeberg.org/feathecutie/qbittorrent_password";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    sparkyfitness.url = "github:CodeWithCJ/SparkyFitness/v0.17.3";
   };
 
   outputs =

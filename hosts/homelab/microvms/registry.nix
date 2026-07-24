@@ -634,6 +634,48 @@ in
       };
     };
 
+    sparkyfitness = {
+      group = "isolated";
+      vmId = 19;
+      module = [
+        inputs.sparkyfitness.nixosModules.sparkyfitness
+        ./vms/sparkyfitness.nix
+      ];
+      mem = 4096;
+      vcpu = 2;
+      beszel.agent.enable = true;
+
+      dataVolume = {
+        sizeMiB = 16384;
+        mountPoint = "/mnt";
+        fsType = "ext4";
+        label = "sparky-data";
+      };
+
+      cert.enable = true;
+
+      tailscale = {
+        enable = true;
+        tags = [
+          "tag:homelab-vm"
+          "tag:sparkyfitness"
+        ];
+        grants = [
+          {
+            from = [ "autogroup:member" ];
+            ports = [ "tcp:443" ];
+          }
+        ];
+      };
+
+      keys."/var/keys/sparkyfitness.env" = {
+        file = "/var/keys/sparkyfitness.env";
+        user = "root";
+        group = "root";
+        permissions = "0400";
+      };
+    };
+
     # Example configuration only (documentation).
     # Uncomment and adapt when you need to run a MicroVM.
     # example-http = {

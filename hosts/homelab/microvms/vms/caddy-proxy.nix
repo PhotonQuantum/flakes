@@ -12,7 +12,7 @@
   ...
 }:
 let
-  httpsHost = "${vmSelf.name}.lqhome.me";
+  httpsHost = vmCert.domain;
 in
 {
   assertions = [

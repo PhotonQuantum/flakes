@@ -676,6 +676,47 @@ in
       };
     };
 
+    lqdiet = {
+      group = "isolated";
+      vmId = 20;
+      module = [
+        inputs.lqdiet.nixosModules.lqdiet
+        ./vms/lqdiet.nix
+      ];
+      mem = 1024;
+      vcpu = 2;
+      beszel.agent.enable = true;
+
+      dataVolume = {
+        sizeMiB = 8192;
+        mountPoint = "/mnt";
+        fsType = "ext4";
+        label = "lqdiet-data";
+      };
+
+      cert = {
+        enable = true;
+        domain = "diet.lqhome.me";
+      };
+
+      tailscale = {
+        enable = true;
+        tags = [
+          "tag:homelab-vm"
+          "tag:lqdiet"
+        ];
+        grants = [
+          {
+            from = [
+              "autogroup:member"
+              "tag:hermes"
+            ];
+            ports = [ "tcp:443" ];
+          }
+        ];
+      };
+    };
+
     # Example configuration only (documentation).
     # Uncomment and adapt when you need to run a MicroVM.
     # example-http = {

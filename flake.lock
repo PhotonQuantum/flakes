@@ -452,6 +452,27 @@
         "type": "github"
       }
     },
+    "lqdiet": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1784862095,
+        "narHash": "sha256-utKFDFcfjSfwf0raUFS8gLMC/m5tDK/qWrtT+/tzuFY=",
+        "ref": "master",
+        "rev": "4da7953f7371101cd85ce2b2cab520e2661ae5ae",
+        "revCount": 5,
+        "type": "git",
+        "url": "https://git.lightquantum.me/LightQuantum/lqdiet"
+      },
+      "original": {
+        "ref": "master",
+        "type": "git",
+        "url": "https://git.lightquantum.me/LightQuantum/lqdiet"
+      }
+    },
     "microvm": {
       "inputs": {
         "nixpkgs": [
@@ -738,6 +759,7 @@
         "disko": "disko",
         "flake-parts": "flake-parts_3",
         "home-manager": "home-manager",
+        "lqdiet": "lqdiet",
         "microvm": "microvm",
         "nixpkgs": "nixpkgs_3",
         "nixvim": "nixvim",

@@ -120,13 +120,6 @@ in
         group = "kvm";
         permissions = "0400";
       };
-      "sparkyfitness.env" = {
-        keyFile = homelabSecrets.sparkyfitnessEnvironmentFile;
-        destDir = "/var/keys";
-        user = "microvm";
-        group = "kvm";
-        permissions = "0400";
-      };
     };
   };
 

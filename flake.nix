@@ -74,8 +74,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    sparkyfitness.url = "github:CodeWithCJ/SparkyFitness/v0.17.3";
-
     lqdiet = {
       url = "git+https://git.lightquantum.me/LightQuantum/lqdiet?ref=master";
       inputs.nixpkgs.follows = "nixpkgs";

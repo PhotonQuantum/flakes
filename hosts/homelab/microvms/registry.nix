@@ -368,7 +368,10 @@ in
         ];
         grants = [
           {
-            from = [ "autogroup:member" ];
+            from = [
+              "autogroup:member"
+              "tag:ani-rss"
+            ];
             ports = [
               "tcp:80"
               "tcp:443"

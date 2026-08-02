@@ -655,6 +655,10 @@ in
         label = "lqdiet-data";
       };
 
+      backup = {
+        repo = secrets.backupRepos.lqdiet;
+      };
+
       cert = {
         enable = true;
         domain = "diet.lqhome.me";

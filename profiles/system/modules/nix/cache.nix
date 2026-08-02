@@ -14,7 +14,6 @@ let
       "https://yazi.cachix.org"
       "https://viperml.cachix.org"
       "https://nix-darwin.cachix.org"
-      "https://cache.garnix.io"
       "https://colmena.cachix.org"
     ];
     trusted-public-keys = [
@@ -25,7 +24,6 @@ let
       "yazi.cachix.org-1:Dcdz63NZKfvUCbDGngQDAZq6kOroIrFoyO064uvLh8k="
       "viperml.cachix.org-1:qZhKBMTfmcLL+OG6fj/hzsMEedgKvZVFRRAhq7j8Vh8="
       "nix-darwin.cachix.org-1:LxMyKzQk7Uqkc1Pfq5uhm9GSn07xkERpy+7cpwc006A="
-      "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
       "colmena.cachix.org-1:7BzpDnjjH8ki2CT3f6GdOk7QAzPOl+1t3LvTLXqYcSg="
     ];
   };

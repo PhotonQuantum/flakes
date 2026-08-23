@@ -361,6 +361,26 @@
         },
         "version": "dba9cc421b868c918d5c23c408544a28aadf2f2f"
     },
+    "trek_image": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "trek_image",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "arch": "amd64",
+            "finalImageName": "mauriceboe/trek",
+            "finalImageTag": null,
+            "imageDigest": "sha256:ce7fab639b89a6f62d484d1175a7d489a536a8c77291f56c03fec20608d4a3eb",
+            "imageName": "mauriceboe/trek",
+            "imageTag": "3.4.1",
+            "os": "linux",
+            "sha256": "sha256-PInIcY7WrsqwNu5gN+oxUoZUWaPZAu9Kw5VqShShiSs=",
+            "tlsVerify": null
+        },
+        "version": "3.4.1"
+    },
     "vicinae_extensions": {
         "cargoLock": null,
         "date": "2026-06-09",

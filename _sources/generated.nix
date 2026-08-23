@@ -219,6 +219,19 @@
     };
     date = "2026-03-06";
   };
+  trek_image = {
+    pname = "trek_image";
+    version = "3.4.1";
+    src = dockerTools.pullImage {
+      imageName = "mauriceboe/trek";
+      imageDigest = "sha256:ce7fab639b89a6f62d484d1175a7d489a536a8c77291f56c03fec20608d4a3eb";
+      sha256 = "sha256-PInIcY7WrsqwNu5gN+oxUoZUWaPZAu9Kw5VqShShiSs=";
+      finalImageTag = "3.4.1";
+      os = "linux";
+      arch = "amd64";
+      finalImageName = "mauriceboe/trek";
+    };
+  };
   vicinae_extensions = {
     pname = "vicinae_extensions";
     version = "b2169756872919f2bdeece9bce47247ba5d99b8a";

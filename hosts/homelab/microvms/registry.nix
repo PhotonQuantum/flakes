@@ -637,6 +637,48 @@ in
       };
     };
 
+    trek = {
+      group = "isolated";
+      vmId = 19;
+      module = ./vms/trek.nix;
+      mem = 2049;
+      vcpu = 2;
+      beszel.agent.enable = true;
+
+      dataVolume = {
+        sizeMiB = 16384;
+        mountPoint = "/mnt";
+        fsType = "ext4";
+        label = "trek-data";
+      };
+
+      backup = {
+        repo = secrets.backupRepos.trek;
+      };
+
+      cert = {
+        enable = true;
+        domain = "trek.lqhome.me";
+      };
+
+      tailscale = {
+        enable = true;
+        tags = [
+          "tag:homelab-vm"
+          "tag:trek"
+        ];
+        grants = [
+          {
+            from = [
+              "autogroup:member"
+              "tag:hermes"
+            ];
+            ports = [ "tcp:443" ];
+          }
+        ];
+      };
+    };
+
     lqdiet = {
       group = "isolated";
       vmId = 20;

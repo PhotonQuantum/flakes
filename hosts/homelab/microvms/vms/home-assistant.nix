@@ -23,12 +23,6 @@ let
   initialConfig = pkgs.writeText "home-assistant-configuration.yaml" ''
     default_config:
 
-    http:
-      use_x_forwarded_for: true
-      trusted_proxies:
-        - 127.0.0.1
-        - ::1
-
     automation: !include automations.yml
     script: !include scripts.yml
     scene: !include scenes.yml

@@ -1,5 +1,6 @@
 {
   git,
+  openssl,
   qbittorrent-password,
   writeShellApplication,
 }:
@@ -9,6 +10,7 @@ writeShellApplication {
 
   runtimeInputs = [
     git
+    openssl
     qbittorrent-password
   ];
 

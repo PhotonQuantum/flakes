@@ -128,3 +128,18 @@ $ nix run .#tailscale-deploy-dns
 ```
 
 9. Configure syncthing.
+10. For Home Assistant, use nested SSH local port forwards (laptop → homelab → Home Assistant MicroVM) to reach the VM's port `8123` directly, then under **Settings → System → Network → HTTP server**, enable **Trust X-Forwarded-For**, add `127.0.0.1` and `::1` to **Trusted proxies**, and confirm the settings after restart.
+
+Run this on your laptop and leave it running:
+
+```bash
+ssh -A -t \
+  -o ExitOnForwardFailure=yes \
+  -L 127.0.0.1:18123:127.0.0.1:18123 \
+  lightquantum@lightquantum-homelab.local \
+  'microvm -s home-assistant -- -- -N \
+    -o ExitOnForwardFailure=yes \
+    -L 127.0.0.1:18123:127.0.0.1:8123'
+```
+
+Open <http://127.0.0.1:18123> to configure Home Assistant; press Ctrl+C when finished. Both `--` separators are required to pass the forwarding options through to the VM's SSH connection.

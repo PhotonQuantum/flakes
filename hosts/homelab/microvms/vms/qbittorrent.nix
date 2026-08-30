@@ -1,5 +1,7 @@
 { lib, pkgs, ... }:
 let
+  apiKeyPlaceholder = "__QBITTORRENT_API_KEY__";
+  apiKeyFile = "/var/keys/qbittorrent-api-key";
   passwordPlaceholder = "__QBITTORRENT_PASSWORD_PBKDF2__";
   passwordFile = "/var/keys/qbittorrent-password-pbkdf2";
   configFile = "/config/qBittorrent/config/qBittorrent.conf";
@@ -24,13 +26,17 @@ let
         TempPath = "/downloads/incomplete/";
       };
       General.Locale = "en";
-      WebUI = {
-        Address = "127.0.0.1";
-        Password_PBKDF2 = "@ByteArray(${passwordPlaceholder})";
-        ServerDomains = "*";
-      };
+    };
+    WebUI = {
+      Address = "127.0.0.1";
+      APIKey = apiKeyPlaceholder;
+      Password_PBKDF2 = "@ByteArray(${passwordPlaceholder})";
+      ServerDomains = "*";
     };
   };
+  patchApiKey = pkgs.writeShellScript "qbittorrent-patch-api-key" ''
+    ${pkgs.replace-secret}/bin/replace-secret ${lib.escapeShellArg apiKeyPlaceholder} ${lib.escapeShellArg apiKeyFile} ${lib.escapeShellArg configFile}
+  '';
   patchPassword = pkgs.writeShellScript "qbittorrent-patch-password" ''
     ${pkgs.replace-secret}/bin/replace-secret ${lib.escapeShellArg passwordPlaceholder} ${lib.escapeShellArg passwordFile} ${lib.escapeShellArg configFile}
   '';
@@ -79,6 +85,7 @@ in
 
   systemd.services.qbittorrent.serviceConfig.ExecStartPre = lib.mkAfter [
     "${patchPassword}"
+    "${patchApiKey}"
     "${removeStaleLock}"
   ];
 

@@ -8,11 +8,11 @@
 {
   ani-rss = {
     pname = "ani-rss";
-    version = "v3.1.68";
+    version = "v3.2.27";
     src = fetchurl {
-      url = "https://github.com/wushuo894/ani-rss/releases/download/v3.1.68/ani-rss.jar";
+      url = "https://github.com/wushuo894/ani-rss/releases/download/v3.2.27/ani-rss.jar";
       name = "ani-rss.jar";
-      sha256 = "sha256-Q0kBEXQHJKiJo3VUbSmcSfTiQLX57GxKhX23qeHkTAw=";
+      sha256 = "sha256-iibrZXbNEGkQQIJ7YOs93fT8f67/fR7rYrHx8K9lFqE=";
     };
   };
   emby = {
@@ -146,12 +146,12 @@
   };
   hermes_agent_image = {
     pname = "hermes_agent_image";
-    version = "v2026.7.7.2";
+    version = "v2026.8.27";
     src = dockerTools.pullImage {
       imageName = "nousresearch/hermes-agent";
-      imageDigest = "sha256:9c841866021c54c4596849f6135717e8a4d52ba510b7f52c50aef1de1a283973";
-      sha256 = "sha256-O7TTqI6itLY0HzsyY88ZNYVQ/sjxnRzHGvBvBUrRFfA=";
-      finalImageTag = "v2026.7.7.2";
+      imageDigest = "sha256:e0df6adebddf29b91112aefc999d4aaf6846c9eb544faca5672a16a13590ff79";
+      sha256 = "sha256-PlZniRCrIlGyJtajayA29WWmo+pnYtRFKqsBzotRlx4=";
+      finalImageTag = "v2026.8.27";
       os = "linux";
       arch = "amd64";
       finalImageName = "nousresearch/hermes-agent";
@@ -159,23 +159,23 @@
   };
   hermes_lcm = {
     pname = "hermes_lcm";
-    version = "v0.19.0";
+    version = "v0.20.0";
     src = fetchFromGitHub {
       owner = "stephenschoettler";
       repo = "hermes-lcm";
-      rev = "v0.19.0";
+      rev = "v0.20.0";
       fetchSubmodules = false;
-      sha256 = "sha256-B80HCn3BT+M1B8THMm3Ph5tpimTB68yIVkBfPaV4X40=";
+      sha256 = "sha256-yJ1Nn+su7YbKd+cgVOizXChzLbKHqTprSprF1p9/HYk=";
     };
   };
   hindsight_image = {
     pname = "hindsight_image";
-    version = "0.8.4";
+    version = "0.9.2";
     src = dockerTools.pullImage {
       imageName = "ghcr.io/vectorize-io/hindsight";
-      imageDigest = "sha256:2c60f233eaba8f51db31adb920a560735aaf6f314e4b63c36c73159742dfa1a7";
-      sha256 = "sha256-1qzTnBCS8cEZPQufJwap4cAz86YxMlg6ILNmlczfoGg=";
-      finalImageTag = "0.8.4";
+      imageDigest = "sha256:84ab276b8f501546deb6ea9c64a57291718b4e16a59dd9e02a02fdd5adfe9028";
+      sha256 = "sha256-Pd7gK1LMHZ/imNuKDeZrDGqKXGBfQV+nkl/Mq2CWTBM=";
+      finalImageTag = "0.9.2";
       os = "linux";
       arch = "amd64";
       finalImageName = "ghcr.io/vectorize-io/hindsight";
@@ -183,12 +183,12 @@
   };
   home_assistant_image = {
     pname = "home_assistant_image";
-    version = "2026.7.2";
+    version = "2026.8.3";
     src = dockerTools.pullImage {
       imageName = "ghcr.io/home-assistant/home-assistant";
-      imageDigest = "sha256:1476924357b46e80735c13e94232ba5c853cac052e9df4bb28d50fa56348097b";
-      sha256 = "sha256-3H3sFHISGDkdIXkIFCppzdme/0vHJ7lRasoqUVnOQmk=";
-      finalImageTag = "2026.7.2";
+      imageDigest = "sha256:14931c6b13756317849f46da1d01b45937a1150db66c081cfe529d48215943fe";
+      sha256 = "sha256-/+233TaTLpk1T7vu8Nkug4xkaMa81bwnu5j93ORfZgg=";
+      finalImageTag = "2026.8.3";
       os = "linux";
       arch = "amd64";
       finalImageName = "ghcr.io/home-assistant/home-assistant";
@@ -196,12 +196,12 @@
   };
   matter_server_image = {
     pname = "matter_server_image";
-    version = "1.2.7";
+    version = "1.4.0";
     src = dockerTools.pullImage {
       imageName = "ghcr.io/matter-js/matterjs-server";
-      imageDigest = "sha256:3f2b19c26fa21f9a855fd1e31cc8e1b174e8fcece881ab4ac7f56b5d828446a6";
-      sha256 = "sha256-1vdqdjnwqf/fylX56GgxhtKs6KXGocoCRN3q1S93YKs=";
-      finalImageTag = "1.2.7";
+      imageDigest = "sha256:54232d0d3e7dff5a54759469d2753399270412b4c30c55b31750a4595e4cb236";
+      sha256 = "sha256-mF4nHbtuGnumPkKoMEXhqTQlyB+61zBD4PeH6yjAs9E=";
+      finalImageTag = "1.4.0";
       os = "linux";
       arch = "amd64";
       finalImageName = "ghcr.io/matter-js/matterjs-server";
@@ -221,12 +221,12 @@
   };
   trek_image = {
     pname = "trek_image";
-    version = "3.4.1";
+    version = "4.1.1";
     src = dockerTools.pullImage {
       imageName = "mauriceboe/trek";
-      imageDigest = "sha256:ce7fab639b89a6f62d484d1175a7d489a536a8c77291f56c03fec20608d4a3eb";
-      sha256 = "sha256-PInIcY7WrsqwNu5gN+oxUoZUWaPZAu9Kw5VqShShiSs=";
-      finalImageTag = "3.4.1";
+      imageDigest = "sha256:01d217fa047414b73e2132f7737703d7d39b1f468f670f804e801f5e327837f4";
+      sha256 = "sha256-uxX/WuvI9BgQjBkMUabtn7z/G/R1fn1Z29ocPR2WW8Q=";
+      finalImageTag = "4.1.1";
       os = "linux";
       arch = "amd64";
       finalImageName = "mauriceboe/trek";
@@ -234,15 +234,15 @@
   };
   vicinae_extensions = {
     pname = "vicinae_extensions";
-    version = "b2169756872919f2bdeece9bce47247ba5d99b8a";
+    version = "de926d2e94ff4423dc04068eb2b6fc8d501f3b74";
     src = fetchFromGitHub {
       owner = "vicinaehq";
       repo = "extensions";
-      rev = "b2169756872919f2bdeece9bce47247ba5d99b8a";
+      rev = "de926d2e94ff4423dc04068eb2b6fc8d501f3b74";
       fetchSubmodules = false;
-      sha256 = "sha256-9D3/tZiIUUqNEVs0zdEgdTkY6qS70qbV87+KrXWiwV4=";
+      sha256 = "sha256-YVr/SysyzG2lkSpacrEC/Mo7XdUYdKu5vX2AUcqAzpQ=";
     };
-    date = "2026-06-09";
+    date = "2026-08-29";
   };
   yazi_flavors = {
     pname = "yazi_flavors";
@@ -270,15 +270,15 @@
   };
   zimfw_git = {
     pname = "zimfw_git";
-    version = "fff448c0b89a4885f4ace90e2f37893a078b0c8a";
+    version = "7d38eb4d9e595241bbbcdd62f836d1ee668317fc";
     src = fetchFromGitHub {
       owner = "zimfw";
       repo = "git";
-      rev = "fff448c0b89a4885f4ace90e2f37893a078b0c8a";
+      rev = "7d38eb4d9e595241bbbcdd62f836d1ee668317fc";
       fetchSubmodules = false;
-      sha256 = "sha256-ojcv6nCOcv+2bbOZxcWhiefQ6mIWovYV57K8V6iyO5M=";
+      sha256 = "sha256-9GQYpvZAKyZwxuT+RFHxNWGapxc/5w9/+TExQZhIDWk=";
     };
-    date = "2026-01-05";
+    date = "2026-08-18";
   };
   zimfw_input = {
     pname = "zimfw_input";
@@ -306,14 +306,14 @@
   };
   zsh_completions = {
     pname = "zsh_completions";
-    version = "03bae0bf3f9c4ab894f1f11a31ffe7a1e1029879";
+    version = "8cd3bd78e8b1f17271cfdd8269074e5557d8d7b8";
     src = fetchFromGitHub {
       owner = "zsh-users";
       repo = "zsh-completions";
-      rev = "03bae0bf3f9c4ab894f1f11a31ffe7a1e1029879";
+      rev = "8cd3bd78e8b1f17271cfdd8269074e5557d8d7b8";
       fetchSubmodules = false;
-      sha256 = "sha256-lRRmX3aNTmFu2zjSIROL0XUfkKN6dpsOpLPIVMtqijQ=";
+      sha256 = "sha256-/yCvFIhFUQg7k1YfSfEeJhyFBOxUtWuT9wbk2bZbR4g=";
     };
-    date = "2026-06-26";
+    date = "2026-08-21";
   };
 }

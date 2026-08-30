@@ -1,12 +1,12 @@
 { lib, pkgs, ... }:
 let
-  qbittorrentPasswordFile = "/var/keys/qbittorrent-password";
+  qbittorrentApiKeyFile = "/var/keys/qbittorrent-api-key";
   configFile = "/config/config.v2.json";
-  patchQbittorrentPassword = pkgs.writeShellScript "ani-rss-patch-qbittorrent-password" ''
+  patchQbittorrentApiKey = pkgs.writeShellScript "ani-rss-patch-qbittorrent-api-key" ''
     set -euo pipefail
 
-    ${pkgs.jq}/bin/jq --arg password "$(${pkgs.coreutils}/bin/cat ${lib.escapeShellArg qbittorrentPasswordFile})" \
-      '.downloadToolPassword = $password' \
+    ${pkgs.jq}/bin/jq --arg apiKey "$(${pkgs.coreutils}/bin/cat ${lib.escapeShellArg qbittorrentApiKeyFile})" \
+      '.downloadToolPassword = $apiKey' \
       ${lib.escapeShellArg configFile} | ${pkgs.moreutils}/bin/sponge ${lib.escapeShellArg configFile}
   '';
 in
@@ -65,5 +65,5 @@ in
     };
   };
 
-  systemd.services.ani-rss.serviceConfig.ExecStartPre = lib.mkAfter [ "${patchQbittorrentPassword}" ];
+  systemd.services.ani-rss.serviceConfig.ExecStartPre = lib.mkAfter [ "${patchQbittorrentApiKey}" ];
 }

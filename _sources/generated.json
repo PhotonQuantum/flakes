@@ -8,11 +8,11 @@
         "pinned": false,
         "src": {
             "name": "ani-rss.jar",
-            "sha256": "sha256-Q0kBEXQHJKiJo3VUbSmcSfTiQLX57GxKhX23qeHkTAw=",
+            "sha256": "sha256-iibrZXbNEGkQQIJ7YOs93fT8f67/fR7rYrHx8K9lFqE=",
             "type": "url",
-            "url": "https://github.com/wushuo894/ani-rss/releases/download/v3.1.68/ani-rss.jar"
+            "url": "https://github.com/wushuo894/ani-rss/releases/download/v3.2.27/ani-rss.jar"
         },
-        "version": "v3.1.68"
+        "version": "v3.2.27"
     },
     "emby": {
         "cargoLock": null,
@@ -250,14 +250,14 @@
             "arch": "amd64",
             "finalImageName": "nousresearch/hermes-agent",
             "finalImageTag": null,
-            "imageDigest": "sha256:9c841866021c54c4596849f6135717e8a4d52ba510b7f52c50aef1de1a283973",
+            "imageDigest": "sha256:e0df6adebddf29b91112aefc999d4aaf6846c9eb544faca5672a16a13590ff79",
             "imageName": "nousresearch/hermes-agent",
-            "imageTag": "v2026.7.7.2",
+            "imageTag": "v2026.8.27",
             "os": "linux",
-            "sha256": "sha256-O7TTqI6itLY0HzsyY88ZNYVQ/sjxnRzHGvBvBUrRFfA=",
+            "sha256": "sha256-PlZniRCrIlGyJtajayA29WWmo+pnYtRFKqsBzotRlx4=",
             "tlsVerify": null
         },
-        "version": "v2026.7.7.2"
+        "version": "v2026.8.27"
     },
     "hermes_lcm": {
         "cargoLock": null,
@@ -273,12 +273,12 @@
             "name": null,
             "owner": "stephenschoettler",
             "repo": "hermes-lcm",
-            "rev": "v0.19.0",
-            "sha256": "sha256-B80HCn3BT+M1B8THMm3Ph5tpimTB68yIVkBfPaV4X40=",
+            "rev": "v0.20.0",
+            "sha256": "sha256-yJ1Nn+su7YbKd+cgVOizXChzLbKHqTprSprF1p9/HYk=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "v0.19.0"
+        "version": "v0.20.0"
     },
     "hindsight_image": {
         "cargoLock": null,
@@ -291,14 +291,14 @@
             "arch": "amd64",
             "finalImageName": "ghcr.io/vectorize-io/hindsight",
             "finalImageTag": null,
-            "imageDigest": "sha256:2c60f233eaba8f51db31adb920a560735aaf6f314e4b63c36c73159742dfa1a7",
+            "imageDigest": "sha256:84ab276b8f501546deb6ea9c64a57291718b4e16a59dd9e02a02fdd5adfe9028",
             "imageName": "ghcr.io/vectorize-io/hindsight",
-            "imageTag": "0.8.4",
+            "imageTag": "0.9.2",
             "os": "linux",
-            "sha256": "sha256-1qzTnBCS8cEZPQufJwap4cAz86YxMlg6ILNmlczfoGg=",
+            "sha256": "sha256-Pd7gK1LMHZ/imNuKDeZrDGqKXGBfQV+nkl/Mq2CWTBM=",
             "tlsVerify": null
         },
-        "version": "0.8.4"
+        "version": "0.9.2"
     },
     "home_assistant_image": {
         "cargoLock": null,
@@ -311,14 +311,14 @@
             "arch": "amd64",
             "finalImageName": "ghcr.io/home-assistant/home-assistant",
             "finalImageTag": null,
-            "imageDigest": "sha256:1476924357b46e80735c13e94232ba5c853cac052e9df4bb28d50fa56348097b",
+            "imageDigest": "sha256:14931c6b13756317849f46da1d01b45937a1150db66c081cfe529d48215943fe",
             "imageName": "ghcr.io/home-assistant/home-assistant",
-            "imageTag": "2026.7.2",
+            "imageTag": "2026.8.3",
             "os": "linux",
-            "sha256": "sha256-3H3sFHISGDkdIXkIFCppzdme/0vHJ7lRasoqUVnOQmk=",
+            "sha256": "sha256-/+233TaTLpk1T7vu8Nkug4xkaMa81bwnu5j93ORfZgg=",
             "tlsVerify": null
         },
-        "version": "2026.7.2"
+        "version": "2026.8.3"
     },
     "matter_server_image": {
         "cargoLock": null,
@@ -331,14 +331,14 @@
             "arch": "amd64",
             "finalImageName": "ghcr.io/matter-js/matterjs-server",
             "finalImageTag": null,
-            "imageDigest": "sha256:3f2b19c26fa21f9a855fd1e31cc8e1b174e8fcece881ab4ac7f56b5d828446a6",
+            "imageDigest": "sha256:54232d0d3e7dff5a54759469d2753399270412b4c30c55b31750a4595e4cb236",
             "imageName": "ghcr.io/matter-js/matterjs-server",
-            "imageTag": "1.2.7",
+            "imageTag": "1.4.0",
             "os": "linux",
-            "sha256": "sha256-1vdqdjnwqf/fylX56GgxhtKs6KXGocoCRN3q1S93YKs=",
+            "sha256": "sha256-mF4nHbtuGnumPkKoMEXhqTQlyB+61zBD4PeH6yjAs9E=",
             "tlsVerify": null
         },
-        "version": "1.2.7"
+        "version": "1.4.0"
     },
     "sbarlua": {
         "cargoLock": null,
@@ -372,18 +372,18 @@
             "arch": "amd64",
             "finalImageName": "mauriceboe/trek",
             "finalImageTag": null,
-            "imageDigest": "sha256:ce7fab639b89a6f62d484d1175a7d489a536a8c77291f56c03fec20608d4a3eb",
+            "imageDigest": "sha256:01d217fa047414b73e2132f7737703d7d39b1f468f670f804e801f5e327837f4",
             "imageName": "mauriceboe/trek",
-            "imageTag": "3.4.1",
+            "imageTag": "4.1.1",
             "os": "linux",
-            "sha256": "sha256-PInIcY7WrsqwNu5gN+oxUoZUWaPZAu9Kw5VqShShiSs=",
+            "sha256": "sha256-uxX/WuvI9BgQjBkMUabtn7z/G/R1fn1Z29ocPR2WW8Q=",
             "tlsVerify": null
         },
-        "version": "3.4.1"
+        "version": "4.1.1"
     },
     "vicinae_extensions": {
         "cargoLock": null,
-        "date": "2026-06-09",
+        "date": "2026-08-29",
         "extract": null,
         "name": "vicinae_extensions",
         "passthru": null,
@@ -395,12 +395,12 @@
             "name": null,
             "owner": "vicinaehq",
             "repo": "extensions",
-            "rev": "b2169756872919f2bdeece9bce47247ba5d99b8a",
-            "sha256": "sha256-9D3/tZiIUUqNEVs0zdEgdTkY6qS70qbV87+KrXWiwV4=",
+            "rev": "de926d2e94ff4423dc04068eb2b6fc8d501f3b74",
+            "sha256": "sha256-YVr/SysyzG2lkSpacrEC/Mo7XdUYdKu5vX2AUcqAzpQ=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "b2169756872919f2bdeece9bce47247ba5d99b8a"
+        "version": "de926d2e94ff4423dc04068eb2b6fc8d501f3b74"
     },
     "yazi_flavors": {
         "cargoLock": null,
@@ -446,7 +446,7 @@
     },
     "zimfw_git": {
         "cargoLock": null,
-        "date": "2026-01-05",
+        "date": "2026-08-18",
         "extract": null,
         "name": "zimfw_git",
         "passthru": null,
@@ -458,12 +458,12 @@
             "name": null,
             "owner": "zimfw",
             "repo": "git",
-            "rev": "fff448c0b89a4885f4ace90e2f37893a078b0c8a",
-            "sha256": "sha256-ojcv6nCOcv+2bbOZxcWhiefQ6mIWovYV57K8V6iyO5M=",
+            "rev": "7d38eb4d9e595241bbbcdd62f836d1ee668317fc",
+            "sha256": "sha256-9GQYpvZAKyZwxuT+RFHxNWGapxc/5w9/+TExQZhIDWk=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "fff448c0b89a4885f4ace90e2f37893a078b0c8a"
+        "version": "7d38eb4d9e595241bbbcdd62f836d1ee668317fc"
     },
     "zimfw_input": {
         "cargoLock": null,
@@ -509,7 +509,7 @@
     },
     "zsh_completions": {
         "cargoLock": null,
-        "date": "2026-06-26",
+        "date": "2026-08-21",
         "extract": null,
         "name": "zsh_completions",
         "passthru": null,
@@ -521,11 +521,11 @@
             "name": null,
             "owner": "zsh-users",
             "repo": "zsh-completions",
-            "rev": "03bae0bf3f9c4ab894f1f11a31ffe7a1e1029879",
-            "sha256": "sha256-lRRmX3aNTmFu2zjSIROL0XUfkKN6dpsOpLPIVMtqijQ=",
+            "rev": "8cd3bd78e8b1f17271cfdd8269074e5557d8d7b8",
+            "sha256": "sha256-/yCvFIhFUQg7k1YfSfEeJhyFBOxUtWuT9wbk2bZbR4g=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "03bae0bf3f9c4ab894f1f11a31ffe7a1e1029879"
+        "version": "8cd3bd78e8b1f17271cfdd8269074e5557d8d7b8"
     }
 }

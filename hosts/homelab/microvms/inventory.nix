@@ -1,7 +1,10 @@
 { inputs, lib }:
 let
   registry = import ./registry.nix { inherit inputs; };
-  vmLib = import ./lib.nix { inherit lib; };
+  vmHostPackages = import inputs.nixpkgs-qemu { system = "x86_64-linux"; };
+  vmLib = import ./lib.nix {
+    inherit lib vmHostPackages;
+  };
 
   volumePath = registry.volumePath or "/srv/microvms";
   backupDefaults = registry.backupDefaults or { };

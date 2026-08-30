@@ -4,6 +4,10 @@
   inputs = {
     nixpkgs.url = "git+https://github.com/NixOS/nixpkgs?shallow=1&ref=nixpkgs-unstable";
 
+    # Keep MicroVM's locally-built QEMU variants stable across general
+    # nixpkgs updates. These exact derivations are retained by homelab.
+    nixpkgs-qemu.url = "github:NixOS/nixpkgs/f8e81fc7eb063db454f563cdd596fb96a5ad1497";
+
     flake-parts.url = "github:hercules-ci/flake-parts";
 
     nur = {

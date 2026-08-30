@@ -1,4 +1,7 @@
-{ lib }:
+{
+  lib,
+  vmHostPackages ? null,
+}:
 let
   hexDigits = [
     "0"
@@ -807,6 +810,9 @@ let
         inherit vcpu mem;
         # storeDiskErofsFlags = ["-zlz4hc" "-Eztailpacking"]; # FIXME this is a debug option for faster disk generation
         inherit credentialFiles;
+      }
+      // lib.optionalAttrs (vmHostPackages != null) {
+        inherit vmHostPackages;
       };
     in
     { config, pkgs, ... }:

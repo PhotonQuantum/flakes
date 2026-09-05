@@ -397,7 +397,7 @@ in
       group = "lan";
       vmId = 13;
       module = ./vms/qbittorrent.nix;
-      mem = 2049;
+      mem = 4096;
       vcpu = 2;
       beszel.agent.enable = true;
 

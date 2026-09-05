@@ -49,6 +49,12 @@ in
     (import ./caddy-proxy.nix { upstream = "http://127.0.0.1:8080"; })
   ];
 
+  boot.kernelModules = [ "tcp_bbr" ];
+  boot.kernel.sysctl = {
+    "net.core.default_qdisc" = "fq";
+    "net.ipv4.tcp_congestion_control" = "bbr";
+  };
+
   users = {
     users.media = {
       description = "media user";

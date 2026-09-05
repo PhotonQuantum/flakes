@@ -4,6 +4,20 @@ let
 in
 {
   disko.devices = {
+    # Disko creates disks in name order; partition this member before secondary
+    # creates the shared /srv filesystem.
+    disk.additional = {
+      type = "disk";
+      device = "/dev/disk/by-id/${diskIds.additionalDiskId}";
+      content = {
+        type = "gpt";
+        partitions.srv = {
+          name = "srv";
+          end = "-0";
+        };
+      };
+    };
+
     disk.main = {
       type = "disk";
       device = "/dev/disk/by-id/${diskIds.mainDiskId}";
@@ -73,6 +87,7 @@ in
                 "-d raid0"
                 "-m raid1"
                 "/dev/disk/by-partlabel/disk-main-srv"
+                "/dev/disk/by-partlabel/disk-additional-srv"
               ];
               mountpoint = "/srv";
               mountOptions = [

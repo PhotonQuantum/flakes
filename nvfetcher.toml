@@ -91,6 +91,10 @@ docker.arch = "amd64"
 docker.os = "linux"
 docker.finalImageName = "ghcr.io/home-assistant/home-assistant"
 
+[ha_bambulab]
+src.github = "greghesp/ha-bambulab"
+fetch.github = "greghesp/ha-bambulab"
+
 [matter_server_image]
 src.github = "matter-js/matterjs-server"
 src.prefix = "v"

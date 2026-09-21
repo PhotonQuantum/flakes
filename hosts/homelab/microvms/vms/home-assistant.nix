@@ -16,6 +16,7 @@ let
   threadDir = "${dataDir}/thread";
   homeAssistantImage = pkgs.generated.home_assistant_image;
   matterServerImage = pkgs.generated.matter_server_image;
+  bambuLab = "${pkgs.generated.ha_bambulab.src}/custom_components/bambu_lab";
   mkBoolParam = name: enabled: lib.optionalString enabled "&${name}";
   threadRadioUrl =
     "spinel+hdlc+uart://${threadRadio.byId}?uart-baudrate=${toString threadRadio.baudRate}"
@@ -75,6 +76,7 @@ in
         privileged = true;
         volumes = [
           "${configDir}:/config"
+          "${bambuLab}:/config/custom_components/bambu_lab:ro"
           "/etc/localtime:/etc/localtime:ro"
         ];
         extraOptions = [

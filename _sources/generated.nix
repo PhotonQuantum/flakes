@@ -144,6 +144,17 @@
     };
     date = "2024-12-11";
   };
+  ha_bambulab = {
+    pname = "ha_bambulab";
+    version = "v2.2.26";
+    src = fetchFromGitHub {
+      owner = "greghesp";
+      repo = "ha-bambulab";
+      rev = "v2.2.26";
+      fetchSubmodules = false;
+      sha256 = "sha256-9KsIzem7BjImUW+BTnAUYJ7CnU5bFpet7D2HhmOwTbA=";
+    };
+  };
   hermes_agent_image = {
     pname = "hermes_agent_image";
     version = "v2026.8.27";

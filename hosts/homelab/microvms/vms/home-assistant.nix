@@ -61,6 +61,7 @@ in
           LOG_LEVEL = "info";
           LISTEN_ADDRESS = "127.0.0.1";
           PRODUCTION_MODE = "true";
+          ENABLE_TEST_NET_DCL = "true";
         };
         extraOptions = [
           "--network=host"

@@ -232,6 +232,19 @@
       finalImageName = "mauriceboe/trek";
     };
   };
+  vertex_image = {
+    pname = "vertex_image";
+    version = "2026.05.27";
+    src = dockerTools.pullImage {
+      imageName = "lswl/vertex";
+      imageDigest = "sha256:141d6966d0fac46453bfbbf76e616a49976b87caf965563911a7da13832b1bac";
+      sha256 = "sha256-1SiPxBndReZTNS4FOt4SHUG80BkWEM5SoEj/h23/lvQ=";
+      finalImageTag = "2026.05.27";
+      os = "linux";
+      arch = "amd64";
+      finalImageName = "lswl/vertex";
+    };
+  };
   vicinae_extensions = {
     pname = "vicinae_extensions";
     version = "de926d2e94ff4423dc04068eb2b6fc8d501f3b74";

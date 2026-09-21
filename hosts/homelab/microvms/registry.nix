@@ -415,6 +415,7 @@ in
             from = [
               "autogroup:member"
               "tag:ani-rss"
+              "tag:vertex"
             ];
             ports = [
               "tcp:80"
@@ -724,6 +725,42 @@ in
               "autogroup:member"
               "tag:hermes"
             ];
+            ports = [ "tcp:443" ];
+          }
+        ];
+      };
+    };
+
+    vertex = {
+      group = "isolated";
+      vmId = 21;
+      module = ./vms/vertex.nix;
+      # microvm.nix warns that QEMU can hang when memory is exactly 2 GiB.
+      mem = 2049;
+      vcpu = 2;
+      beszel.agent.enable = true;
+
+      dataVolume = {
+        sizeMiB = 8192;
+        mountPoint = "/mnt";
+        fsType = "ext4";
+        label = "vertex-data";
+      };
+
+      cert = {
+        enable = true;
+        domain = "vertex.lqhome.me";
+      };
+
+      tailscale = {
+        enable = true;
+        tags = [
+          "tag:homelab-vm"
+          "tag:vertex"
+        ];
+        grants = [
+          {
+            from = [ "autogroup:member" ];
             ports = [ "tcp:443" ];
           }
         ];

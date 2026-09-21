@@ -116,6 +116,14 @@ docker.arch = "amd64"
 docker.os = "linux"
 docker.finalImageName = "mauriceboe/trek"
 
+[vertex_image]
+src.container = "lswl/vertex"
+src.include_regex = "^[0-9]{4}\\.[0-9]{2}\\.[0-9]{2}$"
+fetch.docker = "lswl/vertex"
+docker.arch = "amd64"
+docker.os = "linux"
+docker.finalImageName = "lswl/vertex"
+
 [ani-rss]
 src.github = "wushuo894/ani-rss"
 fetch.url = "https://github.com/wushuo894/ani-rss/releases/download/$ver/ani-rss.jar"

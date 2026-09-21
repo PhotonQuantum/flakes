@@ -381,6 +381,26 @@
         },
         "version": "4.1.1"
     },
+    "vertex_image": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "vertex_image",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "arch": "amd64",
+            "finalImageName": "lswl/vertex",
+            "finalImageTag": null,
+            "imageDigest": "sha256:141d6966d0fac46453bfbbf76e616a49976b87caf965563911a7da13832b1bac",
+            "imageName": "lswl/vertex",
+            "imageTag": "2026.05.27",
+            "os": "linux",
+            "sha256": "sha256-1SiPxBndReZTNS4FOt4SHUG80BkWEM5SoEj/h23/lvQ=",
+            "tlsVerify": null
+        },
+        "version": "2026.05.27"
+    },
     "vicinae_extensions": {
         "cargoLock": null,
         "date": "2026-08-29",

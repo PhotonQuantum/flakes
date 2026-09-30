@@ -580,6 +580,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-qemu": {
+      "locked": {
+        "lastModified": 1785542685,
+        "narHash": "sha256-sjfvXMbG5pCFgpvw2OZAFcZiTvrppCWvnB6cuGrSY08=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "f8e81fc7eb063db454f563cdd596fb96a5ad1497",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "f8e81fc7eb063db454f563cdd596fb96a5ad1497",
+        "type": "github"
+      }
+    },
     "nixpkgs-regression": {
       "locked": {
         "lastModified": 1643052045,
@@ -724,6 +740,7 @@
         "lqdiet": "lqdiet",
         "microvm": "microvm",
         "nixpkgs": "nixpkgs_3",
+        "nixpkgs-qemu": "nixpkgs-qemu",
         "nixvim": "nixvim",
         "nur": "nur",
         "pyproject-nix": "pyproject-nix",

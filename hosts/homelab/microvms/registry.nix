@@ -1,6 +1,7 @@
 { inputs, ... }:
 let
   secrets = import ../../../secrets/homelab.nix;
+  qemuPkgs = import inputs.nixpkgs-qemu { system = "x86_64-linux"; };
 in
 {
   volumePath = "/srv/microvms";
@@ -623,6 +624,10 @@ in
             path = "vendorid=${secrets.usbDevices.homeAssistantThreadRadio.vendorId},productid=${secrets.usbDevices.homeAssistantThreadRadio.productId}";
           }
         ];
+        # USB devices make microvm.nix build qemu with libusb, which is never cached.
+        # Pinned to reproduce 9lc3l0ax...-qemu-host-cpu-only-for-vm-tests-11.0.2 already on homelab.
+        vmHostPackages = qemuPkgs;
+        qemu.package = qemuPkgs.qemu_kvm.override { nixosTestRunner = true; };
       };
 
       tailscale = {
@@ -692,6 +697,21 @@ in
       module = [
         inputs.lqdiet.nixosModules.lqdiet
         ./vms/lqdiet.nix
+        (
+          { pkgs, ... }:
+          {
+            # FIXME drop once lqdiet stops overriding nodejs on pnpm; pnpm >= 11 has no such arg
+            services.lqdiet.package =
+              (pkgs.callPackage "${inputs.lqdiet}/nix/package.nix" {
+                pnpm = pkgs.pnpm_10;
+              }).overrideAttrs
+                (old: {
+                  pnpmDeps = old.pnpmDeps.overrideAttrs {
+                    outputHash = "sha256-/AEXldh6AF5TpGXCNP1raEQqCLPPkYH8cnmBp24xsL8=";
+                  };
+                });
+          }
+        )
       ];
       mem = 1024;
       vcpu = 2;

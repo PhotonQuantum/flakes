@@ -844,9 +844,7 @@ let
         gid = certGroupGid;
       };
 
-      services.journald.extraConfig = ''
-        ForwardToSocket=vsock:2:19534
-      '';
+      services.journald.settings.Journal.ForwardToSocket = "vsock:2:19534";
 
       networking.hostName = name;
       networking.useDHCP = false;

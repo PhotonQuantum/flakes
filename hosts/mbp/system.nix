@@ -93,7 +93,6 @@
         ninja
         nodejs
         openjdk
-        openssl_3
         p7zip
         pandoc
         wget

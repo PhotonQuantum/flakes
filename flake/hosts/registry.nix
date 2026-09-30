@@ -68,7 +68,7 @@ in
     nixosDeploy = {
       targetHost = "lightquantum-homelab.local";
       targetUser = "lightquantum";
-      buildOnTarget = false;
+      buildOnTarget = true;
     };
   };
 

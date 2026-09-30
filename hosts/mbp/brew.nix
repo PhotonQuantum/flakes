@@ -72,6 +72,7 @@ _: {
     "background-music"
     "backuploupe"
     "baidunetdisk"
+    "bambu-studio"
     "chatgpt"
     "cheatsheet"
     "clashx-pro"
